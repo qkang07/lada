@@ -1,0 +1,73 @@
+import React, { ReactElement, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { seatMan } from './manager'
+import { SeatDef } from '@hll/coupe-form'
+
+type SlotType = {
+  name: string,
+  seat: ReactElement
+}
+
+
+type Props = {
+  onMounted?: () => void
+  renderer: string
+  props: Record<string, any>
+  style?: string
+  className?: string
+  slots?: SlotType[]
+}
+
+export type SeatReactRef = {
+  mount: () => any
+  destroy: () => any
+
+}
+
+const SeatReact = (props: Props) => {
+  const [dom, setDom] = useState<HTMLElement>()
+  const {seat, seatDef} = useMemo(() => {
+    const seatDef = seatMan.getSeat(props.renderer)
+    const seat = seatDef?.create({})
+    seat?.mount().then((d) => {
+      setDom(d)
+      props.onMounted?.()
+    })
+    return {
+      seat,
+      seatDef
+    }
+  }, [props.renderer])
+
+  useEffect(() => {
+    seat?.update({
+      props: props.props,
+      style: props.style,
+      className: props.className
+    })
+  },[props.props])
+
+  if(dom) {
+    return dom
+  }
+  return <></>
+}
+
+
+function createSeatReactDef(def: SeatDef, render: ReactNode): SeatDef {
+  return {
+    ...def,
+    create(props) {
+      return {
+        mount(data?: any) {
+          
+          return Promise.resolve(null as any)
+        },
+        update(data?: any){},
+        destroy(){}
+      }
+    }
+  }
+}
+
+
+export default SeatReact

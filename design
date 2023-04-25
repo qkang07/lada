@@ -1,0 +1,23 @@
+component manager 管理组件注册、查找
+  manager 是不是也可以可视化？
+component renderer 组件渲染
+component designer 设计时渲染
+  编辑组件 数据、事件绑定
+  编辑组件 属性
+  层次选择
+
+代码编辑器
+  在不同场景下编辑不同的内容
+  有代码数据上下文
+
+smart canvas 
+  变量作用域
+smart input
+
+
+连接器*主要是前端组件
+  数据连接器，用于连接外部数据的抽象层，在此抽象层可以实现多种数据注入能力
+  支持 bike
+  支持 coupe
+  支持 后端接口
+

@@ -1,0 +1,161 @@
+import { DOMElement, ReactNode } from 'react';
+
+export type DataType =
+  | number
+  | string
+  | boolean
+  | Array<any>
+  | Record<string, any>;
+
+export type DataTypeName =
+  | 'number'
+  | 'string'
+  | 'boolean'
+  | 'record'
+  | 'list'
+  | 'object'
+  | 'any';
+
+
+
+type RecoupeCommon = {
+  onMounted: (handler: () => any) => void
+  onUnMounted: (handler: () => any) => void
+  onEmit: (handler: (name: string, data: any) => any) => void
+}
+
+type RecoupeRenderProps<T> = {
+  el?: HTMLElement
+  initData?: T
+} & RecoupeCommon
+
+
+type ReCoupeInstance<T> = {
+  mount: (el?: HTMLElement) => void
+  unMount: () => void
+  destroy: () => void
+  update: (data: T) => void
+
+  offMounted: (handler: () => any) => void
+  offUnMounted: (handler: () => any) => void
+  offEmit: (handler: (name: string, data: any) => any) => void
+  get inMounted(): boolean
+} & RecoupeCommon
+
+
+type RecoupeRenderer<T> = (props: RecoupeRenderProps<T>) => ReCoupeInstance<T>
+
+
+class ReCoupe {
+  get isMounted() {
+    return false
+  }
+  on(event: string, handler: () => void){
+
+  }
+  off() {
+
+  }
+}
+
+
+
+function Render(params: {
+  data: any,
+  onMounted?: () => any
+  onUnmounted?: () => any
+  onEvent?: (event: any) => any
+}) {
+
+}
+
+
+
+
+/**
+ * IField
+ * 是一个实例化的字段，运行时的数据格式，也可以直接用于表单结构持久化存储。
+ */
+export interface ComponentDef {
+  /**
+   * 渲染器，即下面 defineFieldType 里面的字段类型名
+   */
+  renderer: string;
+  id?: string
+  label?: string;
+  version?: string;
+  // 字段的值在设计时，或者设置了该属性的时候是只读的
+  props: { [key: string]: any };
+}
+
+
+
+export type RenderMode = 'normal' | 'design' | 'view';
+
+type RenderProps<F extends ComponentDef> = {
+  field: F;
+  /**
+   * 渲染模式，
+   * normal:
+   */
+  mode?: RenderMode;
+};
+
+// 正常渲染时的 props
+export type RenderProps<F extends ComponentDef = ComponentDef> = RenderProps<F> & {
+  onChange: (v: any) => void;
+  onFieldChange?: (f: F) => void;
+  // 有些组件在渲染函数中会有一些校验逻辑，需要输出一些校验结果
+  onValidate?: (res: string[]) => void;
+};
+
+// 正常渲染函数的类型
+export type RenderType<F extends ComponentDef = ComponentDef> = (
+  props: RenderFieldProps<F>,
+) => JSX.Element;
+
+// 编辑器渲染时的 props
+export type RenderEditorProps<F extends ComponentDef = ComponentDef> = RenderProps<F> & {
+  onFieldChange: (f: F) => void;
+};
+
+// 编辑器渲染函数的类型
+export type RenderEditorType<F extends ComponentDef = ComponentDef> = (
+  props: RenderEditorProps<F>,
+) => JSX.Element;
+
+
+export type CreateFunctionType<F extends ComponentDef = ComponentDef> = (initField: F) => F;
+
+export type ValidationType<F extends ComponentDef = ComponentDef> = (
+  field: F,
+) => string[];
+
+export type ComponentMeta<F extends ComponentDef = any> = {
+  // 唯一名称。如果是 npm 包，必须和包名一致
+  name: string;
+  // 展示名
+  displayName?: string;
+  // 版本。如果没有使用 npm、url 版本参数之类的，需要填写该字段。
+  version?: string;
+  // 描述
+  desc?: string;
+  // for antd icon, use 'antd-icons:[name]'
+  // for arco icon, use 'arco-icons:[name]'
+  icon?: string | ReactNode;
+  // npm 链接
+  npmUrl?: string;
+
+  dependencies: string[]
+  // 渲染字段
+  renderField?: RenderFieldType<F>;
+  // 创建新字段的时候调用，返回字段初始值
+  create?: CreateFunctionType<F>;
+
+};
+
+/**
+ * 定义一个字段类型
+ */
+export const defineField = <F extends ComponentDef = ComponentDef>(def: ComponentMeta<F>) =>
+  def;

@@ -1,0 +1,43 @@
+.designer {
+  height: 100vh;
+  
+}
+.head {
+  height: 49px;
+  border-bottom: 1px solid #eee;
+}
+.body {
+  height: calc(100vh - 50px);
+  display: flex;
+}
+
+.toolbox {
+  width: 300px;
+  border-right: 1px solid #eee;
+  // background-color: rgb(243, 243, 243);
+}
+
+.canvas {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.editor {
+  border-left: 1px solid #eee;
+  width: 300px;
+}
+
+.resizer-line {
+  border-bottom: 1px solid #ddd;
+  height: 4px;
+  background-color: transparent;
+  transition: all .4s;
+  &:hover {
+    background-color: #bedaff;
+    border-bottom-color: #bedaff;
+  }
+}
