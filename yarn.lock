@@ -330,7 +330,7 @@ ahooks-v3-count@^1.0.0:
   resolved "https://registry-npm-next.huolala.work/ahooks-v3-count/-/ahooks-v3-count-1.0.0.tgz#ddeb392e009ad6e748905b3cbf63a9fd8262ca80"
   integrity sha1-3es5LgCa1udIkFs8v2Op/YJiyoA=
 
-ahooks@^3.5.0:
+ahooks@^3.5.0, ahooks@^3.7.6:
   version "3.7.6"
   resolved "https://registry-npm-next.huolala.work/ahooks/-/ahooks-3.7.6.tgz#4fdbe3be421775844bd64ab17c9c170424675247"
   integrity sha1-T9vjvkIXdYRL1kqxfJwXBCRnUkc=

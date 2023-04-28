@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import CompBox from './CompBox'
-import Canvas, { CanvasRef } from '@/components/Canvas'
+import Canvas from '@/components/Canvas'
 import { ActionRuntime, BindingSchema, CompRuntime, CompSchema, PageSchema, SlotRuntime, SlotSchema } from '@/components/compDef'
 import PropsEditor from '@/components/PropsEditor'
 import FocusFrame from '@/components/FocusFrame'
@@ -13,7 +13,10 @@ import TreeView from './TreeView'
 import {EventEmitter} from 'events'
 import SidePane from '@/components/SidePane'
 import { action, autorun, makeAutoObservable } from 'mobx'
-import { randomId } from '@/utils'
+import { Optional, randomId } from '@/utils'
+import { useParams } from 'react-router-dom'
+import { useRequest } from 'ahooks'
+import { compMan } from '@/components/manager'
 
 export type CompTransferObj = {
   id: string
@@ -26,6 +29,10 @@ export type SlotTransferObj = {
   id: string
   compId: string
   
+}
+type CompDomInfo = {
+  compId: string
+  compDom: HTMLElement
 }
 
 
@@ -67,6 +74,24 @@ function findSlot(dom: HTMLElement): SlotTransferObj | undefined {
 }
 
 
+const defaultPageSchema = ():PageSchema => ({
+  name: 'New Page',
+  rootComp: {
+    renderer: 'listLayout',
+    name: 'root',
+    slots: [{
+      name: 'default',
+      type: 'list',
+      children: []
+    }],
+  },
+  dataSources: []
+})
+
+
+
+
+
 type DesignerContextType = {
 
   eventBus?: EventEmitter
@@ -89,13 +114,14 @@ type Props = {}
 
 const Designer = (props: Props) => {
 
-  const [renderState, setRenderState] = useState(0)
-  const [currentCompId, setCurrentCompId] = useState()
+  const {id} = useParams<{id:string}>()
 
-  const canvasRef = useRef<CanvasRef>(null)
+  const [renderState, setRenderState] = useState(0)
+  const [currentCompId, setCurrentCompId] = useState<string>()
+
 
   const handleCompAdd = (name: string) => {
-    canvasRef.current?.addComp(name)
+    addComp(name)
   }
 
   const compSchemaMapRef = useRef<Record<any, CompRuntime>>(makeAutoObservable({}))
@@ -107,61 +133,126 @@ const Designer = (props: Props) => {
   const slotSchemaMap = slotSchemaMapRef.current
   const eventBus = eventBusRef.current
 
-  const pageSchema = useRef<PageSchema>({
-    name: 'test page',
-    rootComp: {
-      renderer: 'listLayout',
-    name: 'root',
-    slots: [{
-      name: 'default',
-      type: 'list',
-      children: []
-    }],
-    
-    },
-    dataSources: []
-  })
+  const makeRuntimeSlot = (slot: SlotSchema, comp: CompRuntime) => {
+    const runtime: SlotRuntime = makeAutoObservable({
+      ...slot,
+      children: slot.children?.map(c => makeRuntimeComp(c, comp)),
+      comp,
+      id: randomId()
+    })
+    if(slotSchemaMap) {
+      slotSchemaMap[runtime.id] = runtime
+    }
+    return runtime
+  }
+  const makeRuntimeComp = (comp: CompSchema, parent?: CompRuntime) => {
+    const runtime:CompRuntime = makeAutoObservable({
+      ...comp,
+      slots: [],
+      parent,
+      id: randomId()
+    })
+    runtime.slots = comp.slots?.map(s => makeRuntimeSlot(s, runtime))
+    if(compSchemaMap) {
+      compSchemaMap[runtime.id] = runtime
+    }
+    return runtime
+  }
+
+  const {data: pageSchema = defaultPageSchema()} = useRequest<PageSchema, void[]>(() => {
+    if(id) {
+      //  TODO fetch page schema
+      return Promise.resolve(defaultPageSchema())
+    } else return Promise.resolve(defaultPageSchema())
+  }, {refreshDeps:[id]})
+
 
 
   const [compTO, setCompTO] = useState<CompTransferObj>()
   const [slotTO, setSlotTO] = useState<SlotTransferObj>()
 
-  const runtimeSchema = useMemo(() => {
-    const makeRuntimeSlot = (slot: SlotSchema, comp: CompRuntime) => {
-      const runtime: SlotRuntime = makeAutoObservable({
-        ...slot,
-        children: slot.children?.map(c => makeRuntimeComp(c, comp)),
-        comp,
-        id: randomId()
-      })
-      if(slotSchemaMap) {
-        slotSchemaMap[runtime.id] = runtime
-      }
-      return runtime
-    }
-    const makeRuntimeComp = (comp: CompSchema, parent?: CompRuntime) => {
-      const runtime:CompRuntime = makeAutoObservable({
-        ...comp,
-        slots: [],
-        parent,
-        id: randomId()
-      })
-      runtime.slots = comp.slots?.map(s => makeRuntimeSlot(s, runtime))
-      if(compSchemaMap) {
-        compSchemaMap[runtime.id] = runtime
-      }
-      return runtime
-    }
-    return makeRuntimeComp(props.schema)
-  }, [props.schema])
+  const runtimeSchema = useRef(makeRuntimeComp(pageSchema.rootComp))
 
+  const updateRoot = action(() => {
+    runtimeSchema.current = makeRuntimeComp(pageSchema.rootComp)
+  })
+
+  useEffect(() => {
+    updateRoot()
+  }, [pageSchema])
+
+  const testObj = useRef<any>(makeAutoObservable({}))
+
+  useEffect(() => {
+    const change = action(() => {
+      testObj.current['aaa'] = randomId()
+    })
+    setInterval(() => {
+      change()
+    }, 1000)
+  }, [])
+  // const runtimeSchema = useMemo(() => {
+  //   const schema = makeRuntimeComp(pageSchema.rootComp)
+  //   const test = action(() => {
+  //     schema.name = randomId()
+  //   })
+  //   setInterval(() => {
+  //     test()
+  //     console.log(';sss')
+  //   }, 1000);
+  //   return schema
+  // }, [pageSchema])
+
+
+
+  const addComp = action((name: string) => {
+    const compDef = compMan.getComp(name)
+    let newComp: CompRuntime = {
+      renderer: name,
+      name: randomId(),
+      id: randomId()
+    }
+    if(compSchemaMap) {
+      compSchemaMap[newComp.id] = newComp
+    }
+    if(compDef?.slots?.length) {
+      newComp.slots = compDef.slots.map(s => {
+        const slot: SlotRuntime = {
+          name: s.name,
+          comp: newComp,
+          type: s.type,
+          children: [],
+          id: randomId()
+        }
+        if(slotSchemaMap) {
+          slotSchemaMap[slot.id] = slot
+        }
+        return slot
+      })
+    }
+    if(compDef?.createSchema) {
+      newComp = compDef.createSchema(newComp) as CompRuntime
+    }
+
+    // default use root runtime schema
+    console.log('newComp',newComp)
+    newComp = makeAutoObservable(newComp)
+
+    if(slotTO) {
+      slotSchemaMap?.[slotTO.id].children?.push(newComp)
+      newComp.parent = compSchemaMap?.[slotTO.compId]
+    } else {
+      newComp.parent = runtimeSchema.current
+      runtimeSchema.current.slots?.[0].children?.push(newComp)
+    }
+  })
 
 
   const updateCompSchema = action((id: any, schema: CompRuntime) => {
     if(compSchemaMap[id]) {
       compSchemaMap[id] = schema
     }
-    eventBus.emit('schemaUpdate', )
+    eventBus.emit('schemaUpdate', schema)
   })
 
   const updateCompBinding = action((id: any, binding: BindingSchema) => {
@@ -231,7 +322,6 @@ const Designer = (props: Props) => {
       <div className={styles.designer}>
         <div className={styles.head}>
           <DesignerHeader onSave={() => {
-            canvasRef.current?.getSchema()
           }}/>
         </div>
         <div className={styles.body}>
@@ -239,9 +329,8 @@ const Designer = (props: Props) => {
             <EditorStack 
               items={[
                 <CompBox onCompClick={handleCompAdd}/>,
-                <DataSources schemas={pageSchema.current.dataSources} onAdd={ds => {
-                  pageSchema.current.dataSources.push(ds)
-                  setRenderState(Math.random())
+                <DataSources schemas={pageSchema.dataSources} onAdd={ds => {
+                  pageSchema.dataSources.push(ds)
                 }}/>,
                 <TreeView/>
               ]}
@@ -249,7 +338,7 @@ const Designer = (props: Props) => {
         
           </div>
           <div className={styles.canvas}>
-            <Canvas schema={pageSchema.current.rootComp} ref={canvasRef} />
+            <Canvas test={testObj.current} onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema.current} />
           </div>
           <div className={styles.editor}>
             <PropsEditor compId={currentCompId}/>
