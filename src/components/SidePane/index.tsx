@@ -4,7 +4,7 @@ import styles from './index.module.less'
 type Props = {
   title: string
   icon?: ReactNode
-  actions?: ReactNode[]
+  actions?: ReactNode
   children?: ReactNode
 }
 

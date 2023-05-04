@@ -25,17 +25,12 @@ export type CanvasContextType = {
 export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 
-
-
-
-
 type Props = {
   schema: CompRuntime
   compTO?: CompTransferObj
   slotTO?: SlotTransferObj
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
 }
-
 
 
 const Canvas = observer((props: Props) => {
@@ -71,15 +66,7 @@ const Canvas = observer((props: Props) => {
         <div className={styles.canvasContext}  onClick={onCanvasClick }>
           <Renderer schema={schema} />
         </div>
-        {/* <div className={styles.theCanvas} onClick={handleCanvasClick }>
-          {compsSchema.current.map((comp, i) => {
-            return <Renderer schema={comp}  key={i + comp.renderer}  />
-          })}
-        </div> */}
         <FocusFrame  canvasDom={canvasDomRef.current || undefined} target={compTO?.dom} />
-        {/* <FocusFrame canvasDom={canvasDomRef.current || undefined} target={slotTO?.doms} styles={{
-          outlineColor: '#66cc88'
-        }} /> */}
       </div>
     </CanvasContext.Provider>
   )

@@ -5,6 +5,7 @@ import { compMan } from "../manager";
 import { CanvasContext } from "../Canvas";
 import { DesignerContext } from "@/pages/Designer";
 import Renderer from "../Renderer";
+import { observer } from "mobx-react";
 
 type Props = {
   // name?: string
@@ -15,7 +16,7 @@ type Props = {
   props?: any;
 };
 
-const SlotHolder = (props: Props) => {
+const SlotHolder = observer((props: Props) => {
   const { schema: slotSchema } = props;
 
   const [rtSchema, setRTSchema] = useState(props.schema)
@@ -96,6 +97,6 @@ const SlotHolder = (props: Props) => {
        */}
     </div>
   );
-};
+});
 
 export default SlotHolder;

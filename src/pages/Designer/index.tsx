@@ -182,13 +182,13 @@ const Designer = (props: Props) => {
     compSchemaMap[newComp.id] = newComp
     if(compDef?.slots?.length) {
       newComp.slots = compDef.slots.map(s => {
-        const slot: SlotRuntime = {
+        const slot: SlotRuntime = makeAutoObservable({
           name: s.name,
           comp: newComp,
           type: s.type,
           children: [],
           id: randomId()
-        }
+        })
         if(slotSchemaMap) {
           slotSchemaMap[slot.id] = slot
         }
@@ -204,12 +204,14 @@ const Designer = (props: Props) => {
     
     // default use root runtime schema
     if(slotTO) {
+      
       slotSchemaMap?.[slotTO.id].children?.push(newComp)
       newComp.parent = compSchemaMap?.[slotTO.compId]
     } else {
       newComp.parent = runtimeSchema
       runtimeSchema.slots?.[0].children?.push(newComp)
     }
+    eventBus.emit('schemaUpdate')
   })
 
 
@@ -249,6 +251,7 @@ const Designer = (props: Props) => {
     }
 
     const theSlot = findSlot(source)
+    console.log('found slot', theSlot)
     if(theSlot?.id) {
       setSlotTO({
         ...theSlot,
@@ -288,7 +291,7 @@ const Designer = (props: Props) => {
                 <DataSources schemas={pageSchema.dataSources} onAdd={ds => {
                   pageSchema.dataSources.push(ds)
                 }}/>,
-                <TreeView/>
+                <TreeView schema={runtimeSchema}/>
               ]}
             />
         
@@ -297,7 +300,7 @@ const Designer = (props: Props) => {
             <Canvas onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema} />
           </div>
           <div className={styles.editor}>
-            <PropsEditor/>
+            <PropsEditor compId={compTO?.id}/>
           </div>
         </div>
         

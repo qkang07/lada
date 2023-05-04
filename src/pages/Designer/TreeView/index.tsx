@@ -28,6 +28,7 @@ const makeTreeData = (schemas?: CompRuntime[]): any[] => {
 
 
 type Props = {
+  schema: CompRuntime
 }
 
 const TreeView = observer((props: Props) => {
@@ -36,8 +37,8 @@ const TreeView = observer((props: Props) => {
   const [treeData, setTreeData] = useState<TreeDataType[]>([])
 
   useEffect(() => {
-    eventBus?.on('schemaUpdate', (schema: CompRuntime)=>{
-      setTreeData(makeTreeData([schema]))
+    eventBus?.on('schemaUpdate', ()=>{
+      setTreeData(makeTreeData([props.schema]))
     })
   }, [eventBus])
 

@@ -85,7 +85,7 @@ const CustomPropsEditor = observer((props: Props) => {
                 }}
               >
                 {editor.config.map((option: any) => {
-                  return <Radio value={option.value}>{option.label}</Radio>;
+                  return <Radio key={option.value} value={option.value}>{option.label}</Radio>;
                 })}
               </Radio.Group>
             )}
