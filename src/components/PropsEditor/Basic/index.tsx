@@ -11,8 +11,6 @@ const BasicProps = observer((props: Props) => {
   const { compId} = props
   const { compSchemaMap, updateCompSchema} = useContext(DesignerContext);
 
-  console.log('reder', compSchemaMap)
-
   
   const compSchema = compSchemaMap![compId];
 
@@ -22,7 +20,6 @@ const BasicProps = observer((props: Props) => {
       <div className={pstyle.propField}>
         <div className={pstyle.label}>Name</div>
         <Input size='small' value={compSchema.name} onChange={v => {
-          console.log('v',v)
           if(v){
             compSchema.name = v
             updateCompSchema?.(compId, compSchema)

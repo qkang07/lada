@@ -13,7 +13,7 @@ const StyleEditor = (props: Props) => {
 
   const [innerValue, setInnerValue] = useState<string>()
 
-  const {currentCompId, compSchemaMap} = useContext(DesignerContext)
+  const {compSchemaMap} = useContext(DesignerContext)
 
   const schema = () => compSchemaMap![compId]
 

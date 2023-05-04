@@ -10,7 +10,7 @@ import { Input, Radio, Select, Switch } from "@arco-design/web-react";
 import React, { useContext, useEffect, useState } from "react";
 import pstyle from "../index.module.less";
 import { observer } from "mobx-react";
-import { autorun, makeAutoObservable } from "mobx";
+import { action, autorun, makeAutoObservable } from "mobx";
 
 type Props = {
   compId: string;
@@ -26,7 +26,7 @@ const CustomPropsEditor = observer((props: Props) => {
 
 
 
-  const handlePropChange = (name: string, value: any) => {
+  const handlePropChange = action((name: string, value: any) => {
     // const propDef = compDef!.props!.find(p => p.name === name)
     console.log("prop change", name, value);
     let bind: BindingSchema | undefined = compSchema.bindings?.find(
@@ -44,7 +44,7 @@ const CustomPropsEditor = observer((props: Props) => {
       bind.binding = value;
     }
     updateCompSchema?.(compId, compSchema)
-  };
+  });
   return (
     <SidePane title={"自定义属性"}>
       {compDef?.props?.map((prop) => {

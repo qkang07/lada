@@ -33,7 +33,6 @@ type Props = {
   schema: CompRuntime
   compTO?: CompTransferObj
   slotTO?: SlotTransferObj
-  test: any
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
 }
 
@@ -43,9 +42,7 @@ const Canvas = observer((props: Props) => {
 
   const {schema, compTO, slotTO, onCanvasClick} = props
 
-  const {setCurrentCompId, compSchemaMap, slotSchemaMap, eventBus, updateCompSchema} = useContext(DesignerContext)
-
-  console.log('test update', props.test)
+  const {compSchemaMap, slotSchemaMap, eventBus} = useContext(DesignerContext)
 
 
   const store = useRef<CanvasStore>(new CanvasStore())

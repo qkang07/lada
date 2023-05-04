@@ -37,7 +37,6 @@ const Renderer = observer((props: Props) => {
   }
 
   useEffect(() => {
-    console.log('shcema updated')
     updateSchema()
   }, [schema])
 

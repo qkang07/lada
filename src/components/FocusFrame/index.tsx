@@ -29,7 +29,7 @@ const FocusFrame = (props: Props) => {
   const [renderState, setRenderState] = useState(0)
 
   const observerRef = useRef(new MutationObserver((e) => {
-    console.log('dom change',e)
+    // console.log('dom change',e)
     calcFrame()
   }))
 

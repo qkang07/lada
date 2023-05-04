@@ -21,13 +21,14 @@ import { compMan } from '@/components/manager'
 export type CompTransferObj = {
   id: string
   dom: HTMLElement
-  schemaRuntime: () => CompSchema
+  schemaRuntime: CompSchema
 }
 
 export type SlotTransferObj = {
   dom: HTMLElement
   id: string
   compId: string
+  runtime: SlotRuntime
   
 }
 type CompDomInfo = {
@@ -56,8 +57,7 @@ function findComp(dom: HTMLElement): Optional<CompDomInfo> | undefined {
 }
 
 //  这个可以优化
-function findSlot(dom: HTMLElement): SlotTransferObj | undefined {
-  console.log(dom)
+function findSlot(dom: HTMLElement): {id: string, compId: string, dom: HTMLElement} | undefined {
 
   if(dom.dataset.ladaCanvas) {
     return undefined
@@ -69,8 +69,8 @@ function findSlot(dom: HTMLElement): SlotTransferObj | undefined {
       compId: dom.dataset.slotCompId!,
       dom
     }
-  } else return findSlot(dom.parentElement!)
-
+  } else if(dom.parentElement) return findSlot(dom.parentElement)
+  return undefined
 }
 
 
@@ -96,10 +96,7 @@ type DesignerContextType = {
 
   eventBus?: EventEmitter
   isDesign?: boolean
-  currentCompId?: any
   actions?: ActionRuntime[]
-  setCurrentCompId?: (id?: any) => void
-  currentCompSchema?: () => CompRuntime | void
   compSchemaMap?: Record<any, CompRuntime>
   slotSchemaMap?: Record<any, SlotRuntime>
   updateCompSchema?: (id: any, schema: CompRuntime) => any
@@ -115,15 +112,6 @@ type Props = {}
 const Designer = (props: Props) => {
 
   const {id} = useParams<{id:string}>()
-
-  const [renderState, setRenderState] = useState(0)
-  const [currentCompId, setCurrentCompId] = useState<string>()
-
-
-  const handleCompAdd = (name: string) => {
-    addComp(name)
-  }
-
   const compSchemaMapRef = useRef<Record<any, CompRuntime>>(makeAutoObservable({}))
   const slotSchemaMapRef = useRef<Record<any, SlotRuntime>>({})
   const eventBusRef = useRef(new EventEmitter)
@@ -159,50 +147,29 @@ const Designer = (props: Props) => {
     return runtime
   }
 
-  const {data: pageSchema = defaultPageSchema()} = useRequest<PageSchema, void[]>(() => {
-    if(id) {
-      //  TODO fetch page schema
-      return Promise.resolve(defaultPageSchema())
-    } else return Promise.resolve(defaultPageSchema())
-  }, {refreshDeps:[id]})
+  const [pageSchema] = useState(defaultPageSchema())
+
+  const [runtimeSchema] = useState(makeRuntimeComp(pageSchema.rootComp))
+
+
+  const handleCompAdd = (name: string) => {
+    addComp(name)
+  }
+
+
+
+
+  // const {data: pageSchema = defaultPageSchema()} = useRequest<PageSchema, void[]>(() => {
+  //   if(id) {
+  //     //  TODO fetch page schema
+  //     return Promise.resolve(defaultPageSchema())
+  //   } else return Promise.resolve(defaultPageSchema())
+  // }, {refreshDeps:[id]})
 
 
 
   const [compTO, setCompTO] = useState<CompTransferObj>()
   const [slotTO, setSlotTO] = useState<SlotTransferObj>()
-
-  const runtimeSchema = useRef(makeRuntimeComp(pageSchema.rootComp))
-
-  const updateRoot = action(() => {
-    runtimeSchema.current = makeRuntimeComp(pageSchema.rootComp)
-  })
-
-  useEffect(() => {
-    updateRoot()
-  }, [pageSchema])
-
-  const testObj = useRef<any>(makeAutoObservable({}))
-
-  useEffect(() => {
-    const change = action(() => {
-      testObj.current['aaa'] = randomId()
-    })
-    setInterval(() => {
-      change()
-    }, 1000)
-  }, [])
-  // const runtimeSchema = useMemo(() => {
-  //   const schema = makeRuntimeComp(pageSchema.rootComp)
-  //   const test = action(() => {
-  //     schema.name = randomId()
-  //   })
-  //   setInterval(() => {
-  //     test()
-  //     console.log(';sss')
-  //   }, 1000);
-  //   return schema
-  // }, [pageSchema])
-
 
 
   const addComp = action((name: string) => {
@@ -212,9 +179,7 @@ const Designer = (props: Props) => {
       name: randomId(),
       id: randomId()
     }
-    if(compSchemaMap) {
-      compSchemaMap[newComp.id] = newComp
-    }
+    compSchemaMap[newComp.id] = newComp
     if(compDef?.slots?.length) {
       newComp.slots = compDef.slots.map(s => {
         const slot: SlotRuntime = {
@@ -234,16 +199,16 @@ const Designer = (props: Props) => {
       newComp = compDef.createSchema(newComp) as CompRuntime
     }
 
-    // default use root runtime schema
     console.log('newComp',newComp)
     newComp = makeAutoObservable(newComp)
-
+    
+    // default use root runtime schema
     if(slotTO) {
       slotSchemaMap?.[slotTO.id].children?.push(newComp)
       newComp.parent = compSchemaMap?.[slotTO.compId]
     } else {
-      newComp.parent = runtimeSchema.current
-      runtimeSchema.current.slots?.[0].children?.push(newComp)
+      newComp.parent = runtimeSchema
+      runtimeSchema.slots?.[0].children?.push(newComp)
     }
   })
 
@@ -276,29 +241,23 @@ const Designer = (props: Props) => {
     const theComp = findComp(source)
     
     if(theComp?.compId) {
-      setCurrentCompId?.(theComp.compId)
       setCompTO({
         id: theComp.compId,
         dom: theComp.compDom!,
-        schemaRuntime: () => compSchemaMap![theComp.compId!],
+        schemaRuntime: compSchemaMap[theComp.compId!],
       })
     }
 
     const theSlot = findSlot(source)
     if(theSlot?.id) {
-      setSlotTO(theSlot)
+      setSlotTO({
+        ...theSlot,
+        runtime: slotSchemaMap[theSlot.id]
+      })
     }
     
   }
 
-
-
-  const currentCompSchema = () => {
-    if(currentCompId) {
-      return compSchemaMap[currentCompId]
-    }
-    return void 0
-  }
 
   const deleteComp =action((id: any) => {
     delete compSchemaMap[id]
@@ -308,12 +267,9 @@ const Designer = (props: Props) => {
   return (
     <DesignerContext.Provider value={{
       isDesign: true,
-      currentCompId,
-      setCurrentCompId,
       compSchemaMap,
       updateCompSchema,
       updateCompBinding,
-      currentCompSchema,
       slotSchemaMap,
       deleteComp,
       eventBus
@@ -338,10 +294,10 @@ const Designer = (props: Props) => {
         
           </div>
           <div className={styles.canvas}>
-            <Canvas test={testObj.current} onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema.current} />
+            <Canvas onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema} />
           </div>
           <div className={styles.editor}>
-            <PropsEditor compId={currentCompId}/>
+            <PropsEditor/>
           </div>
         </div>
         
