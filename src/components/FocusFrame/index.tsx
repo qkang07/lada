@@ -52,7 +52,7 @@ const FocusFrame = (props: Props) => {
 
   const calcFrame = debounce(() => {
     setRenderState(Math.random())
-  }, 20)
+  }, 0)
 
   const style = useMemo(() => {
     const frameStyle: CSSProperties = {
