@@ -93,7 +93,7 @@ export interface ActionRuntime extends ActionSchema {
 // Comp Schema
 
 export type CompSchema = {
-  renderer: string
+  provider: string
   name: string
   bindings?: BindingSchema[]
   slots?: SlotSchema[]
@@ -146,24 +146,7 @@ export type AppSchema = {
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-// Data Provider Def
 
-export type DataProviderHook<P = {}, R = any> = (params: any) => {
-  data: R | undefined
-  loading: boolean
-  run: (params: P) => Promise<R | undefined>
-}
-
-export type DataProviderDef = {
-  name: string
-  type: DataSourceType
-  params?: CompPropDef[]
-  props?: CompPropDef[]
-  states?: CompPropDef[]
-  actions?: ActionDef[]
-  events?: EventDef[]
-  use: DataProviderHook
-}
 
 
 // Comp Def
@@ -174,7 +157,7 @@ export type PropEditorType = {
 }
 
 
-export type CompPropDef = {
+export type PropDef = {
   name: string
   label?: string
   editor?: PropEditorType | string // 需要预设的编辑器
@@ -195,8 +178,8 @@ export type SlotDef = {
 
 export type ActionDef<P = {}, R = void> = {
   name: string
+  label?: string
   params?: string
-  handler: (params: P) => R
 }
 
 
@@ -214,22 +197,59 @@ export type RenderProps<T extends Record<string, any>> = {
   slots?: SlotRuntime[]
 } & T;
 
-export type CompDef<P extends Record<string, any> = any> = {
-  name: string;
+
+// Comp Base
+
+export type CompCreateContext = {
+  emit: (event: string ,data?: any) => any
+}
+
+export type CompDefBase = {
+  name: string
   label?: string
+  create?: (context: CompCreateContext) => Record<string ,any>
+  actions?: ActionDef[]
+  events?: EventDef[]
+  props?: PropDef[]
+  createSchema?: (initSchema?: any) => any
+}
+
+
+// Data Source Def
+
+export type DataSourceHook<D = any> = (params: any) => {
+  data: D | undefined
+  set: (data: D) => void
+}
+
+export interface AsyncDataSourceHook<D = any, P = {}> extends DataSourceHook<D> {
+  run: (params: P) => Promise<D | undefined>
+  loading: boolean
+}
+
+export interface DataSourceDef extends CompDefBase {
+  type: DataSourceType
+  params?: PropDef[]
+  states?: PropDef[]
+  create?: (context: CompCreateContext) => DataSourceHook | AsyncDataSourceHook
+  createSchema: (schema: DataSourceSchema) => DataSourceSchema
+}
+
+export interface CompDef<P extends Record<string, any> = any> extends CompDefBase {
   desc?: string;
   version?: string;
   url?: string;
-  render: (props: RenderProps<P>) => JSX.Element
+  render?: (props: RenderProps<P>) => JSX.Element
   createSchema?:(schema: CompSchema) => CompSchema
   slots?: SlotDef[]
-
-  props?: CompPropDef[]
-  states?: CompPropDef[]
-  events?: EventDef[]
-  actions?: ActionDef[]
+  states?: PropDef[]
 };
 
+
+
+export interface PageDef extends CompDefBase {
+  createSchema?: (initSchema?: PageSchema) => PageSchema
+}
 
 
 

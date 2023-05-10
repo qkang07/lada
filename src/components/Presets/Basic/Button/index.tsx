@@ -33,6 +33,9 @@ const ButtonDef: CompDef<ButtonProps> = {
       name: 'onClick',
     }
   ],
+  create(ctx) {
+    return {}
+  },
   render: (props) => {
     return <Button type={props.type as any}
     onClick={props.onClick}>{props.children}</Button>

@@ -14,7 +14,9 @@ import { observer } from 'mobx-react'
 
 class CanvasStore {
   dataSources: DataSourceInstance[] = []
-  actions: ActionDef[] = []
+
+  pageActions: ActionDef[] = []
+  appActions: ActionDef[] = []
 }
 
 export type CanvasContextType = {
@@ -40,7 +42,7 @@ const Canvas = observer((props: Props) => {
   const {compSchemaMap, slotSchemaMap, eventBus} = useContext(DesignerContext)
 
 
-  const store = useRef<CanvasStore>(new CanvasStore())
+  const store = useRef<CanvasStore>(makeAutoObservable(new CanvasStore()))
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
 

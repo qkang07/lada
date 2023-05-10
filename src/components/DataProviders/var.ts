@@ -1,22 +1,33 @@
-import { DataProviderDef } from "../compDef";
+import { action, makeAutoObservable } from "mobx";
+import { DataSourceDef } from "../compDef";
 
-const VarDataProvider: DataProviderDef = {
+const VarDataSource: DataSourceDef = {
   name: 'var',
   type: 'var',
   actions:[
     {
       name: 'set',
       params: 'any',
-      handler() {}
     }
   ],
   events: [
     {
-      name: 'onChange',
+      name: 'change',
       params: 'any'
     }
   ],
-  use() {
+  create(ctx) {
+    const data = makeAutoObservable({
+      value: undefined
+    })
 
+    return {
+      set: action((v: any) => {
+        data.value = v
+      }),
+      data: data.value,
+    }
   }
 }
+
+export default VarDataSource

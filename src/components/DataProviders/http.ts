@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DataProviderDef } from "../compDef";
+import { action, makeAutoObservable } from "mobx";
 
 const HTTPDataProvider: DataProviderDef = {
   name: 'http',
@@ -45,25 +46,37 @@ const HTTPDataProvider: DataProviderDef = {
   ],
   use: (params: any) => {
     // const {url ,method = 'GET', body} = params
-    const [loading, setLoading] = useState(false)
-    const [data, setData] = useState<any>()
+
+    const data = makeAutoObservable({
+      value: undefined,
+      loading: false
+    })
    
 
-    const run = (params: any) => {
-      setLoading(true)
-      return fetch(params.url, params.options).then(res => {
-        setLoading(false)
-        return res.json().then(d => {
-          setData(d)
-          return d
-        })
-      })
-    }
+    const run = action(async (params: any) => {
+      data.loading = true
+      try {
+        const res = await  fetch(params.url, params.options)
+        const resData = await res.json()
+        data.loading = false
+        set(resData)
+        return resData
+
+      } catch(e) {
+        data.loading = false
+        return Promise.reject(e)
+      }
+    })
+
+    const set = action((data: any) => {
+      data.value = data
+    })
 
     return {
-      loading,
-      data,
-      run
+      loading: data.loading,
+      data: data.value,
+      run,
+      set
     }
   }
 }
