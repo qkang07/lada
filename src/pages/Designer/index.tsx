@@ -77,7 +77,7 @@ function findSlot(dom: HTMLElement): {id: string, compId: string, dom: HTMLEleme
 const defaultPageSchema = ():PageSchema => ({
   name: 'New Page',
   rootComp: {
-    renderer: 'listLayout',
+    provider: 'listLayout',
     name: 'root',
     slots: [{
       name: 'default',
@@ -175,7 +175,7 @@ const Designer = (props: Props) => {
   const addComp = action((name: string) => {
     const compDef = compMan.getComp(name)
     let newComp: CompRuntime = {
-      renderer: name,
+      provider: name,
       name: randomId(),
       id: randomId()
     }

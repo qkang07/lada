@@ -26,10 +26,10 @@ const Renderer = observer((props: Props) => {
 
   const elRef = useRef<any>()
   const {compDef, CompRender} = useMemo(() => {
-    const compDef = compMan.getComp(rtSchema.renderer) as CompDef<{}>
+    const compDef = compMan.getComp(rtSchema.provider) as CompDef<{}>
     const CompRender = compDef?.render
     return {compDef, CompRender}
-  }, [rtSchema.renderer, elRef.current])
+  }, [rtSchema.provider, elRef.current])
 
   const updateSchema = () => {
     processBindings()
@@ -75,7 +75,7 @@ const Renderer = observer((props: Props) => {
       <CompRender slots={rtSchema.slots} {...boundProps} />
     </>
   }
-  return <span>未找到组件 {rtSchema.renderer}</span>
+  return <span>未找到组件 {rtSchema.provider}</span>
 })
 
 export default Renderer
