@@ -8,7 +8,7 @@ import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
 import { Drawer } from '@arco-design/web-react'
 import TreeView from '@/pages/Designer/TreeView'
-import { autorun, makeAutoObservable } from 'mobx'
+import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
 
@@ -17,6 +17,10 @@ class CanvasStore {
 
   pageActions: ActionDef[] = []
   appActions: ActionDef[] = []
+  compActions?: Map<string, ActionDef[]>
+
+  actionMap: Map<string, ActionDef[]> = new Map()
+
 }
 
 export type CanvasContextType = {
@@ -34,8 +38,12 @@ type Props = {
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
 }
 
+export type CanvasRef = {
+  store: CanvasStore
+}
 
-const Canvas = observer((props: Props) => {
+
+const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const {schema, compTO, slotTO, onCanvasClick} = props
 
@@ -45,6 +53,15 @@ const Canvas = observer((props: Props) => {
   const store = useRef<CanvasStore>(makeAutoObservable(new CanvasStore()))
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
+  useImperativeHandle(ref, () => {
+    return {
+      store: store.current
+    }
+  }, [])
+
+  const regDataSource = action((type: string, ) => {
+    
+  })
 
   const processBinding = (binding: BindingSchema) => {
     if(binding.scope === BindScopeEnum.Direct) {
@@ -72,6 +89,6 @@ const Canvas = observer((props: Props) => {
       </div>
     </CanvasContext.Provider>
   )
-})
+}))
 
 export default Canvas

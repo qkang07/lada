@@ -59,6 +59,7 @@ export type PropSchema = {
   label?: string
   defaultValue?: any
   type?: PropType
+  desc?: string
 }
 
 // Slot Schema
@@ -84,10 +85,12 @@ export interface SlotRuntime extends SlotSchema {
 export interface ActionSchema {
   name: string
   label: string
+  params?: PropSchema[]
 }
 
 export interface ActionRuntime extends ActionSchema {
   host: CompRuntime
+  type: 'page' | 'comp' | 'datasource'
 }
 
 // Comp Schema
