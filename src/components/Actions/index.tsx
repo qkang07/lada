@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import styles from './index.module.less'
 import { Modal } from '@arco-design/web-react'
+import { ActionSchema } from '../compDef'
+import ActionCard from './ActionCard'
 
 type Props = {}
 
 const ActionsPanel = (props: Props) => {
 
   const [visible, setVisible] = useState(false)
+  const [actions,setActions] = useState<ActionSchema[]>([])
   return (
     <Modal visible={visible}>
 
@@ -42,7 +45,9 @@ const ActionsPanel = (props: Props) => {
           </div>
         </div>
         <div className={styles.actionDetail}>
-          
+          {actions.map(action => {
+            return <ActionCard action={action} key={action.name}/>
+          })}
         </div>
       </div>
     </Modal>

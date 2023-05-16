@@ -14,7 +14,7 @@ const BasicProps = observer((props: Props) => {
   
   const compSchema = compSchemaMap![compId];
 
-  const compDef = compMan.getComp(compSchema.renderer);
+  const compDef = compMan.getComp(compSchema.provider);
   return (
     <SidePane title='基本属性'>
       <div className={pstyle.propField}>

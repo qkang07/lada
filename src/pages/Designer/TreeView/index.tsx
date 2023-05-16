@@ -12,7 +12,7 @@ const makeTreeData = (schemas?: CompRuntime[]): any[] => {
     return []
   }
   return schemas.map(schema => ({
-    title: <div>{schema.renderer} <div style={{color: '#aaa'}}>{schema.name}</div></div> ,
+    title: <div>{schema.provider} <div style={{color: '#aaa'}}>{schema.name}</div></div> ,
     key: schema.id,
     type: 'comp',
     children: schema.slots?.map(s => {

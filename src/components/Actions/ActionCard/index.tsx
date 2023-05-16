@@ -9,7 +9,7 @@ type Props = {
 const ActionCard = (props: Props) => {
   
   return (
-    <div>
+    <div className={styles.actionCard}>
       <div className={styles.name}></div>
       <div className={styles.params}>
         {props.action.params?.map(p=>{
