@@ -4,12 +4,13 @@ import { ActionSchema } from '@/components/compDef'
 
 type Props = {
   action: ActionSchema
+  onClick?: () => void
 }
 
 const ActionCard = (props: Props) => {
   
   return (
-    <div>
+    <div onClick={props.onClick}>
       <div className={styles.name}></div>
       <div className={styles.params}>
         {props.action.params?.map(p=>{

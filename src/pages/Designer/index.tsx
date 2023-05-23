@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import CompBox from './CompBox'
-import Canvas from '@/components/Canvas'
+import Canvas, { CanvasRef, CanvasStore } from '@/components/Canvas'
 import { ActionRuntime, BindingSchema, CompRuntime, CompSchema, PageSchema, SlotRuntime, SlotSchema } from '@/components/compDef'
 import PropsEditor from '@/components/PropsEditor'
 import FocusFrame from '@/components/FocusFrame'
@@ -102,6 +102,8 @@ type DesignerContextType = {
   updateCompSchema?: (id: any, schema: CompRuntime) => any
   updateCompBinding?: (id: any, binding: BindingSchema) => void
   deleteComp?: (id: any) => any
+
+  canvasStore?: CanvasStore
 }
 
 
@@ -115,6 +117,7 @@ const Designer = (props: Props) => {
   const compSchemaMapRef = useRef<Record<any, CompRuntime>>(makeAutoObservable({}))
   const slotSchemaMapRef = useRef<Record<any, SlotRuntime>>({})
   const eventBusRef = useRef(new EventEmitter)
+  const canvasRef = useRef<CanvasRef | null>(null)
 
 
   const compSchemaMap = compSchemaMapRef.current
@@ -275,7 +278,8 @@ const Designer = (props: Props) => {
       updateCompBinding,
       slotSchemaMap,
       deleteComp,
-      eventBus
+      eventBus,
+      canvasStore: canvasRef.current
     }}>
 
       <div className={styles.designer}>
@@ -297,7 +301,7 @@ const Designer = (props: Props) => {
         
           </div>
           <div className={styles.canvas}>
-            <Canvas onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema} />
+            <Canvas ref={canvasRef} onCanvasClick={handleCanvasClick} compTO={compTO} slotTO={slotTO} schema={runtimeSchema} />
           </div>
           <div className={styles.editor}>
             <PropsEditor compId={compTO?.id}/>

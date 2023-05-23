@@ -12,7 +12,7 @@ import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
 
-class CanvasStore {
+export class CanvasStore {
   dataSources: DataSourceInstance[] = []
 
   pageActions: ActionDef[] = []
