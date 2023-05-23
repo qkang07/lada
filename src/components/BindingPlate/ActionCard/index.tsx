@@ -10,7 +10,7 @@ type Props = {
 const ActionCard = (props: Props) => {
   
   return (
-    <div onClick={props.onClick}>
+    <div onClick={props.onClick} className={styles.actionCard}>
       <div className={styles.name}></div>
       <div className={styles.params}>
         {props.action.params?.map(p=>{

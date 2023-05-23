@@ -22,7 +22,7 @@ const CustomPropsEditor = observer((props: Props) => {
   const { compSchemaMap, updateCompSchema } = useContext(DesignerContext);
 
   const compSchema = compSchemaMap![compId];
-  const compDef = compMan.getComp(compSchema.renderer);
+  const compDef = compMan.getComp(compSchema.provider);
 
 
 
