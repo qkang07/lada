@@ -12,6 +12,7 @@ import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 
 
+
 export class CanvasStore {
   dataSources: DataSourceInstance[] = []
 
@@ -24,6 +25,13 @@ export class CanvasStore {
   regAction(name: string, host: any) {
 
   }
+
+  unRegAction(name: string, host: any) {
+
+  }
+
+
+
 
 }
 

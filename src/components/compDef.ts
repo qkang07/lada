@@ -1,32 +1,85 @@
 import { ReactNode } from 'react';
 
-// Schema Types
+//#regin base
 
-export type SchemaRuntime<S> = S & {id: string}
 
-// Data Source Schema
-export type DataSourceType = 'var' | 'props' | 'getter' | 'async'
-
-export type DataSourceSchema = {
+export type SchemaBase = {
   name: string
-  type: DataSourceType
-  initValue?: any
-  immediate?: boolean
-  provider?: string
+  label?: string
+  desc?: string
 }
 
-export interface DataSourceRuntime extends DataSourceSchema  {
-  page: PageSchema
+
+export interface CompSchemaBase extends SchemaBase {
+  provider: string
+}
+
+export type CompDefBase<S extends CompSchemaBase> = {
+  name: string
+  label?: string
+  create?: (context: CompCreateContext) => Record<string ,any>
+  ins?: ActionDef[]
+  events?: EventDef[]
+  props?: PropDef[]
+  createSchema?: (initSchema?: S) => S
+}
+
+export type CompInstanceBase<S extends CompSchemaBase> = {
+  def: CompDefBase<S>
+  schema: S
   id: string
 }
 
+export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
 
-export type DataSourceInstance = {
-  schema: DataSourceSchema
-  promise: Promise<any>
-  pending?: boolean
-  value?: any
+export interface CompPropSchema extends SchemaBase {
+  defaultValue?: any
+  type?: CompPropType
 }
+
+//#endregion base
+
+
+
+export namespace DataSource {
+
+  
+  export type DataSourceType = 'var' | 'props' | 'getter' | 'async'
+  
+  export interface Schema extends CompSchemaBase {
+    type: DataSourceType
+    initValue?: any
+    immediate?: boolean
+  }
+  
+  export type Hook<D = any> = (params: any) => {
+    data: D | undefined
+    set: (data: D) => void
+  }
+  
+  export interface AsyncHook<D = any, P = {}> extends Hook<D> {
+    run: (params: P) => Promise<D | undefined>
+    loading: boolean
+  }
+  
+  export interface Def extends CompDefBase {
+    type: DataSourceType
+    params?: PropDef[]
+    states?: PropDef[]
+    create?: (context: CompCreateContext) => Hook | AsyncHook
+    createSchema: (schema: Schema) => Schema
+  }
+  
+  export interface Instance extends CompInstanceBase {
+    def: Def
+    schema: Schema
+    page: PageInstance
+    promise: Promise<any>
+    pending?: boolean
+    value?: any
+  }
+}
+
 
 // Binding Schema
 
@@ -52,78 +105,79 @@ export type BindingSchema = {
 
 // Comp Prop Schema
 
-export type PropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
 
-export type PropSchema = {
-  name: string
-  label?: string
-  defaultValue?: any
-  type?: PropType
-  desc?: string
+
+//#region action
+
+export interface ActionSchema extends SchemaBase {
+  params?: SchemaBase[]
 }
 
-// Slot Schema
-
-export type SlotType = 'single' | 'list' | 'loop'
-
-export type SlotSchema = {
-  name: string
-  type: SlotType
-  display?: 'block' | 'inline'
-  binding?: BindingSchema
-  children?: CompSchema[]
-}
-
-export interface SlotRuntime extends SlotSchema {
-  comp: CompRuntime
-  children?: CompRuntime[]
-  id: string
-}
-
-// action schema
-
-export interface ActionSchema {
-  name: string
-  label: string
-  params?: PropSchema[]
-}
-
-export interface ActionRuntime extends ActionSchema {
-  host: CompRuntime
+export interface ActionInstance extends ActionSchema {
+  host: CompInstanceBase
   type: 'page' | 'comp' | 'datasource'
 }
 
-// Comp Schema
+//#endregion
 
-export type CompSchema = {
-  provider: string
-  name: string
-  bindings?: BindingSchema[]
-  slots?: SlotSchema[]
+
+
+export namespace UIComp {
+
+  export type SlotType = 'single' | 'list' | 'loop'
+  
+  export interface SlotSchema extends PropSchemaBase {
+    type: SlotType
+    display?: 'block' | 'inline'
+    binding?: BindingSchema
+    children?: Schema[]
+  }
+  
+  export interface SlotInstance {
+    comp: Instance
+    children?: Instance[]
+  }
+  
+  
+  export interface Schema extends CompSchemaBase {
+    bindings?: BindingSchema[]
+    slots?: SlotSchema[]
+  }
+  
+  
+  export interface Instance extends CompInstanceBase {
+    parent?: Instance
+    slot: string
+  }
+  
+  
+  
+  export interface Def<P extends Record<string, any> = any> extends CompDefBase {
+    desc?: string;
+    version?: string;
+    url?: string;
+    render?: (props: RenderProps<P>) => JSX.Element
+    createSchema?:(schema: Schema) => Schema
+    slots?: SlotDef[]
+    states?: PropDef[]
+  };
 }
-
-export interface CompRuntime extends CompSchema  {
-  parent?: CompRuntime
-  slots?: SlotRuntime[]
-  id: string
-}
-
 
 
 
 // Page Schema
 
-export type PageSchema = {
+export interface PageSchema extends CompSchemaBase {
   name: string
   label?: string
-  rootComp: CompSchema
-  dataSources: DataSourceSchema[]
+  rootComp: UIComp.Schema
+  dataSources: DataSource.Schema[]
 }
 
-export interface PageRuntime extends PageSchema  {
-  app: AppSchema
-  rootComp: CompRuntime
-  dataSources: DataSourceRuntime[]
+export interface PageInstance extends CompInstanceBase  {
+  app: AppInstance
+  rootComp: UIComp.Instance
+  dataSources: DataSource.Instance[]
 }
 
 
@@ -133,14 +187,17 @@ export type RouteType = {
   page: string
 }
 
-export type AppSchema = {
-  id?: number
-  name: string
-  label?: string
+export interface AppSchema extends CompSchemaBase {
   routes: RouteType[]
+}
+
+export interface AppDef extends CompDefBase {
 
 }
 
+export interface AppInstance extends CompInstanceBase  {
+  schema: AppSchema
+}
 
 
 
@@ -207,46 +264,14 @@ export type CompCreateContext = {
   emit: (event: string ,data?: any) => any
 }
 
-export type CompDefBase = {
-  name: string
-  label?: string
-  create?: (context: CompCreateContext) => Record<string ,any>
-  actions?: ActionDef[]
-  events?: EventDef[]
-  props?: PropDef[]
-  createSchema?: (initSchema?: any) => any
-}
+
+
 
 
 // Data Source Def
 
-export type DataSourceHook<D = any> = (params: any) => {
-  data: D | undefined
-  set: (data: D) => void
-}
 
-export interface AsyncDataSourceHook<D = any, P = {}> extends DataSourceHook<D> {
-  run: (params: P) => Promise<D | undefined>
-  loading: boolean
-}
 
-export interface DataSourceDef extends CompDefBase {
-  type: DataSourceType
-  params?: PropDef[]
-  states?: PropDef[]
-  create?: (context: CompCreateContext) => DataSourceHook | AsyncDataSourceHook
-  createSchema: (schema: DataSourceSchema) => DataSourceSchema
-}
-
-export interface CompDef<P extends Record<string, any> = any> extends CompDefBase {
-  desc?: string;
-  version?: string;
-  url?: string;
-  render?: (props: RenderProps<P>) => JSX.Element
-  createSchema?:(schema: CompSchema) => CompSchema
-  slots?: SlotDef[]
-  states?: PropDef[]
-};
 
 
 
