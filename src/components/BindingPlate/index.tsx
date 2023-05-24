@@ -12,46 +12,54 @@ const BindingPlate = observer((props: Props) => {
   
   
   return (
-    <Modal visible={visible}>
+    <Modal visible={visible} footer={null}>
 
-      <div className={styles.actionsPanel}>
-        <div className={styles.actionList}>
+      <div className={styles.bindingPlate}>
+        <div className={styles.compTypeList}>
 
-          <div className={styles.actionTypes}>
-            <div className={styles.actionTypeTitle}>
+          <div className={styles.compType}>
+            <div className={styles.compTypeTitle}>
               <span>数据</span>
             </div>
-            <div className={styles.actions}>
+            <div className={styles.comps}>
               {canvasStore?.dataSources.map(ds => {
-                return <div key={ds.schema.name}>{ds.schema.name}</div>
+                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
               })}
             </div>
           </div>
-          <div className={styles.actionTypes}>
-            <div className={styles.actionTypeTitle}>
+          <div className={styles.compType}>
+            <div className={styles.compTypeTitle}>
               <span>组件</span>
             </div>
-            <div className={styles.actions}>
-
+            <div className={styles.comps}>
+              {canvasStore?.dataSources.map(ds => {
+                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
+              })}
             </div>
-
           </div>
-          <div className={styles.actionTypes}>
-            <div className={styles.actionTypeTitle}>
+          <div className={styles.compType}>
+            <div className={styles.compTypeTitle}>
               <span>页面</span>
             </div>
-            <div className={styles.actions}></div>
-
+            <div className={styles.comps}>
+              {canvasStore?.dataSources.map(ds => {
+                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
+              })}
+            </div>
           </div>
-          <div className={styles.actionTypes}>
-            <div className={styles.actionTypeTitle}>
+          <div className={styles.compType}>
+            <div className={styles.compTypeTitle}>
               <span>应用</span>
             </div>
-            <div className={styles.actions}></div>
-
+            <div className={styles.comps}>
+              {canvasStore?.dataSources.map(ds => {
+                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
+              })}
+            </div>
           </div>
+        
         </div>
-        <div className={styles.actionDetail}>
+        <div className={styles.bindingItems}>
           <div>
             <div>Props</div>
           </div>

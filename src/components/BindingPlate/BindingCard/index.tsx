@@ -7,7 +7,7 @@ type Props = {
   onClick?: () => void
 }
 
-const ActionCard = (props: Props) => {
+const BindingCard = (props: Props) => {
   
   return (
     <div onClick={props.onClick} className={styles.actionCard}>
@@ -21,4 +21,6 @@ const ActionCard = (props: Props) => {
   )
 }
 
-export default ActionCard
+export default BindingCard
+
+

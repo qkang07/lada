@@ -21,6 +21,10 @@ export class CanvasStore {
 
   actionMap: Map<string, ActionDef[]> = new Map()
 
+  regAction(name: string, host: any) {
+
+  }
+
 }
 
 export type CanvasContextType = {
