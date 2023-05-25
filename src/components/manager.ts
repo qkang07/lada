@@ -3,15 +3,16 @@ import ButtonDef from "./Presets/Basic/Button";
 import InputDef from "./Presets/Basic/Input";
 import ListLayoutDef from "./Presets/Layout/List";
 import ParagraphDef from "./Presets/Typo/P";
-import { CompManager, DataProviderDef } from "./compDef";
+import { DefManager, DataProviderDef, UIComp, DataSource } from "./compDef";
 
-export const compMan = new CompManager()
+export const uiMan = new DefManager<UIComp.Def>()
+export const dsMan = new DefManager<DataSource.Def>()
 
 export const dataProviderMap: Record<string, DataProviderDef> = {}
 
 dataProviderMap['http'] = HTTPDataProvider
 
-compMan.regComp(InputDef)
-compMan.regComp(ButtonDef)
-compMan.regComp(ParagraphDef)
-compMan.regComp(ListLayoutDef)
+uiMan.regComp(InputDef)
+uiMan.regComp(ButtonDef)
+uiMan.regComp(ParagraphDef)
+uiMan.regComp(ListLayoutDef)

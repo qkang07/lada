@@ -14,9 +14,16 @@ export interface CompSchemaBase extends SchemaBase {
   provider: string
 }
 
-export type CompDefBase<S extends CompSchemaBase> = {
+// 创建实例时的上下文。目前虽然好像没啥用
+export type CompCreateContext = {
+  // emit: (event: string ,data?: any) => any
+}
+
+
+export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   name: string
   label?: string
+  desc?: string
   create?: (context: CompCreateContext) => Record<string ,any>
   ins?: ActionDef[]
   events?: EventDef[]
@@ -24,7 +31,7 @@ export type CompDefBase<S extends CompSchemaBase> = {
   createSchema?: (initSchema?: S) => S
 }
 
-export type CompInstanceBase<S extends CompSchemaBase> = {
+export type CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> = {
   def: CompDefBase<S>
   schema: S
   id: string
@@ -62,15 +69,15 @@ export namespace DataSource {
     loading: boolean
   }
   
-  export interface Def extends CompDefBase {
+  export interface Def extends CompDefBase<Schema> {
     type: DataSourceType
     params?: PropDef[]
     states?: PropDef[]
     create?: (context: CompCreateContext) => Hook | AsyncHook
-    createSchema: (schema: Schema) => Schema
+    createSchema: (schema?: Schema) => Schema
   }
   
-  export interface Instance extends CompInstanceBase {
+  export interface Instance extends CompInstanceBase<Schema> {
     def: Def
     schema: Schema
     page: PageInstance
@@ -126,7 +133,11 @@ export namespace UIComp {
 
   export type SlotType = 'single' | 'list' | 'loop'
   
-  export interface SlotSchema extends PropSchemaBase {
+  export type SlotDef = {
+    name: string
+    type: SlotType
+  }
+  export interface SlotSchema extends SchemaBase {
     type: SlotType
     display?: 'block' | 'inline'
     binding?: BindingSchema
@@ -150,14 +161,18 @@ export namespace UIComp {
     slot: string
   }
   
+  export type RenderProps<T extends Record<string, any>> = {
+    style?: string;
+    classNames?: string;
+    slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
+  } & T;
   
   
   export interface Def<P extends Record<string, any> = any> extends CompDefBase {
-    desc?: string;
     version?: string;
     url?: string;
     render?: (props: RenderProps<P>) => JSX.Element
-    createSchema?:(schema: Schema) => Schema
+    createSchema?:(schema?: Schema) => Schema
     slots?: SlotDef[]
     states?: PropDef[]
   };
@@ -228,11 +243,7 @@ export type PropDef = {
 
 // slot def
 
-export type SlotDef = {
-  name: string
-  type: SlotType
 
-}
 
 // action def
 
@@ -251,18 +262,10 @@ export interface EventDef {
   params?: any
 }
 
-export type RenderProps<T extends Record<string, any>> = {
-  style?: string;
-  classNames?: string;
-  slots?: SlotRuntime[]
-} & T;
 
 
 // Comp Base
 
-export type CompCreateContext = {
-  emit: (event: string ,data?: any) => any
-}
 
 
 
@@ -275,7 +278,7 @@ export type CompCreateContext = {
 
 
 
-export interface PageDef extends CompDefBase {
+export interface PageDef extends CompDefBase<PageSchema> {
   createSchema?: (initSchema?: PageSchema) => PageSchema
 }
 
@@ -283,11 +286,19 @@ export interface PageDef extends CompDefBase {
 
 ///////// Type def part finish
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------
+declare var window: Window & {
+  $comp?: {
+    reg?(comp: CompDefBase): void;
+    cache?: CompDefBase[];
+  };
+  // 加载时的临时挂载变量
+  CompMod?: CompDefBase;
+};
 
 
-export class CompManager {
-  protected resolveMap: Record<string, Promise<CompDef>> = {};
-  protected regTable: Record<string, CompDef> = {};
+export class DefManager<D extends CompDefBase> {
+  protected resolveMap: Record<string, Promise<D>> = {};
+  protected regTable: Record<string, D> = {};
 
   protected scriptReadyHooks: ((key: string, script: string) => void)[] = [];
   protected beforeFetchScriptHooks: ((key: string) => string | void)[] = [];
@@ -296,18 +307,18 @@ export class CompManager {
     const self = this;
     if (window.$comp?.cache) {
       window.$comp.cache.forEach((comp) => {
-        self.regComp(comp);
+        self.regComp(comp as D);
       });
     }
     window.$comp = {
-      reg(def: CompDef) {
+      reg(def: D) {
         self.regComp(def);
       },
       cache: [],
     };
   }
 
-  regComp(def: CompDef) {
+  regComp(def: D) {
     const name = def.name;
     this.regTable[name] = def;
   }
@@ -327,13 +338,13 @@ export class CompManager {
   }
 
   protected handleScriptLoad(script: HTMLScriptElement) {
-    const promise = new Promise<CompDef>((resolve, reject) => {
+    const promise = new Promise<D>((resolve, reject) => {
       script.onload = () => {
         if (window.CompMod) {
           const comp = window.CompMod;
-          this.regComp(comp);
+          this.regComp(comp as D);
           window.CompMod = undefined;
-          resolve(comp);
+          resolve(comp as D);
         } else {
           reject('No CompMod Found');
         }
@@ -369,13 +380,6 @@ export class CompManager {
 }
 
 
-declare var window: Window & {
-  $comp?: {
-    reg?(comp: CompDef): void;
-    cache?: CompDef[];
-  };
-  CompMod?: CompDef;
-};
 
 
 function combineProps(
@@ -390,7 +394,7 @@ function combineProps(
 
 
 
-export function ExportComp(def: CompDef) {
+export function ExportComp(def: UIComp.Def) {
   if (window.$comp?.reg) {
     window.$comp.reg(def);
   } else {

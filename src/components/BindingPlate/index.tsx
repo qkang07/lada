@@ -32,29 +32,19 @@ const BindingPlate = observer((props: Props) => {
               <span>组件</span>
             </div>
             <div className={styles.comps}>
-              {canvasStore?.dataSources.map(ds => {
+              {canvasStore?.c.map(ds => {
                 return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
               })}
             </div>
           </div>
           <div className={styles.compType}>
             <div className={styles.compTypeTitle}>
-              <span>页面</span>
+              <span>环境</span>
             </div>
             <div className={styles.comps}>
-              {canvasStore?.dataSources.map(ds => {
-                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
-              })}
-            </div>
-          </div>
-          <div className={styles.compType}>
-            <div className={styles.compTypeTitle}>
-              <span>应用</span>
-            </div>
-            <div className={styles.comps}>
-              {canvasStore?.dataSources.map(ds => {
-                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
-              })}
+              <div className={styles.compItem}>页面</div>
+              <div className={styles.compItem}>应用</div>
+             
             </div>
           </div>
         
