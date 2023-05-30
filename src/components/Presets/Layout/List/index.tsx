@@ -1,5 +1,5 @@
 import Renderer from '@/components/Renderer'
-import { CompDef, SlotSchema } from '@/components/compDef'
+import {UIComp } from '@/components/compDef'
 import React, { CSSProperties } from 'react'
 import styles from './index.module.less'
 import SlotHolder from '@/components/SlotHolder'
@@ -9,7 +9,7 @@ type ListLayoutProps = {
   styleString?: string
 }
 
-const ListLayoutDef: CompDef<ListLayoutProps> = {
+const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
   name: 'listLayout',
   label: '列表布局',
   props: [

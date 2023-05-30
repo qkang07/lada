@@ -1,4 +1,4 @@
-import { CompDef } from "@/components/compDef"
+import { UIComp } from "@/components/compDef"
 import { Input } from "@arco-design/web-react"
 import { action, makeAutoObservable } from "mobx"
 
@@ -10,7 +10,7 @@ type InputProps = {
 }
 
 
-const InputDef: CompDef<InputProps> = {
+const InputDef: UIComp.Def<InputProps> = {
   name: 'input',
   label: '输入框',
 

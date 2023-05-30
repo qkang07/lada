@@ -1,8 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
-import { compMan } from '../manager'
 import Renderer from '../Renderer'
-import { ActionDef, BindScopeEnum, BindingSchema, CompRuntime, CompSchema, DataSourceInstance, SlotRuntime, SlotSchema } from '../compDef'
+import { ActionDef, BindScopeEnum, BindingSchema, DataSource, UIComp} from '../compDef'
 import { CompTransferObj, DesignerContext, SlotTransferObj } from '@/pages/Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
@@ -14,29 +13,34 @@ import { observer } from 'mobx-react'
 
 
 export class CanvasStore {
-  dataSources: DataSourceInstance[] = []
+  dataSources: DataSource.Instance[] = []
 
-  pageActions: ActionDef[] = []
-  appActions: ActionDef[] = []
-  compActions?: Map<string, ActionDef[]>
 
-  actionMap: Map<string, ActionDef[]> = new Map()
+  uiCompMap: Map<string, UIComp.Instance> = new Map()
+  dsMap: Map<string, DataSource.Instance> = new Map()
 
-  regAction(name: string, host: any) {
-
+  regDS(ds: DataSource.Instance) {
+    this.dsMap.set(ds.id, ds)
   }
 
-  unRegAction(name: string, host: any) {
-
+  unRegDS(ds: DataSource.Instance) {
+    this.dsMap.delete(ds.id)
   }
 
+  regUIComp(comp: UIComp.Instance) {
+    this.uiCompMap.set(comp.id, comp)
+  }
+
+  unRegUIComp(comp: UIComp.Instance) {
+    this.uiCompMap.delete(comp.id)
+  }
 
 
 
 }
 
 export type CanvasContextType = {
-  store: CanvasStore
+  canvasStore: CanvasStore
   processBinding: (binding: BindingSchema) => any
 }
 
@@ -44,7 +48,7 @@ export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 
 type Props = {
-  schema: CompRuntime
+  schema: UIComp.Schema
   compTO?: CompTransferObj
   slotTO?: SlotTransferObj
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
@@ -90,7 +94,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   return (
     <CanvasContext.Provider value={{
-      store: store.current,
+      canvasStore: store.current,
       processBinding
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>

@@ -15,8 +15,12 @@ export interface CompSchemaBase extends SchemaBase {
 }
 
 // 创建实例时的上下文。目前虽然好像没啥用
-export type CompCreateContext = {
-  // emit: (event: string ,data?: any) => any
+export type CompContext = {
+  emitEvent: (event: string ,data?: any) => any
+  onAction: (action: string, params: any) => any
+  offAction: (action: string) => void
+  setState: (state: any) => void
+  readonly state: any
 }
 
 
@@ -24,17 +28,19 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   name: string
   label?: string
   desc?: string
-  create?: (context: CompCreateContext) => Record<string ,any>
-  ins?: ActionDef[]
   events?: EventDef[]
   props?: PropDef[]
-  createSchema?: (initSchema?: S) => S
+  actions?: ActionDef[]
+  states?: PropDef[]
+  createSchema?: (initSchema: S) => S
 }
 
 export type CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> = {
   def: CompDefBase<S>
   schema: S
   id: string
+  states: Record<string, any>
+
 }
 
 export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
@@ -59,22 +65,29 @@ export namespace DataSource {
     immediate?: boolean
   }
   
-  export type Hook<D = any> = (params: any) => {
+  export type Hook<D = any, P = any> = (params: any) => {
     data: D | undefined
-    set: (data: D) => void
+    setData: (data: D) => void
+    fetch: (params: P) => D
+    loading: boolean
   }
   
   export interface AsyncHook<D = any, P = {}> extends Hook<D> {
     run: (params: P) => Promise<D | undefined>
     loading: boolean
   }
+
+  export interface CreateParams {
+    ctx: CompContext
+  }
+
   
   export interface Def extends CompDefBase<Schema> {
     type: DataSourceType
     params?: PropDef[]
-    states?: PropDef[]
-    create?: (context: CompCreateContext) => Hook | AsyncHook
-    createSchema: (schema?: Schema) => Schema
+    actions: ActionDef[]
+    create?: (params: CreateParams) => void
+    createSchema?: (schema: Schema) => Schema
   }
   
   export interface Instance extends CompInstanceBase<Schema> {
@@ -158,12 +171,14 @@ export namespace UIComp {
   
   export interface Instance extends CompInstanceBase {
     parent?: Instance
-    slot: string
+    slot?: string
   }
   
   export type RenderProps<T extends Record<string, any>> = {
     style?: string;
     classNames?: string;
+    instance: Instance
+    ctx: CompContext
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
   } & T;
   
@@ -172,9 +187,8 @@ export namespace UIComp {
     version?: string;
     url?: string;
     render?: (props: RenderProps<P>) => JSX.Element
-    createSchema?:(schema?: Schema) => Schema
+    createSchema?:(schema: Schema) => Schema
     slots?: SlotDef[]
-    states?: PropDef[]
   };
 }
 
@@ -187,6 +201,7 @@ export interface PageSchema extends CompSchemaBase {
   label?: string
   rootComp: UIComp.Schema
   dataSources: DataSource.Schema[]
+  
 }
 
 export interface PageInstance extends CompInstanceBase  {
@@ -279,7 +294,8 @@ export interface EventDef {
 
 
 export interface PageDef extends CompDefBase<PageSchema> {
-  createSchema?: (initSchema?: PageSchema) => PageSchema
+  createSchema?: (initSchema: PageSchema) => PageSchema
+  
 }
 
 

@@ -1,12 +1,12 @@
 import SlotHolder from "@/components/SlotHolder";
-import { CompDef } from "@/components/compDef";
+import { UIComp } from "@/components/compDef";
 import { Typography } from "@arco-design/web-react";
 
 type PProps = {
 }
 
 
-const ParagraphDef: CompDef<PProps> = {
+const ParagraphDef: UIComp.Def<PProps> = {
   name: 'paragraph',
   label: '段落',
   props: [],

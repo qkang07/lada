@@ -1,4 +1,4 @@
-import { BindScopeEnum, BindTypeEnum, CompDef, CompSchema } from "@/components/compDef";
+import { BindScopeEnum, BindTypeEnum, UIComp } from "@/components/compDef";
 import { Button } from "@arco-design/web-react";
 import { ReactNode } from "react";
 
@@ -8,7 +8,7 @@ type ButtonProps = {
   type?: string
 }
 
-const ButtonDef: CompDef<ButtonProps> = {
+const ButtonDef: UIComp.Def<ButtonProps> = {
   name:'button',
   label: '按钮',
   props: [{
@@ -40,7 +40,8 @@ const ButtonDef: CompDef<ButtonProps> = {
     return <Button type={props.type as any}
     onClick={props.onClick}>{props.children}</Button>
   },
-  createSchema(schema: CompSchema) {
+  createSchema(schema: UIComp.Schema) {
+    
     schema.bindings = [
       {
         prop: 'children',

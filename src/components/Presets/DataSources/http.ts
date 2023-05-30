@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { DataProviderDef } from "../compDef";
+import { DataSource } from "../../compDef";
 import { action, makeAutoObservable } from "mobx";
 
-const HTTPDataProvider: DataProviderDef = {
+const HTTPDataSource: DataSource.Def = {
   name: 'http',
   type: 'async',
   params: [
@@ -29,9 +29,6 @@ const HTTPDataProvider: DataProviderDef = {
     {
       name: 'run',
       params: 'params',
-      handler() {
-
-      }
     }
   ],
   events: [
@@ -44,7 +41,7 @@ const HTTPDataProvider: DataProviderDef = {
       params: 'error'
     }
   ],
-  use: (params: any) => {
+  create({ctx}) {
     // const {url ,method = 'GET', body} = params
 
     const data = makeAutoObservable({
@@ -55,6 +52,10 @@ const HTTPDataProvider: DataProviderDef = {
 
     const run = action(async (params: any) => {
       data.loading = true
+      ctx.setState({
+        ...ctx.state,
+        loading: true
+      })
       try {
         const res = await  fetch(params.url, params.options)
         const resData = await res.json()
@@ -68,17 +69,26 @@ const HTTPDataProvider: DataProviderDef = {
       }
     })
 
-    const set = action((data: any) => {
-      data.value = data
+    const set = action((v: any) => {
+      data.value = v
+      ctx.emitEvent('change', data.value)
+      ctx.setState({
+        data: data.value,
+        loading: data.loading
+      })
     })
 
-    return {
+    ctx.onAction('run', run)
+    ctx.onAction('set', set)
+    
+
+    return () => ({
       loading: data.loading,
       data: data.value,
       run,
-      set
-    }
+      setData: set
+    })
   }
 }
 
-export default HTTPDataProvider
+export default HTTPDataSource

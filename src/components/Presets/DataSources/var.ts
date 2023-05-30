@@ -1,7 +1,7 @@
 import { action, makeAutoObservable } from "mobx";
-import { DataSourceDef } from "../compDef";
+import { DataSource } from "../../compDef";
 
-const VarDataSource: DataSourceDef = {
+const VarDataSource: DataSource.Def = {
   name: 'var',
   type: 'var',
   actions:[
@@ -16,17 +16,22 @@ const VarDataSource: DataSourceDef = {
       params: 'any'
     }
   ],
-  create(ctx) {
+  create({ctx}){
     const data = makeAutoObservable({
       value: undefined
     })
 
-    return {
-      set: action((v: any) => {
-        data.value = v
-      }),
-      data: data.value,
-    }
+    const set = action((v: any) => {
+      data.value = v
+      ctx.emitEvent('change', data.value)
+      ctx.setState({data: data.value})
+    })
+
+    ctx.onAction('set', (v: any) => {
+      set(v)
+    })
+    
+
   }
 }
 

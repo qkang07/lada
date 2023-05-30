@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useMemo, useRef, useState } from 'reac
 import styles from './index.module.less'
 import CompBox from './CompBox'
 import Canvas, { CanvasRef, CanvasStore } from '@/components/Canvas'
-import { ActionRuntime, BindingSchema, CompRuntime, CompSchema, PageSchema, SlotRuntime, SlotSchema } from '@/components/compDef'
+import { CompInstanceBase, CompSchemaBase } from '@/components/compDef'
 import PropsEditor from '@/components/PropsEditor'
 import FocusFrame from '@/components/FocusFrame'
 import DesignerHeader from './Header'
@@ -16,7 +16,7 @@ import { action, autorun, makeAutoObservable } from 'mobx'
 import { Optional, randomId } from '@/utils'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { compMan } from '@/components/manager'
+import { uiMan } from '@/components/manager'
 
 export type CompTransferObj = {
   id: string
@@ -176,10 +176,14 @@ const Designer = (props: Props) => {
 
 
   const addComp = action((name: string) => {
-    const compDef = compMan.getComp(name)
-    let newComp: CompRuntime = {
+    const compDef = uiMan.getComp(name)
+    const schema: CompSchemaBase = {
       provider: name,
-      name: randomId(),
+      name: name + randomId()
+    }
+    let newComp: CompInstanceBase = {
+      schema,
+      def: compDef,
       id: randomId()
     }
     compSchemaMap[newComp.id] = newComp
@@ -279,7 +283,7 @@ const Designer = (props: Props) => {
       slotSchemaMap,
       deleteComp,
       eventBus,
-      canvasStore: canvasRef.current
+      canvasStore: canvasRef.current?.store
     }}>
 
       <div className={styles.designer}>
