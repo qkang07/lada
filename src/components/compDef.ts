@@ -39,6 +39,7 @@ export type CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> = {
   def: CompDefBase<S>
   schema: S
   id: string
+  type: string
   states: Record<string, any>
 
 }
@@ -92,34 +93,11 @@ export namespace DataSource {
   
   export interface Instance extends CompInstanceBase<Schema> {
     def: Def
-    schema: Schema
-    page: PageInstance
+    page: Page.Instance
     promise: Promise<any>
     pending?: boolean
     value?: any
   }
-}
-
-
-// Binding Schema
-
-export enum BindScopeEnum {
-  Direct,
-  Props,
-  Page,
-  Global
-}
-
-export enum BindTypeEnum {
-  Model,
-  Event
-}
-
-export type BindingSchema = {
-  prop: string
-  scope: BindScopeEnum
-  type: BindTypeEnum
-  binding: string
 }
 
 
@@ -153,7 +131,6 @@ export namespace UIComp {
   export interface SlotSchema extends SchemaBase {
     type: SlotType
     display?: 'block' | 'inline'
-    binding?: BindingSchema
     children?: Schema[]
   }
   
@@ -164,12 +141,11 @@ export namespace UIComp {
   
   
   export interface Schema extends CompSchemaBase {
-    bindings?: BindingSchema[]
     slots?: SlotSchema[]
   }
   
   
-  export interface Instance extends CompInstanceBase {
+  export interface Instance extends CompInstanceBase<Schema> {
     parent?: Instance
     slot?: string
   }
@@ -196,19 +172,46 @@ export namespace UIComp {
 
 // Page Schema
 
-export interface PageSchema extends CompSchemaBase {
-  name: string
-  label?: string
-  rootComp: UIComp.Schema
-  dataSources: DataSource.Schema[]
-  
+export namespace Page {
+
+
+
+  // Binding Schema
+  // Bindings are page level logic
+
+  export type BindingSchema = {
+    source: {
+      id: string
+      prop: string
+    }
+    target: {
+      id: string
+      prop: string
+    }
+    type: 'action' | 'state'
+  }
+  export interface Schema extends CompSchemaBase {
+    name: string
+    label?: string
+    rootComp: UIComp.Schema
+    dataSources: DataSource.Schema[]
+    bindings: BindingSchema[]
+  }
+  export interface Instance extends CompInstanceBase<Schema>  {
+    app: AppInstance
+    rootComp: UIComp.Instance
+    dataSources: DataSource.Instance[]
+  }
+
+  export interface Def extends CompDefBase<Schema> {
+    
+  }
 }
 
-export interface PageInstance extends CompInstanceBase  {
-  app: AppInstance
-  rootComp: UIComp.Instance
-  dataSources: DataSource.Instance[]
-}
+
+
+
+
 
 
 // Other Schema
@@ -225,8 +228,7 @@ export interface AppDef extends CompDefBase {
 
 }
 
-export interface AppInstance extends CompInstanceBase  {
-  schema: AppSchema
+export interface AppInstance extends CompInstanceBase<AppSchema>  {
 }
 
 
@@ -293,10 +295,7 @@ export interface EventDef {
 
 
 
-export interface PageDef extends CompDefBase<PageSchema> {
-  createSchema?: (initSchema: PageSchema) => PageSchema
-  
-}
+
 
 
 

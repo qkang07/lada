@@ -1,7 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import { ActionDef, BindScopeEnum, BindingSchema, DataSource, UIComp} from '../compDef'
+import { ActionDef, DataSource, Page, UIComp} from '../compDef'
 import { CompTransferObj, DesignerContext, SlotTransferObj } from '@/pages/Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
@@ -9,6 +9,7 @@ import { Drawer } from '@arco-design/web-react'
 import TreeView from '@/pages/Designer/TreeView'
 import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
+import { isEqual } from 'lodash-es'
 
 
 
@@ -18,6 +19,10 @@ export class CanvasStore {
 
   uiCompMap: Map<string, UIComp.Instance> = new Map()
   dsMap: Map<string, DataSource.Instance> = new Map()
+
+  bindingList: Page.BindingSchema[] = []
+
+  // bindingMap: Map<string, Page.BindingSchema> = new Map()
 
   regDS(ds: DataSource.Instance) {
     this.dsMap.set(ds.id, ds)
@@ -33,6 +38,23 @@ export class CanvasStore {
 
   unRegUIComp(comp: UIComp.Instance) {
     this.uiCompMap.delete(comp.id)
+  }
+
+  hasBinding(binding: Page.BindingSchema) {
+    const res = this.bindingList.find(bd => isEqual(bd, binding))
+    return res
+  }
+
+  regBinding(binding: Page.BindingSchema ) {
+    if(!this.hasBinding(binding)) {
+      this.bindingList.push(binding)
+    }
+  }
+  unRegBinding(binding: Page.BindingSchema) {
+    const bd = this.hasBinding(binding)
+    if(bd) {
+      this.bindingList.splice(this.bindingList.indexOf(bd), 1)
+    }
   }
 
 
