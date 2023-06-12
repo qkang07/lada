@@ -1,4 +1,4 @@
-import { BindScopeEnum, BindTypeEnum, UIComp } from "@/components/compDef";
+import { UIComp } from "@/components/compDef";
 import { Button } from "@arco-design/web-react";
 import { ReactNode } from "react";
 
@@ -42,19 +42,19 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
   },
   createSchema(schema: UIComp.Schema) {
     
-    schema.bindings = [
-      {
-        prop: 'children',
-        scope: BindScopeEnum.Direct,
-        type: BindTypeEnum.Model,
-        binding: '按钮'
-      },{
-        prop: 'type',
-        scope: BindScopeEnum.Direct,
-        type: BindTypeEnum.Model,
-        binding: 'default'
-      }
-    ]
+    // schema.bindings = [
+    //   {
+    //     prop: 'children',
+    //     scope: BindScopeEnum.Direct,
+    //     type: BindTypeEnum.Model,
+    //     binding: '按钮'
+    //   },{
+    //     prop: 'type',
+    //     scope: BindScopeEnum.Direct,
+    //     type: BindTypeEnum.Model,
+    //     binding: 'default'
+    //   }
+    // ]
     return schema
   }
 }

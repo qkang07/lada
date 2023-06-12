@@ -9,6 +9,8 @@ import VarDataSource from "./Presets/DataSources/var";
 export const uiMan = new DefManager<UIComp.Def>()
 export const dsMan = new DefManager<DataSource.Def>()
 
+export const compMan = new DefManager()
+
 dsMan.regComp(HTTPDataSource)
 dsMan.regComp(VarDataSource)
 

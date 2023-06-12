@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { uiMan } from '../manager'
 import { CanvasContext } from '../Canvas'
 import { randomId } from '@/utils'
-import { BindScopeEnum, BindingSchema, UIComp} from '../compDef'
+import { BindScopeEnum, BindingSchema, CompInstanceBase, UIComp} from '../compDef'
 import { DesignerContext } from '@/pages/Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { observer } from 'mobx-react'
@@ -18,13 +18,14 @@ const Renderer = observer((props: Props) => {
 
   const {isDesign, compSchemaMap} = useContext(DesignerContext)
 
-  const {canvasStore, processBinding} = useContext(CanvasContext)
+  const {canvasStore} = useContext(CanvasContext)
 
 
   const [boundProps, setBoundProps] = useState<any>({})
   const [rtSchema, setRTSchema] = useState(schema)
 
   const compRef = useRef<any>()
+  const instanceRef = useRef<CompInstanceBase>()
   const {compDef, CompRender} = useMemo(() => {
     const compDef = uiMan.getComp(rtSchema.provider) 
     const CompRender = compDef?.render

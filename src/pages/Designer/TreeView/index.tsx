@@ -1,4 +1,4 @@
-import { CompRuntime, SchemaRuntime } from '@/components/compDef'
+import { UIComp } from '@/components/compDef'
 import { Tag, Tree } from '@arco-design/web-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { DesignerContext } from '..'
@@ -7,18 +7,18 @@ import SidePane from '@/components/SidePane'
 import { observer } from 'mobx-react'
 
 
-const makeTreeData = (schemas?: CompRuntime[]): any[] => {
+const makeTreeData = (schemas?: UIComp.Schema[]): any[] => {
   if(!schemas) {
     return []
   }
   return schemas.map(schema => ({
     title: <div>{schema.provider} <div style={{color: '#aaa'}}>{schema.name}</div></div> ,
-    key: schema.id,
+    key: schema.name,
     type: 'comp',
     children: schema.slots?.map(s => {
       return {
         title: <Tag bordered color='green'>{s.name}</Tag> ,
-        key: s.id,
+        key: s.name,
         type: 'slot',
         children: makeTreeData(s.children)
       }
@@ -28,7 +28,7 @@ const makeTreeData = (schemas?: CompRuntime[]): any[] => {
 
 
 type Props = {
-  schema: CompRuntime
+  schema: UIComp.Schema
 }
 
 const TreeView = observer((props: Props) => {

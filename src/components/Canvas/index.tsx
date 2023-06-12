@@ -1,7 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import { ActionDef, DataSource, Page, UIComp} from '../compDef'
+import { ActionDef, CompSchemaBase, DataSource, BindingScope, SchemaBase, UIComp} from '../compDef'
 import { CompTransferObj, DesignerContext, SlotTransferObj } from '@/pages/Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
@@ -10,6 +10,7 @@ import TreeView from '@/pages/Designer/TreeView'
 import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
+import { compMan } from '../manager'
 
 
 
@@ -57,13 +58,23 @@ export class CanvasStore {
     }
   }
 
+  // really important
+  createComp(schema: CompSchemaBase) {
+    const def = compMan.getComp(schema.provider)
+    if(!def) {
+      console.warn('schema provider not fount: ', schema.provider)
+      return
+    }
+
+  }
+
 
 
 }
 
 export type CanvasContextType = {
   canvasStore: CanvasStore
-  processBinding: (binding: BindingSchema) => any
+  // processBinding: (binding: BindingSchema) => any
 }
 
 export const CanvasContext = createContext<CanvasContextType>({} as any)

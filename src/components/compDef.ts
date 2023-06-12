@@ -16,11 +16,13 @@ export interface CompSchemaBase extends SchemaBase {
 
 // 创建实例时的上下文。目前虽然好像没啥用
 export type CompContext = {
-  emitEvent: (event: string ,data?: any) => any
+  emit: (event: string ,data?: any) => any
   onAction: (action: string, params: any) => any
   offAction: (action: string) => void
   setState: (state: any) => void
+  onPropChange: (propName: string, value: any) => void
   readonly state: any
+  mode?: 'design' | 'run' | 'view'
 }
 
 
@@ -32,10 +34,13 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   props?: PropDef[]
   actions?: ActionDef[]
   states?: PropDef[]
+  // 运行时创建实例
+  create?: (ctx: CompContext) => any
+  // 设计时初始 schema
   createSchema?: (initSchema: S) => S
 }
 
-export type CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> = {
+export interface CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> {
   def: CompDefBase<S>
   schema: S
   id: string
@@ -86,14 +91,12 @@ export namespace DataSource {
   export interface Def extends CompDefBase<Schema> {
     type: DataSourceType
     params?: PropDef[]
-    actions: ActionDef[]
-    create?: (params: CreateParams) => void
     createSchema?: (schema: Schema) => Schema
   }
   
   export interface Instance extends CompInstanceBase<Schema> {
     def: Def
-    page: Page.Instance
+    scope: BindingScope.Instance
     promise: Promise<any>
     pending?: boolean
     value?: any
@@ -170,11 +173,11 @@ export namespace UIComp {
 
 
 
-// Page Schema
-
-export namespace Page {
 
 
+// Binding Scope
+
+export namespace BindingScope {
 
   // Binding Schema
   // Bindings are page level logic
@@ -193,23 +196,16 @@ export namespace Page {
   export interface Schema extends CompSchemaBase {
     name: string
     label?: string
-    rootComp: UIComp.Schema
+    uiRoot: UIComp.Schema
     dataSources: DataSource.Schema[]
     bindings: BindingSchema[]
   }
   export interface Instance extends CompInstanceBase<Schema>  {
-    app: AppInstance
     rootComp: UIComp.Instance
     dataSources: DataSource.Instance[]
   }
 
-  export interface Def extends CompDefBase<Schema> {
-    
-  }
 }
-
-
-
 
 
 
