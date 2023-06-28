@@ -23,11 +23,21 @@ export abstract class ReactiveComp<ST extends Record<string, any> = {}> {
     makeAutoObservable(this)
   }
 
+  protected stateChangeCallback?: (stateName: string, value?: any) => any
+  protected onPropChangeCallback?: () => any
+
   updateState(s: Optional<ST>) {
     this.state = {
       ...this.state,
       ...s
     }
+    Object.keys(s).forEach(k => {
+      this.stateChangeCallback?.(k, s[k])
+    })
+  }
+
+  onStateChange(cb: (stateName: string, value: any) => any) {
+    this.stateChangeCallback = cb
   }
 
   abstract onPropChange(propName: string, value: any) : any
