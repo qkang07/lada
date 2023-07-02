@@ -6,6 +6,7 @@ import { BindScopeEnum, BindingSchema, CompInstanceBase, UIComp} from '../compDe
 import { DesignerContext } from '@/pages/Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { observer } from 'mobx-react'
+import { CompAgent } from '../CompAgent'
 
 type Props = {
   schema: UIComp.Schema
@@ -18,13 +19,16 @@ const Renderer = observer((props: Props) => {
 
   const {isDesign, compSchemaMap} = useContext(DesignerContext)
 
-  const {canvasStore} = useContext(CanvasContext)
+  const {canvasStore, bdCon} = useContext(CanvasContext)
+
+  const agent = useRef<CompAgent>(new CompAgent(schema))
 
 
   const [boundProps, setBoundProps] = useState<any>({})
   const [rtSchema, setRTSchema] = useState(schema)
 
   const compRef = useRef<any>()
+
   const instanceRef = useRef<CompInstanceBase>()
   const {compDef, CompRender} = useMemo(() => {
     const compDef = uiMan.getComp(rtSchema.provider) 
@@ -37,8 +41,13 @@ const Renderer = observer((props: Props) => {
     setRTSchema(compSchemaMap![rtSchema.id])
   }
 
+
+
   useEffect(() => {
     updateSchema()
+    // TODO  需要能 update schema
+    bdCon.regComp(agent.current)
+    
   }, [schema])
 
   // useEffect(() => {

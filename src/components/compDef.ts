@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { CompAgent } from './CompAgent';
 
 //#regin base
 
@@ -35,7 +36,7 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   actions?: ActionDef[]
   states?: PropDef[]
   // 运行时创建实例
-  create?: (ctx: CompContext) => any
+  create?: (agent: CompAgent) => any
   // 设计时初始 schema
   createSchema?: (initSchema: S) => S
 }
@@ -157,7 +158,9 @@ export namespace UIComp {
     style?: string;
     classNames?: string;
     instance: Instance
+    props?: Record<string ,any> // 组件定义的 props
     ctx: CompContext
+    agent: CompAgent
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
   } & T;
   

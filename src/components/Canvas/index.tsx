@@ -11,6 +11,7 @@ import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
 import { compMan } from '../manager'
+import { BindingContainer } from '../BindingContainer'
 
 
 
@@ -74,6 +75,8 @@ export class CanvasStore {
 
 export type CanvasContextType = {
   canvasStore: CanvasStore
+  bdCon: BindingContainer
+
   // processBinding: (binding: BindingSchema) => any
 }
 
@@ -81,7 +84,7 @@ export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 
 type Props = {
-  schema: UIComp.Schema
+  schema: BindingScope.Schema
   compTO?: CompTransferObj
   slotTO?: SlotTransferObj
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
@@ -101,6 +104,8 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const store = useRef<CanvasStore>(makeAutoObservable(new CanvasStore()))
   const canvasDomRef = useRef<HTMLDivElement>(null)
+
+  const bindingContainer = useRef(new BindingContainer(compMan, schema))
 
   useImperativeHandle(ref, () => {
     return {
@@ -128,7 +133,8 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   return (
     <CanvasContext.Provider value={{
       canvasStore: store.current,
-      processBinding
+      processBinding,
+      bdCon: bindingContainer.current
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
         <div className={styles.canvasContext}  onClick={onCanvasClick }>

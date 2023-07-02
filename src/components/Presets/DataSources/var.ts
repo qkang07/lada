@@ -16,21 +16,21 @@ const VarDataSource: DataSource.Def = {
       params: 'any'
     }
   ],
-  create({ctx}){
+  create(agent){
     const data = makeAutoObservable({
       value: undefined
     })
 
     const set = action((v: any) => {
       data.value = v
-      ctx.emitEvent('change', data.value)
-      ctx.setState({data: data.value})
+      agent.updateState({data: data.value})
+      agent.emitEvent('change', data.value)
     })
-
-    ctx.onAction('set', (v: any) => {
-      set(v)
+    agent.onActionCall((name, value) => {
+      if(name === 'set') {
+        set(value)
+      }
     })
-    
 
   }
 }

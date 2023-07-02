@@ -41,7 +41,7 @@ const HTTPDataSource: DataSource.Def = {
       params: 'error'
     }
   ],
-  create({ctx}) {
+  create(agent) {
     // const {url ,method = 'GET', body} = params
 
     const data = makeAutoObservable({
@@ -52,12 +52,13 @@ const HTTPDataSource: DataSource.Def = {
 
     const run = action(async (params: any) => {
       data.loading = true
-      ctx.setState({
-        ...ctx.state,
+      agent.updateState({
+        ...agent.state,
         loading: true
       })
       try {
-        const res = await  fetch(params.url, params.options)
+        // TODO 暂时用 fetch
+        const res = await fetch(params.url, params.options)
         const resData = await res.json()
         data.loading = false
         set(resData)
@@ -71,16 +72,20 @@ const HTTPDataSource: DataSource.Def = {
 
     const set = action((v: any) => {
       data.value = v
-      ctx.emitEvent('change', data.value)
-      ctx.setState({
+      agent.emitEvent('change', data.value)
+      agent.updateState({
         data: data.value,
         loading: data.loading
       })
     })
 
-    ctx.onAction('run', run)
-    ctx.onAction('set', set)
-    
+    agent.onActionCall((action, value) => {
+      if(action === 'run') {
+        run(value)
+      } else if(action === 'set') {
+        set(value)
+      }
+    })
 
     return () => ({
       loading: data.loading,

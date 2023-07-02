@@ -12,7 +12,7 @@ export type CompEvent = {
  * Binding Scope ， 即「绑定」的容器，容器内的组件在此处理绑定信息。
  * 这里相当于收集组件之间的依赖，给组件之间的绑定做路由。
  */
-export class BindingScopeContainer {
+export class BindingContainer {
   compMap: Map<string, CompAgent> = new Map()
 
   schema: BindingScope.Schema
