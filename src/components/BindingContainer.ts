@@ -21,29 +21,30 @@ export class BindingContainer {
     this.schema = schema
   }
 
+
+  // TODO 设计时，当 schema 改变时需要重新处理绑定
+  updateCompSchema(id: string, schema: CompSchemaBase) {
+    const comp = this.compMap.get(id)
+
+  }
+
   regComp(comp: CompAgent) {
     this.compMap.set(comp.id, comp)
     // TODO 目前还是列表查找的方式。后面可以直接做成引用
-    comp.onEvent((event, payload) => {
-      const bindings = this.schema.bindings.filter(bd => {
-        bd.type === 'action' && bd.source.id === comp.id && bd.source.prop === event
+    const eventBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.source.id === comp.id)
+    eventBindings.forEach(bd => {
+      comp.onEvent(bd.source.prop, payload => {
+        this.triggerAction(bd.target.id, bd.target.prop, payload)
       })
-      if(bindings.length) {
-        bindings.forEach(bd => {
-          this.triggerAction(bd.target.id, bd.target.prop, payload)
-        })
-      }
     })
-    comp.onStateChange((state, value) => {
-      const bindings = this.schema.bindings.filter(bd => {
-        bd.type === 'state' && bd.source.id === comp.id && bd.source.prop === state
+
+    const stateBindings = this.schema.bindings.filter(bd => bd.type === 'state' && bd.source.id === comp.id)
+    stateBindings.forEach(bd => {
+      comp.onStateChange(bd.source.prop, payload => {
+        this.updateProp(bd.target.id, bd.target.prop, payload)
       })
-      if(bindings.length) {
-        bindings.forEach(bd => {
-          this.updateProp(bd.target.id, bd.target.prop, value)
-        })
-      }
     })
+  
   }
 
   triggerAction(compId: string ,actionName: string, payload?: any) {

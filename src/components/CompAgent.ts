@@ -15,12 +15,6 @@ export class CompAgent<ST extends Record<string, any> = {}> {
 
   def: CompDefBase
 
-  private _mode: 'run' | 'design' = 'run'
-
-  get mode() {
-    return this._mode
-  }
-
   constructor(public schema: CompSchemaBase){
     
     const def = compMan.getComp(schema.provider)

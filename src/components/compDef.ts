@@ -194,7 +194,7 @@ export namespace BindingScope {
       id: string
       prop: string
     }
-    type: 'action' | 'state'
+    type: 'event' | 'state'
   }
   export interface Schema extends CompSchemaBase {
     name: string

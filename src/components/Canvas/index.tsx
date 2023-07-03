@@ -76,7 +76,6 @@ export class CanvasStore {
 export type CanvasContextType = {
   canvasStore: CanvasStore
   bdCon: BindingContainer
-
   // processBinding: (binding: BindingSchema) => any
 }
 
@@ -133,8 +132,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   return (
     <CanvasContext.Provider value={{
       canvasStore: store.current,
-      processBinding,
-      bdCon: bindingContainer.current
+      bdCon: bindingContainer.current,
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
         <div className={styles.canvasContext}  onClick={onCanvasClick }>
