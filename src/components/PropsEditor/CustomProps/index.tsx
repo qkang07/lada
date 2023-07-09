@@ -1,8 +1,8 @@
 import SidePane from "@/components/SidePane";
 import {
-  BindScopeEnum,
-  BindTypeEnum,
-  BindingSchema,
+  // BindScopeEnum,
+  // BindTypeEnum,
+  // BindingSchema,
 } from "@/components/compDef";
 import { compMan } from "@/components/manager";
 import { DesignerContext } from "@/pages/Designer";

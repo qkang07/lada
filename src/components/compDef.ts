@@ -12,7 +12,9 @@ export type SchemaBase = {
 
 
 export interface CompSchemaBase extends SchemaBase {
+  id: string
   provider: string
+  defaultProps?: Record<string, any>
 }
 
 // 创建实例时的上下文。目前虽然好像没啥用
@@ -55,6 +57,12 @@ export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' 
 export interface CompPropSchema extends SchemaBase {
   defaultValue?: any
   type?: CompPropType
+}
+
+export type PropValueSchema = {
+  prop: string
+  value: any
+
 }
 
 //#endregion base
@@ -154,15 +162,14 @@ export namespace UIComp {
     slot?: string
   }
   
-  export type RenderProps<T extends Record<string, any>> = {
+  export type RenderProps<T extends Record<string, any> = Record<string, any>> = {
     style?: string;
     classNames?: string;
-    instance: Instance
-    props?: Record<string ,any> // 组件定义的 props
-    ctx: CompContext
+    // instance: Instance
+    props?: T // 组件定义的 props
     agent: CompAgent
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
-  } & T;
+  }
   
   
   export interface Def<P extends Record<string, any> = any> extends CompDefBase {
@@ -195,6 +202,12 @@ export namespace BindingScope {
       prop: string
     }
     type: 'event' | 'state'
+  }
+
+  export interface BindingInstance {
+    id: string
+    schema: BindingSchema
+    handler: (payload?: any) => void
   }
   export interface Schema extends CompSchemaBase {
     name: string

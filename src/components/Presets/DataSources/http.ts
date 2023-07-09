@@ -79,12 +79,11 @@ const HTTPDataSource: DataSource.Def = {
       })
     })
 
-    agent.onActionCall((action, value) => {
-      if(action === 'run') {
-        run(value)
-      } else if(action === 'set') {
-        set(value)
-      }
+    agent.onActionCall('run',(value) => {
+      run(value)
+    })
+    agent.onActionCall('set',(value) => {
+      set(value)
     })
 
     return () => ({

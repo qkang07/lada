@@ -26,10 +26,8 @@ const VarDataSource: DataSource.Def = {
       agent.updateState({data: data.value})
       agent.emitEvent('change', data.value)
     })
-    agent.onActionCall((name, value) => {
-      if(name === 'set') {
-        set(value)
-      }
+    agent.onActionCall('set',(value) => {
+      set(value)
     })
 
   }

@@ -1,28 +1,31 @@
+import { CanvasContext } from '@/components/Canvas'
 import SidePane from '@/components/SidePane'
-import { BindScopeEnum, BindTypeEnum } from '@/components/compDef'
 import { DesignerContext } from '@/pages/Designer'
 import Editor from '@monaco-editor/react'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
 type Props = {
-  compId: string
+  schemaId: string
+  // compId: string
 }
 
 const StyleEditor = (props: Props) => {
-  const {compId} = props
+  const {schemaId} = props
 
   const [innerValue, setInnerValue] = useState<string>()
 
+  const {} = useContext(CanvasContext)
+
   const {compSchemaMap} = useContext(DesignerContext)
 
-  const schema = () => compSchemaMap![compId]
+  const schema = () => compSchemaMap![schemaId]
 
   useEffect(() => {
     const style = schema().bindings?.find(s => s.prop === 'style')?.binding || ''
     if(style !== innerValue) {
       setInnerValue(style)
     }
-  }, [props.compId])
+  }, [schemaId])
 
 
   return (

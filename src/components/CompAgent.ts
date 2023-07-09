@@ -1,5 +1,5 @@
 import { Optional, randomId } from "@/utils"
-import { CompDefBase, CompSchemaBase } from "./compDef"
+import { BindingScope, CompDefBase, CompSchemaBase } from "./compDef"
 import { compMan } from "./manager"
 
 export type HandlerShape = (payload?: any) => void
@@ -8,18 +8,19 @@ type HandlerType = 'others' | 'event' | 'action' | 'state' | 'prop'
 
 
 // 这就是层代理，用于沟通 binding scope 和具体的组件实现
-export class CompAgent<ST extends Record<string, any> = {}> {
+
+export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends CompDefBase = CompDefBase, ST extends Record<string, any> = Record<string, any>> {
   id: string
 
   state: ST
 
-  def: CompDefBase
+  def: D
 
-  constructor(public schema: CompSchemaBase){
+  constructor(public schema: S){
     
     const def = compMan.getComp(schema.provider)
     if(def) {
-      this.def = def
+      this.def = def as D
     } else {
       throw Error('no def found')
     }
@@ -28,7 +29,12 @@ export class CompAgent<ST extends Record<string, any> = {}> {
     // makeAutoObservable(this)
   }
 
+  // 组件上所拥有的 binding，用于设计时
+  // propBindings: BindingScope.BindingInstance[] = []
+  // actionBindings: BindingScope.BindingInstance[] = []
+
   protected otherHandlers: HandlerRegTable = new Map()
+
   protected stateHandlers: HandlerRegTable = new Map()
   protected eventHandlers: HandlerRegTable = new Map()
   
@@ -147,6 +153,16 @@ export class CompAgent<ST extends Record<string, any> = {}> {
   // 向内 更新组件的 prop
   updateProp(prop: string, value?: any) {
     this.getHandlerList('prop', prop).forEach(h => h(value))
+  }
+
+
+  // 设计时
+
+  updateDefaultProp(propName: string, value?: any) {
+    if(!this.schema.defaultProps){
+      this.schema.defaultProps = {}
+    }
+    this.schema.defaultProps[propName] = value
   }
 
   toSchema() {
