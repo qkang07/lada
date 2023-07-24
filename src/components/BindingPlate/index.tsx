@@ -7,7 +7,7 @@ import { DesignerContext } from '@/pages/Designer'
 type Props = {}
 
 const BindingPlate = observer((props: Props) => {
-  const {canvasStore} = useContext(DesignerContext)
+  const {bdContainer} = useContext(DesignerContext)
   const [visible, setVisible] = useState(false)
   
   

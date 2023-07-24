@@ -41,6 +41,13 @@ export class BindingContainer {
     this.schema.bindings.push(bdSchema)
   }
 
+  // 寻找某个组件的bindings，
+  findCompBinding(compId: string) {
+    return this.schema.bindings.filter(bd => {
+      return bd.type === 'state' && bd.target.id === compId || bd.type === 'event' && bd.source.id === compId
+    })
+  }
+
   protected unRegBinding(id: string) {
     const bdIns = this.bindingMap.get(id)
     const schema = bdIns!.schema

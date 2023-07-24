@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import CompBox from './CompBox'
-import Canvas, { CanvasRef, CanvasStore } from '@/components/Canvas'
+import Canvas, { CanvasRef } from '@/components/Canvas'
 import { CompInstanceBase, CompSchemaBase } from '@/components/compDef'
 import PropsEditor from '@/components/PropsEditor'
 import FocusFrame from '@/components/FocusFrame'
@@ -17,6 +17,7 @@ import { Optional, randomId } from '@/utils'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { uiMan } from '@/components/manager'
+import { BindingContainer } from '@/components/BindingContainer'
 
 export type CompTransferObj = {
   id: string
@@ -96,6 +97,7 @@ type DesignerContextType = {
 
   eventBus?: EventEmitter
   isDesign?: boolean
+  bdContainer?: BindingContainer
   actions?: ActionRuntime[]
   compSchemaMap?: Record<any, CompRuntime>
   slotSchemaMap?: Record<any, SlotRuntime>
@@ -103,7 +105,6 @@ type DesignerContextType = {
   updateCompBinding?: (id: any, binding: BindingSchema) => void
   deleteComp?: (id: any) => any
 
-  canvasStore?: CanvasStore
 }
 
 
@@ -283,7 +284,7 @@ const Designer = (props: Props) => {
       slotSchemaMap,
       deleteComp,
       eventBus,
-      canvasStore: canvasRef.current?.store
+      bdContainer: canvasRef.current?.container
     }}>
 
       <div className={styles.designer}>
