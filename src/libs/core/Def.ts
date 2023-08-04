@@ -148,33 +148,28 @@ export namespace UIComp {
   };
 }
 
-export namespace BindingScope {
 
-  // Binding Schema
-  // Bindings are page level logic
-  export type BindingSchema = {
-    source: {
-      id: string
-      prop: string
-    }
-    target: {
-      id: string
-      prop: string
-    }
-    type: 'event' | 'state'
-  }
-
-  export interface BindingInstance {
+export type BindingSchema = {
+  source: {
     id: string
-    schema: BindingSchema
-    handler: (payload?: any) => void
+    prop: string
   }
-  export interface Schema extends CompSchemaBase {
-    name: string
-    label?: string
-    uiRoot: UIComp.Schema
-    dataSources: DataSource.Schema[]
-    bindings: BindingSchema[]
+  target: {
+    id: string
+    prop: string
   }
+  type: 'event' | 'state'
+}
 
+export interface BindingInstance {
+  id: string
+  schema: BindingSchema
+  handler: (payload?: any) => void
+}
+export interface BindingScopeSchema extends CompSchemaBase {
+  name: string
+  label?: string
+  uiRoot: UIComp.Schema
+  dataSources: DataSource.Schema[]
+  bindings: BindingSchema[]
 }

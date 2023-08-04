@@ -1,5 +1,5 @@
 import { Optional, randomId } from "@/utils"
-import { BindingScope, CompDefBase, CompSchemaBase } from "./Def"
+import { CompDefBase, CompSchemaBase } from "./Def"
 import { compMan } from "../../components/manager"
 
 export type HandlerShape = (payload?: any) => void

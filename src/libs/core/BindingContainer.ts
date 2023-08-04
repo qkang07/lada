@@ -1,6 +1,6 @@
 import { randomId } from "@/utils";
 import { CompAgent } from "./CompAgent";
-import { BindingScope, CompDefBase, CompInstanceBase, CompSchemaBase } from "./Def";
+import { BindingInstance, BindingSchema, BindingScopeSchema, CompDefBase, CompInstanceBase, CompSchemaBase } from "./Def";
 import { ProviderManager } from "./ProviderManager";
 
 
@@ -19,11 +19,11 @@ export type CompEvent = {
 export class BindingContainer {
   compMap: Map<string, CompAgent> = new Map()
 
-  schema: BindingScope.Schema
+  schema: BindingScopeSchema
 
-  bindingMap: Map<string, BindingScope.BindingInstance> = new Map()
+  bindingMap: Map<string, BindingInstance> = new Map()
 
-  constructor(public man: ProviderManager<CompDefBase>, schema: BindingScope.Schema) {
+  constructor(public man: ProviderManager<CompDefBase>, schema: BindingScopeSchema) {
     this.schema = schema
   }
 
@@ -39,7 +39,7 @@ export class BindingContainer {
   }
 
   // 添加绑定
-  addBinding(bdSchema: BindingScope.BindingSchema) {
+  addBinding(bdSchema: BindingSchema) {
     this.regBinding(bdSchema)
     this.schema.bindings.push(bdSchema)
   }
@@ -66,7 +66,7 @@ export class BindingContainer {
     
   }
 
-  protected regBinding(schema: BindingScope.BindingSchema) {
+  protected regBinding(schema: BindingSchema) {
     const source = this.compMap.get(schema.source.id)
     const target = this.compMap.get(schema.target.id)
     const handler = schema.type === 'state' ? (payload?: any) => {target?.updateProp(schema.target.prop, payload)} : (payload?: any) => {target?.callAction(schema.target.prop, payload)}
@@ -75,7 +75,7 @@ export class BindingContainer {
     } else {
       source?.bindEvent(schema.source.prop, handler)
     }
-    const inst: BindingScope.BindingInstance = {
+    const inst: BindingInstance = {
       id: randomId(),
       schema: schema,
       handler
@@ -103,7 +103,7 @@ export class BindingContainer {
         this.triggerAction(bd.target.id, bd.target.prop, payload)
       }
       comp.bindEvent(bd.source.prop, handler)
-      const inst: BindingScope.BindingInstance = {
+      const inst: BindingInstance = {
         id: randomId(),
         schema: bd,
         handler
