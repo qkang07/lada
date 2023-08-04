@@ -1,4 +1,4 @@
-import { PageDef } from "@/components/compDef";
+import { PageDef } from "@/libs/core/Def";
 
 
 

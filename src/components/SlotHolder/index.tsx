@@ -1,6 +1,6 @@
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.less";
-import { BindingSchema, SlotRuntime, SlotSchema } from "../compDef";
+import { BindingSchema, SlotRuntime, SlotSchema } from "../../libs/core/Def";
 import { compMan } from "../manager";
 import { CanvasContext } from "../Canvas";
 import { DesignerContext } from "@/pages/Designer";

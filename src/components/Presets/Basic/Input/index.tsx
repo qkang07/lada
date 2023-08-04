@@ -1,4 +1,4 @@
-import { UIComp } from "@/components/compDef"
+import { UIComp } from "@/libs/core/Def"
 import { Input } from "@arco-design/web-react"
 import { action, makeAutoObservable } from "mobx"
 

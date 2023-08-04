@@ -1,4 +1,4 @@
-import { UIComp } from '@/components/compDef'
+import { UIComp } from '@/libs/core/Def'
 import { Tag, Tree } from '@arco-design/web-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { DesignerContext } from '..'

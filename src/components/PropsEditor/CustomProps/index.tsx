@@ -3,7 +3,7 @@ import {
   // BindScopeEnum,
   // BindTypeEnum,
   // BindingSchema,
-} from "@/components/compDef";
+} from "@/libs/core/Def";
 import { compMan } from "@/components/manager";
 import { DesignerContext } from "@/pages/Designer";
 import { Input, Radio, Select, Switch } from "@arco-design/web-react";

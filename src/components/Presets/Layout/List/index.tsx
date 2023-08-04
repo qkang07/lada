@@ -1,5 +1,5 @@
 import Renderer from '@/components/Renderer'
-import {UIComp } from '@/components/compDef'
+import {UIComp } from '@/libs/core/Def'
 import React, { CSSProperties } from 'react'
 import styles from './index.module.less'
 import SlotHolder from '@/components/SlotHolder'

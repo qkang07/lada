@@ -3,7 +3,7 @@ import ButtonDef from "./Presets/Basic/Button";
 import InputDef from "./Presets/Basic/Input";
 import ListLayoutDef from "./Presets/Layout/List";
 import ParagraphDef from "./Presets/Typo/P";
-import { DefManager, UIComp, DataSource } from "./compDef";
+import { DefManager, UIComp, DataSource } from "../libs/core/Def";
 import VarDataSource from "./Presets/DataSources/var";
 
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DataSource } from "../../compDef";
+import { DataSource } from "../../../libs/core/Def";
 import { action, makeAutoObservable } from "mobx";
 
 const HTTPDataSource: DataSource.Def = {

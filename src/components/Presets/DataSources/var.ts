@@ -1,5 +1,5 @@
 import { action, makeAutoObservable } from "mobx";
-import { DataSource } from "../../compDef";
+import { DataSource } from "../../../libs/core/Def";
 
 const VarDataSource: DataSource.Def = {
   name: 'var',

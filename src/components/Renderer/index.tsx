@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { compMan } from '../manager'
 import { CanvasContext } from '../Canvas'
 import { randomId } from '@/utils'
-import { CompInstanceBase, UIComp} from '../compDef'
+import { CompInstanceBase, UIComp} from '../../libs/core/Def'
 import { DesignerContext } from '@/pages/Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { observer } from 'mobx-react'
-import { CompAgent } from '../CompAgent'
+import { CompAgent } from '../../libs/core/CompAgent'
 
 type Props = {
   schema: UIComp.Schema

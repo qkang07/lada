@@ -1,4 +1,4 @@
-import { PageRuntime, PageSchema } from '@/components/compDef'
+import { PageRuntime, PageSchema } from '@/libs/core/Def'
 import React, { useRef } from 'react'
 
 type Props = {}

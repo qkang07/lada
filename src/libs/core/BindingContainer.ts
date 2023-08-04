@@ -1,6 +1,9 @@
 import { randomId } from "@/utils";
 import { CompAgent } from "./CompAgent";
-import { BindingScope, CompDefBase, CompInstanceBase, CompSchemaBase, DefManager } from "./compDef";
+import { BindingScope, CompDefBase, CompInstanceBase, CompSchemaBase } from "./Def";
+import { ProviderManager } from "./ProviderManager";
+
+
 
 
 export type CompEvent = {
@@ -20,7 +23,7 @@ export class BindingContainer {
 
   bindingMap: Map<string, BindingScope.BindingInstance> = new Map()
 
-  constructor(public man: DefManager<CompDefBase>, schema: BindingScope.Schema) {
+  constructor(public man: ProviderManager<CompDefBase>, schema: BindingScope.Schema) {
     this.schema = schema
   }
 
@@ -54,9 +57,9 @@ export class BindingContainer {
     // 去掉旧的真实绑定
     const source = this.compMap.get(bdIns!.schema.source.id)
     if(schema.type === 'state') {
-      source?.offStateChange(schema.source.prop, bdIns?.handler)
+      source?.unBindState(schema.source.prop, bdIns?.handler)
     } else {
-      source?.offEvent(schema.source.prop, bdIns?.handler)
+      source?.unBindEvent(schema.source.prop, bdIns?.handler)
     }
     this.bindingMap.delete(id)
     return schema
@@ -68,9 +71,9 @@ export class BindingContainer {
     const target = this.compMap.get(schema.target.id)
     const handler = schema.type === 'state' ? (payload?: any) => {target?.updateProp(schema.target.prop, payload)} : (payload?: any) => {target?.callAction(schema.target.prop, payload)}
     if(schema.type === 'state') {
-      source?.onStateChange(schema.source.prop, handler)
+      source?.bindState(schema.source.prop, handler)
     } else {
-      source?.onEvent(schema.source.prop, handler)
+      source?.bindEvent(schema.source.prop, handler)
     }
     const inst: BindingScope.BindingInstance = {
       id: randomId(),
@@ -99,7 +102,7 @@ export class BindingContainer {
       const handler = (payload: any) => {
         this.triggerAction(bd.target.id, bd.target.prop, payload)
       }
-      comp.onEvent(bd.source.prop, handler)
+      comp.bindEvent(bd.source.prop, handler)
       const inst: BindingScope.BindingInstance = {
         id: randomId(),
         schema: bd,
@@ -114,7 +117,7 @@ export class BindingContainer {
     const actionBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.target.id === comp.id)
     actionBindings.forEach(bd => {
       const source = this.compMap.get(bd.source.id)
-      source?.onEvent(bd.source.prop, payload => {
+      source?.bindEvent(bd.source.prop, payload => {
 
       })
     })
@@ -126,7 +129,7 @@ export class BindingContainer {
       this.updateProp(bd.target.id, bd.target.prop, comp.state[bd.source.prop]) // FUTURE 这里只用了第一层 state, 深层以后再考虑
 
       // 绑定 state change 事件
-      comp.onStateChange(bd.source.prop, payload => {
+      comp.bindState(bd.source.prop, payload => {
         this.updateProp(bd.target.id, bd.target.prop, payload)
       })
     })

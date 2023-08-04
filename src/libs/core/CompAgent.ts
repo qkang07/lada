@@ -1,6 +1,6 @@
 import { Optional, randomId } from "@/utils"
-import { BindingScope, CompDefBase, CompSchemaBase } from "./compDef"
-import { compMan } from "./manager"
+import { BindingScope, CompDefBase, CompSchemaBase } from "./Def"
+import { compMan } from "../../components/manager"
 
 export type HandlerShape = (payload?: any) => void
 export type HandlerRegTable = Map<string, HandlerShape[]>
@@ -79,11 +79,13 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
 
   // 向外传递
-  onEvent(name: string, handler: HandlerShape){
+  // 给自己的 event 绑定 handler
+  bindEvent(name: string, handler: HandlerShape){
     this.regHandler('event', name, handler)
   }
 
-  onStateChange(name: string, handler: HandlerShape){
+  // 给自己的 state 绑定 handler
+  bindState(name: string, handler: HandlerShape){
     this.regHandler('state', name, handler)
   }
 
@@ -100,11 +102,11 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   
   // 向外传递
-  offEvent(name: string, handler?: HandlerShape){
+  unBindEvent(name: string, handler?: HandlerShape){
     this.unRegHandler('event', name, handler)
   }
 
-  offStateChange(name: string, handler?: HandlerShape){
+  unBindState(name: string, handler?: HandlerShape){
     this.unRegHandler('state', name, handler)
   }
 
@@ -129,7 +131,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   }
 
 
-  // 组件改变了 state，向外通知
+  // 组件改变了 state
   updateState(s: Optional<ST>) {
     this.state = {
       ...this.state,

@@ -2,7 +2,7 @@ import {
   DataSourceRuntime,
   DataSourceSchema,
   DataSourceType,
-} from "@/components/compDef";
+} from "@/libs/core/Def";
 import React, { useState } from "react";
 import styles from "./index.module.less";
 import {

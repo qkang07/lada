@@ -1,7 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import { ActionDef, CompSchemaBase, DataSource, BindingScope, SchemaBase, UIComp} from '../compDef'
+import { ActionDef, CompSchemaBase, DataSource, BindingScope, SchemaBase, UIComp} from '../../libs/core/Def'
 import { CompTransferObj, DesignerContext, SlotTransferObj } from '@/pages/Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
@@ -11,8 +11,8 @@ import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
 import { compMan } from '../manager'
-import { BindingContainer } from '../BindingContainer'
-import { CompAgent } from '../CompAgent'
+import { BindingContainer } from '../../libs/core/BindingContainer'
+import { CompAgent } from '../../libs/core/CompAgent'
 
 
 

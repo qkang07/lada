@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './index.module.less'
-import { ActionSchema } from '@/components/compDef'
+import { ActionSchema } from '@/libs/core/Def'
 
 type Props = {
   action: ActionSchema

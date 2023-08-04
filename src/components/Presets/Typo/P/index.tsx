@@ -1,5 +1,5 @@
 import SlotHolder from "@/components/SlotHolder";
-import { UIComp } from "@/components/compDef";
+import { UIComp } from "@/libs/core/Def";
 import { Typography } from "@arco-design/web-react";
 
 type PProps = {
