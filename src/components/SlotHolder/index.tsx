@@ -1,16 +1,15 @@
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.less";
-import { BindingSchema, SlotRuntime, SlotSchema } from "../../libs/core/Def";
-import { compMan } from "../manager";
+import { BindingSchema, UIComp } from "../../libs/core/Def";
 import { CanvasContext } from "../Canvas";
-import { DesignerContext } from "@/pages/Designer";
+import { DesignerContext } from "@/components/Designer";
 import Renderer from "../Renderer";
 import { observer } from "mobx-react";
 
 type Props = {
   // name?: string
   // compId: string
-  schema?: SlotRuntime;
+  schema?: UIComp.SlotSchema;
   style?: CSSProperties;
   className?: string;
   props?: any;
@@ -19,45 +18,18 @@ type Props = {
 const SlotHolder = observer((props: Props) => {
   const { schema: slotSchema } = props;
 
-  const [rtSchema, setRTSchema] = useState(props.schema)
-  const { compSchemaMap, isDesign, slotSchemaMap } = useContext(DesignerContext);
-  const { processBinding } = useContext(CanvasContext);
-
-  /**** design time functions */
-  const updateSchema = () => {
-    console.log('update slot', slotSchemaMap)
-    setRTSchema(slotSchemaMap![slotSchema?.id!])
-    console.log('current slot schema', slotSchema)
-  }
-
-  const updateBinding = (binding: BindingSchema) => {
-    rtSchema!.binding = binding
-    // slotSchema!.binding = binding
-    updateSchema()
-  }
-
+  const { isDesign } = useContext(DesignerContext);
 
   const hasChildren = !!props.schema?.children?.length;
 
-  if(!rtSchema) {
+  if(!slotSchema) {
     return <></>
   }
-
-  const slotBinding: any[] = useMemo(() => {
-    if (rtSchema.binding) {
-      return processBinding(rtSchema.binding) || [];
-    }
-    return [];
-  }, [props.schema?.binding]);
-
-
 
 
   return (
     <div 
-    data-slot-name={rtSchema.name}
-    data-slot-id={rtSchema.id}
-    data-slot-comp-id={rtSchema.comp.id}
+    data-slot-name={slotSchema.name}
     >
     {/* {
       isDesign && <span
@@ -73,16 +45,16 @@ const SlotHolder = observer((props: Props) => {
         <div className={styles.slotHolder}>Put something here</div>
       )}
 
-      {rtSchema.type === "loop" ? (
+      {/* {slotSchema.type === "loop" ? (
         slotBinding.map((value, i) => (
           <Renderer props={value} key={i} schema={rtSchema.children![0]!} />
         ))
       ) : (
         <></>
-      )}
+      )} */}
 
       {hasChildren &&
-        rtSchema.children?.map((comp, i) => {
+        slotSchema.children?.map((comp, i) => {
           return <Renderer schema={comp} key={i} />;
         })}
       {/* {

@@ -20,7 +20,7 @@ export type PropEditorType = {
   config?: any
 }
 
-export type PropType = 'string' | 'number' | 'boolean' | 'record' | 'array'
+export type PropType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
 
 export interface PropDef extends SchemaBase  {
   editor?: PropEditorType | string // 需要预设的编辑器
@@ -116,8 +116,7 @@ export namespace UIComp {
 
   export type SlotType = 'single' | 'list' | 'loop'
   
-  export type SlotDef = {
-    name: string
+  export interface SlotDef extends SchemaBase {
     type: SlotType
   }
   export interface SlotSchema extends SchemaBase {
@@ -133,10 +132,9 @@ export namespace UIComp {
   export type RenderProps<T extends Record<string, any> = Record<string, any>> = {
     style?: string;
     classNames?: string;
-    props?: T // 组件定义的 props
-    agent: CompAgent
+    // agent: CompAgent
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
-  }
+  } & T
   
   
   export interface Def<P extends Record<string, any> = any> extends CompDefBase {
@@ -167,8 +165,6 @@ export interface BindingInstance {
   handler: (payload?: any) => void
 }
 export interface BindingScopeSchema extends CompSchemaBase {
-  name: string
-  label?: string
   uiRoot: UIComp.Schema
   dataSources: DataSource.Schema[]
   bindings: BindingSchema[]

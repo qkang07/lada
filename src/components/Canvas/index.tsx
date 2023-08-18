@@ -1,18 +1,17 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import { ActionDef, CompSchemaBase, DataSource, BindingScope, SchemaBase, UIComp} from '../../libs/core/Def'
-import { CompTransferObj, DesignerContext, SlotTransferObj } from '@/pages/Designer'
+import { ActionDef, CompSchemaBase, DataSource, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
+import {  DesignerContext } from '../Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
 import { Drawer } from '@arco-design/web-react'
-import TreeView from '@/pages/Designer/TreeView'
 import { action, autorun, makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
-import { compMan } from '../manager'
 import { BindingContainer } from '../../libs/core/BindingContainer'
 import { CompAgent } from '../../libs/core/CompAgent'
+import { pMan } from '../manager'
 
 
 
@@ -87,10 +86,9 @@ export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 
 type Props = {
-  initSchema: BindingScope.Schema
-  compTO?: CompTransferObj
-  slotTO?: SlotTransferObj
+  initSchema: BindingScopeSchema
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
+  onCompSelect?: () => void
 }
 
 export type CanvasRef = {
@@ -102,21 +100,13 @@ export type CanvasRef = {
 
 const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
-  const {initSchema, compTO, slotTO, onCanvasClick} = props
-
-  const {compSchemaMap, slotSchemaMap, eventBus} = useContext(DesignerContext)
+  const {initSchema, onCanvasClick} = props
 
   const [schema, setSchema] = useState<UIComp.Schema>(initSchema.uiRoot)
 
-
-  // const store = useRef<CanvasStore>(makeAutoObservable(new CanvasStore()))
-
-
-  // const schemaCompMap = useRef(new Map<string, CompSchemaBase>())
-
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
-  const bindingContainer = useRef(new BindingContainer(compMan, initSchema))
+  const bindingContainer = useRef(new BindingContainer(pMan, initSchema))
 
   useImperativeHandle(ref, () => {
     return {
@@ -148,7 +138,6 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
         <div className={styles.canvasContext}  onClick={onCanvasClick }>
           <Renderer schema={schema} />
         </div>
-        <FocusFrame  canvasDom={canvasDomRef.current || undefined} target={compTO?.dom} />
       </div>
     </CanvasContext.Provider>
   )

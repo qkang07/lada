@@ -3,16 +3,17 @@ import ButtonDef from "./Presets/Basic/Button";
 import InputDef from "./Presets/Basic/Input";
 import ListLayoutDef from "./Presets/Layout/List";
 import ParagraphDef from "./Presets/Typo/P";
-import { DefManager, UIComp, DataSource } from "../libs/core/Def";
+import { UIComp, DataSource } from "../libs/core/Def";
+import { ProviderManager } from "../libs/core/ProviderManager";
 import VarDataSource from "./Presets/DataSources/var";
 
 
-export const compMan = new DefManager()
+export const pMan = new ProviderManager()
 
-compMan.regComp(HTTPDataSource)
-compMan.regComp(VarDataSource)
+pMan.regComp(HTTPDataSource)
+pMan.regComp(VarDataSource)
 
-compMan.regComp(InputDef)
-compMan.regComp(ButtonDef)
-compMan.regComp(ParagraphDef)
-compMan.regComp(ListLayoutDef)
+pMan.regComp(InputDef)
+pMan.regComp(ButtonDef)
+pMan.regComp(ParagraphDef)
+pMan.regComp(ListLayoutDef)

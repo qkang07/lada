@@ -7,13 +7,11 @@ const VarDataSource: DataSource.Def = {
   actions:[
     {
       name: 'set',
-      params: 'any',
     }
   ],
   events: [
     {
       name: 'change',
-      params: 'any'
     }
   ],
   create(agent){

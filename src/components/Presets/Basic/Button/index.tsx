@@ -1,11 +1,12 @@
 import { UIComp } from "@/libs/core/Def";
 import { Button } from "@arco-design/web-react";
+import { FinalButtonProps } from "@arco-design/web-react/es/Button/interface";
 import { ReactNode } from "react";
 
 type ButtonProps = {
   onClick: () => any
   children?: ReactNode
-  type?: string
+  type?: FinalButtonProps['type']
 }
 
 const ButtonDef: UIComp.Def<ButtonProps> = {
@@ -37,7 +38,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     return {}
   },
   render: (props) => {
-    return <Button type={props.type as any}
+    return <Button type={props.type}
     onClick={props.onClick}>{props.children}</Button>
   },
   createSchema(schema: UIComp.Schema) {

@@ -1,6 +1,7 @@
 import { Optional, randomId } from "@/utils"
 import { CompDefBase, CompSchemaBase } from "./Def"
-import { compMan } from "../../components/manager"
+import { pMan } from "../../components/manager"
+import { action, makeAutoObservable } from "mobx"
 
 export type HandlerShape = (payload?: any) => void
 export type HandlerRegTable = Map<string, HandlerShape[]>
@@ -16,9 +17,14 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   def: D
 
-  constructor(public schema: S){
-    
-    const def = compMan.getComp(schema.provider)
+  schema: S
+
+  parentAgent?: CompAgent
+
+  constructor(schema: S){
+    makeAutoObservable(this)    
+    this.schema = schema
+    const def = pMan.getComp(schema.provider)
     if(def) {
       this.def = def as D
     } else {

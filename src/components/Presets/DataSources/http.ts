@@ -28,17 +28,14 @@ const HTTPDataSource: DataSource.Def = {
   actions: [
     {
       name: 'run',
-      params: 'params',
     }
   ],
   events: [
     {
       name: 'onSuccess',
-      params: 'result'
     },
     {
       name: 'onError',
-      params: 'error'
     }
   ],
   create(agent) {

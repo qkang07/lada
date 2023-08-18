@@ -1,8 +1,7 @@
-import { DesignerContext } from '@/pages/Designer'
+import { DesignerContext } from '@/components/Designer'
 import { Input, ResizeBox, Tabs } from '@arco-design/web-react'
 import React, { useContext, useMemo, useState } from 'react'
-import { compMan } from '../manager'
-import { BindScopeEnum, BindingSchema } from '../../libs/core/Def'
+import { pMan } from '../manager'
 import StyleEditor from './StyleEditor'
 import CustomPropsEditor from './CustomProps'
 import EditorStack from '../EditorStack'
@@ -12,31 +11,24 @@ import CompEvents from './Events'
 import CompActions from './Actions'
 
 type Props = {
-  compId?: string
 }
 
 const PropsEditor = (props: Props) => {
-  const {compId} = props
 
-
-  console.log('comp id',compId)
-
-
-  if(!compId) {
+  const {currentCompAgent} = useContext(DesignerContext)
+  if(!currentCompAgent) {
     return <></>
   } 
-
- 
 
   return (
     <div>
       <EditorStack items={[
-        <BasicProps compId={compId}/>,
-        <CustomPropsEditor compId={compId}/>,
+        <BasicProps/>,
+        <CustomPropsEditor/>,
         <CompSlots/>,
         <CompEvents/>,
         <CompActions/>,
-        <StyleEditor compId={compId}/>
+        <StyleEditor/>
       ]}></EditorStack>
    
     </div>

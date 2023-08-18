@@ -2,27 +2,27 @@ import SidePane from '@/components/SidePane'
 import React, { useContext } from 'react'
 import pstyle from '../index.module.less'
 import { Input } from '@arco-design/web-react'
-import { compMan } from '@/components/manager'
-import { DesignerContext } from '@/pages/Designer'
+import { pMan } from '@/components/manager'
+import { DesignerContext } from '@/components/Designer'
 import { observer } from 'mobx-react'
 
-type Props = {compId: string}
+type Props = {}
 const BasicProps = observer((props: Props) => {
-  const { compId} = props
-  const { compSchemaMap, updateCompSchema} = useContext(DesignerContext);
+  const { currentCompAgent} = useContext(DesignerContext);
 
   
-  const compSchema = compSchemaMap![compId];
+  const schema = currentCompAgent?.schema
 
-  const compDef = compMan.getComp(compSchema.provider);
+  const compDef = pMan.getComp(schema?.provider!);
   return (
     <SidePane title='基本属性'>
       <div className={pstyle.propField}>
         <div className={pstyle.label}>Name</div>
-        <Input size='small' value={compSchema.name} onChange={v => {
+        <Input size='small' value={schema?.name} onChange={v => {
           if(v){
-            compSchema.name = v
-            updateCompSchema?.(compId, compSchema)
+            currentCompAgent?.updateDefaultProp('name', v)
+            // compSchema.name = v
+            // updateCompSchema?.(compId, compSchema)
           }
         }} />
       </div>

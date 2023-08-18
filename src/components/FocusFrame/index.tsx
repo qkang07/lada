@@ -19,13 +19,13 @@ function getDomRect(doms: Element[]) {
 
 type Props = {
   target?: HTMLElement
-  canvasDom?: HTMLElement
   actions?: ReactNode
   styles?: CSSProperties
+  containerDom?: HTMLElement
 }
 
 const FocusFrame = (props: Props) => {
-  const {target, canvasDom} = props
+  const {target, containerDom} = props
   const [renderState, setRenderState] = useState(0)
 
   const observerRef = useRef(new MutationObserver((e) => {
@@ -63,9 +63,9 @@ const FocusFrame = (props: Props) => {
       display: 'none',
       position: 'absolute'
     }
-    if(target && canvasDom) {
+    if(target && containerDom) {
       const targetRect = target.getBoundingClientRect()
-      const canvasRect = canvasDom.getBoundingClientRect()
+      const canvasRect = containerDom.getBoundingClientRect()
       frameStyle.left = targetRect.left - canvasRect.left
       frameStyle.top = targetRect.top - canvasRect.top
       frameStyle.height = target.clientHeight
