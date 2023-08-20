@@ -108,7 +108,7 @@ type DesignerContextType = {
 export const DesignerContext = createContext<DesignerContextType>({} as any)
 
 type Props = {
-  bdConSchema: BindingScopeSchema
+  bdConSchema?: BindingScopeSchema
 }
 
 const Designer = (props: Props) => {
@@ -134,7 +134,10 @@ const Designer = (props: Props) => {
   const obsSchema = obsSchemaRef.current
 
   useEffect(() => {
-    obsSchemaRef.current = observable(bdConSchema)
+    if(bdConSchema){
+
+      obsSchemaRef.current = observable(bdConSchema)
+    }
   }, [bdConSchema])
 
 

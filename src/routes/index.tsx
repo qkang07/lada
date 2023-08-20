@@ -5,7 +5,7 @@ import App from '@/pages/App';
 
 import PageList from '@/pages/App/PageList';
 
-import Designer from '@/pages/Designer';
+import Design from '@/pages/Design';
 
 import AppCreate from '@/pages/AppCreate';
 import { createBrowserRouter } from 'react-router-dom';
@@ -38,7 +38,7 @@ const baseRoutes = createBrowserRouter([
   },
   {
     path: 'design/:id',
-    element: <Designer/>,
+    element: <Design/>,
   },
   {
     path: '/create',
