@@ -1,5 +1,5 @@
 import SidePane from '@/components/SidePane'
-import { compMan } from '@/components/manager'
+import { pMan } from '@/components/manager'
 import { Button } from '@arco-design/web-react'
 import React from 'react'
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 const CompBox = (props: Props) => {
 
-  const names = compMan.names()
+  const names = pMan.names()
   return (
     <SidePane title='组件'>
       {

@@ -160,7 +160,6 @@ const Designer = (props: Props) => {
       schema = compDef.createSchema(schema)
     }
     
-    // default use root runtime schema
     if(currentSlotInfo) {
       const slotSchema = currentSlotInfo.compAgent.schema.slots?.find(s => s.name === currentSlotInfo.name)
       slotSchema?.children?.push(schema)
