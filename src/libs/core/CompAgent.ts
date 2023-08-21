@@ -2,6 +2,7 @@ import { Optional, randomId } from "@/utils"
 import { CompDefBase, CompSchemaBase } from "./Def"
 import { pMan } from "../../components/manager"
 import { action, makeAutoObservable } from "mobx"
+import { BindingContainer } from "./BindingContainer"
 
 export type HandlerShape = (payload?: any) => void
 export type HandlerRegTable = Map<string, HandlerShape[]>
@@ -21,7 +22,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   parentAgent?: CompAgent
 
-  constructor(schema: S){
+  constructor(schema: S, container?: BindingContainer){
     makeAutoObservable(this)    
     this.schema = schema
     const def = pMan.getComp(schema.provider)
@@ -32,6 +33,9 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     }
     this.id = randomId()
     this.state = {} as ST
+    if(container) {
+      container.regComp(this)
+    }
     // makeAutoObservable(this)
   }
 

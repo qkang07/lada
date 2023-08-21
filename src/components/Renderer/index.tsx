@@ -23,7 +23,7 @@ const Renderer = observer((props: Props) => {
 
   const {bdCon} = useContext(CanvasContext)
 
-  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def>>()
+  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def> | undefined>(schema ? new CompAgent(schema, bdCon) : undefined)
 
   const agent = agentRef.current
 
@@ -78,7 +78,7 @@ const Renderer = observer((props: Props) => {
   useEffect(() => {
     console.log('default props', schema?.defaultProps)
     makeProps()
-  }, [schema?.defaultProps])
+  }, [schema?.defaultProps?.type])
 
   const renderProps: UIComp.RenderProps = {
     // agent,
