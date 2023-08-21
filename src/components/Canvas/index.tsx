@@ -78,7 +78,7 @@ import { pMan } from '../manager'
 // }
 
 export type CanvasContextType = {
-  bdCon: BindingContainer
+  bdCon?: BindingContainer
   // processBinding: (binding: BindingSchema) => any
 }
 
@@ -86,15 +86,13 @@ export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 
 type Props = {
-  initSchema: BindingScopeSchema
+  initSchema?: BindingScopeSchema
   onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
   onCompSelect?: () => void
 }
 
 export type CanvasRef = {
-  // store: CanvasStore
-  comps: Map<string, CompAgent>
-  container: BindingContainer
+  bdCon?: BindingContainer
 }
 
 
@@ -102,19 +100,23 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const {initSchema, onCanvasClick} = props
 
-  const [schema, setSchema] = useState<UIComp.Schema>(initSchema.uiRoot)
 
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
-  const bindingContainer = useRef(new BindingContainer(pMan, initSchema))
+
+  const [bdCon, setBdCon] = useState<BindingContainer>()
 
   useImperativeHandle(ref, () => {
     return {
-      // store: store.current,
-      comps: bindingContainer.current.compMap,
-      container: bindingContainer.current
+      bdCon
     }
-  }, [])
+  }, [bdCon])
+
+  useEffect(() => {
+    if(initSchema) {
+      setBdCon(new BindingContainer(pMan, initSchema))
+    }
+  }, [initSchema])
 
 
   // const processBinding = (binding: BindingSchema) => {
@@ -129,14 +131,15 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   //   return void 0
   // }
 
+  console.log('schema, uiroot', initSchema?.uiRoot)
 
   return (
     <CanvasContext.Provider value={{
-      bdCon: bindingContainer.current,
+      bdCon,
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
         <div className={styles.canvasContext}  onClick={onCanvasClick }>
-          <Renderer schema={schema} />
+          <Renderer schema={initSchema?.uiRoot} />
         </div>
       </div>
     </CanvasContext.Provider>

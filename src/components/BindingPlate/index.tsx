@@ -2,12 +2,12 @@ import React, { useContext, useState } from 'react'
 import styles from './index.module.less'
 import { Modal } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
-import { DesignerContext } from '@/pages/Designer'
+import { DesignerContext } from '@/components/Designer'
 
 type Props = {}
 
 const BindingPlate = observer((props: Props) => {
-  const {bdContainer} = useContext(DesignerContext)
+  const {bdCon} = useContext(DesignerContext)
   const [visible, setVisible] = useState(false)
   
   

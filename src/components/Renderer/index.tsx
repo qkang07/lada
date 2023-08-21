@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { CanvasContext } from '../Canvas'
 import { randomId } from '@/utils'
-import { CompInstanceBase, UIComp} from '../../libs/core/Def'
+import { UIComp} from '../../libs/core/Def'
 import { DesignerContext } from '../Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { observer } from 'mobx-react'
 import { CompAgent } from '../../libs/core/CompAgent'
+import { observable, observe } from 'mobx'
+
+
+
 
 type Props = {
-  schema: UIComp.Schema
-  props?: any
+  schema?: UIComp.Schema
 }
 
 const Renderer = observer((props: Props) => {
@@ -20,32 +23,20 @@ const Renderer = observer((props: Props) => {
 
   const {bdCon} = useContext(CanvasContext)
 
-  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def>>(new CompAgent(schema))
+  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def>>()
 
   const agent = agentRef.current
 
-  const CompRender = agent.def.render
+  const CompRender = agent?.def.render
 
   const instanceRef = useRef<any>()
 
   const [compProps, setCompProps] = useState<Record<string, any>>({})
 
-  useEffect(() => {
-    bdCon.regComp(agent)
-
-    // 绑定 action
-    agent.def.actions?.forEach(act => {
-      agent.onActionCall(act.name, (params) => {
-        if(typeof instanceRef.current[act.name] === 'function') {
-          instanceRef.current[act.name](params)
-        }
-      })
-    })
-
-
+  const makeProps = () => {
     // 初始化 props
-    agent.def.props?.forEach(prop => {
-      compProps[prop.name] = schema.defaultProps?.[prop.name] || prop.defaultValue 
+    agent?.def.props?.forEach(prop => {
+      compProps[prop.name] = schema?.defaultProps?.[prop.name] || prop.defaultValue 
       agent.onPropChange(prop.name, (v) => {
         compProps[prop.name] = v
         setCompProps({...compProps})
@@ -53,20 +44,52 @@ const Renderer = observer((props: Props) => {
     })
 
     setCompProps({...compProps})
+  }
+
+  useEffect(() => {
+
+  
+
+    if(schema) {
+      // observe(schema.defaultProps || observable({}), () => {
+      //   console.log('default props change', schema.defaultProps)
+      // })
+      agentRef.current = new CompAgent(schema)
+      const agent = agentRef.current
+      bdCon?.regComp(agent)
+  
+      // 绑定 action
+      agent.def.actions?.forEach(act => {
+        agent.onActionCall(act.name, (params) => {
+          if(typeof instanceRef.current[act.name] === 'function') {
+            instanceRef.current[act.name](params)
+          }
+        })
+      })
+
+      const newCompProps: Record<string, any> = {}
+      makeProps()
+    }
+
   }, [schema])
+
+
+  // 设计时会改变 default props
+  useEffect(() => {
+    console.log('default props', schema?.defaultProps)
+    makeProps()
+  }, [schema?.defaultProps])
 
   const renderProps: UIComp.RenderProps = {
     // agent,
     updateState: (state: string, value? :any) => {
-      agent.updateState({[state]: value})
+      agent?.updateState({[state]: value})
     },
-    ...agent.state,
-    
-    // TODO: 这里要初始化 props
+    ...compProps,
   }
 
   // 绑定 event
-  agent.def.events?.forEach(ev => {
+  agent?.def.events?.forEach(ev => {
     renderProps[ev.name] = (payload: any) => {
       agent.emitEvent(ev.name, payload)
     }
@@ -76,14 +99,17 @@ const Renderer = observer((props: Props) => {
 
   
   if(CompRender) {
+
     return <>
     {
-      isDesign && <span data-lada-comp-id={schema.id}></span>
+      isDesign && <span data-lada-comp-id={agent?.id}></span>
     }
-      <CompRender ref={instanceRef} slots={schema.slots} {...renderProps} />
+      <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
     </>
+  } else if(schema) {
+    return <span>未找到组件 {schema.provider}</span>
   }
-  return <span>未找到组件 {schema.provider}</span>
+  return <></>
 })
 
 export default Renderer

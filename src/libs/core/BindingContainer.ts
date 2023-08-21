@@ -1,6 +1,7 @@
+import { bind } from 'lodash-es';
 import { randomId } from "@/utils";
 import { CompAgent } from "./CompAgent";
-import { BindingInstance, BindingSchema, BindingScopeSchema, CompDefBase, CompInstanceBase, CompSchemaBase } from "./Def";
+import { BindingInstance, BindingSchema, BindingScopeSchema, CompDefBase, CompSchemaBase } from "./Def";
 import { ProviderManager } from "./ProviderManager";
 
 
@@ -89,7 +90,6 @@ export class BindingContainer {
   // 找到已经注册的组件的 state，绑定当前的 prop
   // 找到已经注册的组件的 prop，绑定自己的 state
   regComp(comp: CompAgent) {
-
     this.compMap.set(comp.id, comp)
     // agent 自身是不会处理和其他组件的绑定关系的，只有在容器内才能处理。
 

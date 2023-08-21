@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useMemo, useRef, useState } from 'reac
 import styles from './index.module.less'
 import CompBox from './CompBox'
 import Canvas, { CanvasRef } from '@/components/Canvas'
-import { BindingScopeSchema, CompInstanceBase, CompSchemaBase, UIComp } from '@/libs/core/Def'
+import { BindingScopeSchema, CompSchemaBase, UIComp } from '@/libs/core/Def'
 import PropsEditor from '@/components/PropsEditor'
 import FocusFrame from '@/components/FocusFrame'
 import DesignerHeader from './Header'
@@ -10,7 +10,6 @@ import { ResizeBox } from '@arco-design/web-react'
 import DataSources from './DataSource'
 import EditorStack from '@/components/EditorStack'
 import TreeView from './TreeView'
-import {EventEmitter} from 'events'
 import SidePane from '@/components/SidePane'
 import { action, autorun, makeAutoObservable, observable } from 'mobx'
 import { Optional, randomId } from '@/utils'
@@ -19,6 +18,7 @@ import { useRequest } from 'ahooks'
 import { pMan } from '@/components/manager'
 import { BindingContainer } from '@/libs/core/BindingContainer'
 import { CompAgent } from '@/libs/core/CompAgent'
+import { observer } from 'mobx-react'
 
 
 
@@ -97,9 +97,8 @@ function findSlot(dom: HTMLElement): {compDomInfo: CompDomInfo, name: string, do
 
 type DesignerContextType = {
 
-  eventBus?: EventEmitter
   isDesign?: boolean
-  bdContainer?: BindingContainer
+  bdCon?: BindingContainer
   currentCompAgent?: CompAgent<UIComp.Schema>
   deleteComp?: (id: any) => any
 }
@@ -111,32 +110,31 @@ type Props = {
   bdConSchema?: BindingScopeSchema
 }
 
-const Designer = (props: Props) => {
+const Designer = observer((props: Props) => {
 
   const {bdConSchema} = props
 
-  const eventBusRef = useRef(new EventEmitter)
   const canvasRef = useRef<CanvasRef | null>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
 
-  const bdContainer = canvasRef.current?.container
+  const currentRefs = useRef<{
+    compInfo?: CompInfo
+    slotInfo?: SlotInfo
+  }>(observable({
+    compInfo: undefined,
+    slotInfo: undefined
+  }))
 
-  const currentCompInfoRef = observable(useRef<CompInfo>())
-  const currentCompInfo = currentCompInfoRef.current
 
   const currentSlotInfoRef = observable(useRef<SlotInfo>())
   const currentSlotInfo = currentSlotInfoRef.current
 
-  const eventBus = eventBusRef.current
+  const [obsSchema, setObsSchema] = useState<BindingScopeSchema>()
 
-  const obsSchemaRef = useRef<BindingScopeSchema>()
-
-  const obsSchema = obsSchemaRef.current
 
   useEffect(() => {
     if(bdConSchema){
-
-      obsSchemaRef.current = observable(bdConSchema)
+      setObsSchema(observable<BindingScopeSchema>(bdConSchema,undefined,{deep: true}))
     }
   }, [bdConSchema])
 
@@ -151,7 +149,7 @@ const Designer = (props: Props) => {
     const id = randomId()
     let schema: UIComp.Schema = {
       provider,
-      name: name + id,      
+      name: provider + id,      
       id
     }
 
@@ -159,26 +157,26 @@ const Designer = (props: Props) => {
     if(compDef?.createSchema) {
       schema = compDef.createSchema(schema)
     }
+
+    const slotInfo = currentRefs.current.slotInfo
     
-    if(currentSlotInfo) {
-      const slotSchema = currentSlotInfo.compAgent.schema.slots?.find(s => s.name === currentSlotInfo.name)
+    if(slotInfo) {
+      const slotSchema = slotInfo.compAgent.schema.slots?.find(s => s.name === slotInfo.name)
       slotSchema?.children?.push(schema)
-      // currentCompInfo?.agent.schema.slots?.find(s => s.name === currentSlotInfo.id)
     } else {
       obsSchema?.uiRoot?.slots?.[0].children?.push(schema)
       // newComp.parent = runtimeSchema
       // runtimeSchema.slots?.[0].children?.push(newComp)
     }
-    eventBus.emit('schemaUpdate')
   })
 
   const handleCanvasClick =  action((e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => {
     const source = e.nativeEvent.target as HTMLElement
     const compDomInfo = findComp(source)
-    
+    const bdCon = canvasRef.current?.bdCon
     if(compDomInfo?.id) {
-      const agent =  bdContainer?.compMap.get(compDomInfo.id)!
-      currentCompInfoRef.current = {
+      const agent =  bdCon?.compMap.get(compDomInfo.id)!
+      currentRefs.current.compInfo = {
         id: compDomInfo.id,
         dom: compDomInfo.dom,
         agent
@@ -186,10 +184,9 @@ const Designer = (props: Props) => {
     }
 
     const theSlot = findSlot(source)
-    console.log('found slot', theSlot)
     if(theSlot?.name) {
-      const agent = bdContainer?.compMap.get(theSlot.compDomInfo.id)
-      currentSlotInfoRef.current = {
+      const agent = bdCon?.compMap.get(theSlot.compDomInfo.id)
+      currentRefs.current.slotInfo = {
         name: theSlot.name,
         dom: theSlot.dom,
         compDomInfo: theSlot.compDomInfo,
@@ -208,9 +205,8 @@ const Designer = (props: Props) => {
     <DesignerContext.Provider value={{
       isDesign: true,
       deleteComp,
-      eventBus,
-      bdContainer: canvasRef.current?.container,
-      currentCompAgent: currentCompInfo?.agent
+      bdCon: canvasRef.current?.bdCon,
+      currentCompAgent: currentRefs.current.compInfo?.agent
     }}>
 
       <div className={styles.designer}>
@@ -233,7 +229,7 @@ const Designer = (props: Props) => {
           </div>
           <div className={styles.canvas} ref={canvasContainerRef}>
             <Canvas ref={canvasRef} onCanvasClick={handleCanvasClick} initSchema={obsSchema!} />
-            <FocusFrame containerDom={canvasContainerRef.current as HTMLElement} target={currentCompInfo?.dom} />
+            <FocusFrame containerDom={canvasContainerRef.current as HTMLElement} target={currentRefs.current.compInfo?.dom} />
 
           </div>
           <div className={styles.editor}>
@@ -244,6 +240,6 @@ const Designer = (props: Props) => {
       </div>
     </DesignerContext.Provider>
   )
-}
+})
 
 export default Designer

@@ -51,15 +51,6 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   createSchema?: (initSchema: S) => S
 }
 
-export interface CompInstanceBase<S extends CompSchemaBase = CompSchemaBase> {
-  def: CompDefBase<S>
-  schema: S
-  id: string
-  type: string
-  states: Record<string, any>
-
-}
-
 export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
 
 export interface CompPropSchema extends SchemaBase {
@@ -98,17 +89,11 @@ export namespace DataSource {
   export interface Def extends CompDefBase<Schema> {
     type: DataSourceType
     params?: PropDef[]
-    createSchema?: (schema: Schema) => Schema
   }
 }
 
 export interface ActionSchema extends SchemaBase {
   params?: SchemaBase[]
-}
-
-export interface ActionInstance extends ActionSchema {
-  host: CompInstanceBase
-  type: 'page' | 'comp' | 'datasource'
 }
 
 
@@ -137,11 +122,10 @@ export namespace UIComp {
   } & T
   
   
-  export interface Def<P extends Record<string, any> = any> extends CompDefBase {
+  export interface Def<P extends Record<string, any> = any> extends CompDefBase<Schema> {
     version?: string;
     url?: string;
     render?: (props: RenderProps<P>) => JSX.Element
-    createSchema?:(schema: Schema) => Schema
     slots?: SlotDef[]
   };
 }
