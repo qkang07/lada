@@ -1,7 +1,6 @@
 import { UIComp } from '@/libs/core/Def'
 import { Tag, Tree } from '@arco-design/web-react'
 import React, { useContext, useEffect, useState } from 'react'
-import { DesignerContext } from '..'
 import { TreeDataType } from '@arco-design/web-react/es/Tree/interface'
 import SidePane from '@/components/SidePane'
 import { observer } from 'mobx-react'
@@ -28,19 +27,18 @@ const makeTreeData = (schemas?: UIComp.Schema[]): any[] => {
 
 
 type Props = {
-  schema: UIComp.Schema
+  schema?: UIComp.Schema
 }
 
 const TreeView = observer((props: Props) => {
 
-  const {eventBus} = useContext(DesignerContext)
   const [treeData, setTreeData] = useState<TreeDataType[]>([])
 
   useEffect(() => {
-    eventBus?.on('schemaUpdate', ()=>{
+    if(props.schema) {
       setTreeData(makeTreeData([props.schema]))
-    })
-  }, [eventBus])
+    }
+  }, [props.schema])
 
 
   return (
