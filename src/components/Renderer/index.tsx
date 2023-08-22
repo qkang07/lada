@@ -23,7 +23,7 @@ const Renderer = observer((props: Props) => {
 
   const {bdCon} = useContext(CanvasContext)
 
-  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def> | undefined>(schema ? new CompAgent(schema, bdCon) : undefined)
+  const agentRef = useRef<CompAgent<UIComp.Schema, UIComp.Def> | undefined>()
 
   const agent = agentRef.current
 
@@ -48,15 +48,15 @@ const Renderer = observer((props: Props) => {
 
   useEffect(() => {
 
-  
-
-    if(schema) {
+    if(schema && bdCon) {
       // observe(schema.defaultProps || observable({}), () => {
       //   console.log('default props change', schema.defaultProps)
       // })
-      agentRef.current = new CompAgent(schema)
+      if(!agentRef.current) {
+        console.log('later agent')
+        agentRef.current = new CompAgent(schema, bdCon)
+      }
       const agent = agentRef.current
-      bdCon?.regComp(agent)
   
       // 绑定 action
       agent.def.actions?.forEach(act => {
@@ -67,18 +67,20 @@ const Renderer = observer((props: Props) => {
         })
       })
 
-      const newCompProps: Record<string, any> = {}
       makeProps()
     }
+    return () => {
+      console.log('comp destory')
+    }
 
-  }, [schema])
+  }, [schema, bdCon])
 
 
   // 设计时会改变 default props
   useEffect(() => {
-    console.log('default props', schema?.defaultProps)
+    // console.log('default props', schema?.defaultProps)
     makeProps()
-  }, [schema?.defaultProps?.type])
+  }, [schema?.defaultProps])
 
   const renderProps: UIComp.RenderProps = {
     // agent,
@@ -106,7 +108,7 @@ const Renderer = observer((props: Props) => {
     }
       <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
     </>
-  } else if(schema) {
+  } else if(schema && bdCon) {
     return <span>未找到组件 {schema.provider}</span>
   }
   return <></>

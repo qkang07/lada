@@ -15,7 +15,7 @@ import { action, autorun, makeAutoObservable, observable } from 'mobx'
 import { Optional, randomId } from '@/utils'
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
-import { pMan } from '@/components/manager'
+import { uiMan } from '@/components/manager'
 import { BindingContainer } from '@/libs/core/BindingContainer'
 import { CompAgent } from '@/libs/core/CompAgent'
 import { observer } from 'mobx-react'
@@ -37,7 +37,7 @@ export type SlotInfo = {
   // id: string
   name: string
   compDomInfo: CompDomInfo
-  compAgent: CompAgent<UIComp.Schema>
+  compAgent: CompAgent<UIComp.Schema, UIComp.Def>
   
 }
 
@@ -145,7 +145,7 @@ const Designer = observer((props: Props) => {
 
 
   const addComp = action((provider: string) => {
-    const compDef = pMan.getComp(provider)
+    const compDef = uiMan.getComp(provider)
     const id = randomId()
     let schema: UIComp.Schema = {
       provider,
@@ -161,8 +161,13 @@ const Designer = observer((props: Props) => {
     const slotInfo = currentRefs.current.slotInfo
     
     if(slotInfo) {
+      const slotDef = slotInfo.compAgent.def.slots?.find(s => s.name === slotInfo.name)
       const slotSchema = slotInfo.compAgent.schema.slots?.find(s => s.name === slotInfo.name)
-      slotSchema?.children?.push(schema)
+      // single 和 loop 的 slot 只能放一个子组件
+      if(!slotSchema?.children?.length || slotDef?.type === 'list' ) {
+        slotSchema?.children?.push(schema)
+      }
+      
     } else {
       obsSchema?.uiRoot?.slots?.[0].children?.push(schema)
       // newComp.parent = runtimeSchema

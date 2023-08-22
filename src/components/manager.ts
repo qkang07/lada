@@ -7,12 +7,13 @@ import { UIComp, DataSource, CompDefBase } from "../libs/core/Def";
 import { ProviderManager } from "../libs/core/ProviderManager";
 import VarDataSource from "./Presets/DataSources/var";
 
-export const pMan = new ProviderManager<UIComp.Def | DataSource.Def>()
+export const uiMan = new ProviderManager<UIComp.Def>()
+export const dMan = new ProviderManager<DataSource.Def>()
 
-pMan.regComp(HTTPDataSource)
-pMan.regComp(VarDataSource)
+dMan.regComp(HTTPDataSource)
+dMan.regComp(VarDataSource)
 
-pMan.regComp(InputDef)
-pMan.regComp(ButtonDef)
-pMan.regComp(ParagraphDef)
-pMan.regComp(ListLayoutDef)
+uiMan.regComp(InputDef)
+uiMan.regComp(ButtonDef)
+uiMan.regComp(ParagraphDef)
+uiMan.regComp(ListLayoutDef)

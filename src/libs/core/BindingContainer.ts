@@ -20,11 +20,13 @@ export type CompEvent = {
 export class BindingContainer {
   compMap: Map<string, CompAgent> = new Map()
 
+  schemaCompMap: Map<string, CompAgent> = new Map()
+
   schema: BindingScopeSchema
 
   bindingMap: Map<string, BindingInstance> = new Map()
 
-  constructor(public man: ProviderManager<CompDefBase>, schema: BindingScopeSchema) {
+  constructor(schema: BindingScopeSchema) {
     this.schema = schema
   }
 
@@ -90,14 +92,18 @@ export class BindingContainer {
   // 找到已经注册的组件的 state，绑定当前的 prop
   // 找到已经注册的组件的 prop，绑定自己的 state
   regComp(comp: CompAgent) {
+    console.log('reg comp', comp.schema.name, comp)
     this.compMap.set(comp.id, comp)
+    this.schemaCompMap.set(comp.schema.id, comp)
+
+    const schema = comp.schema
     // agent 自身是不会处理和其他组件的绑定关系的，只有在容器内才能处理。
 
     // step1: 处理 comp 自身的 state
     // agent 自行处理
 
     // step2: 将自己的 event 绑定给目标的 action
-    const eventBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.source.id === comp.id)
+    const eventBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.source.id === schema.id)
     eventBindings.forEach(bd => {
       const handler = (payload: any) => {
         this.triggerAction(bd.target.id, bd.target.prop, payload)
@@ -114,7 +120,7 @@ export class BindingContainer {
 
     // step3: 将自己的 action 绑定到调用方的 event
     // TODO 
-    const actionBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.target.id === comp.id)
+    const actionBindings = this.schema.bindings.filter(bd => bd.type === 'event' && bd.target.id === schema.id)
     actionBindings.forEach(bd => {
       const source = this.compMap.get(bd.source.id)
       source?.bindEvent(bd.source.prop, payload => {
@@ -123,7 +129,7 @@ export class BindingContainer {
     })
 
     // step4: 用自己的 state 更新和绑定目标的 prop
-    const stateBindings = this.schema.bindings.filter(bd => bd.type === 'state' && bd.source.id === comp.id)
+    const stateBindings = this.schema.bindings.filter(bd => bd.type === 'state' && bd.source.id === schema.id)
     stateBindings.forEach(bd => {
       // 初次注册，直接更新 state prop。
       this.updateProp(bd.target.id, bd.target.prop, comp.state[bd.source.prop]) // FUTURE 这里只用了第一层 state, 深层以后再考虑
@@ -135,7 +141,7 @@ export class BindingContainer {
     })
 
     // step5: 找到绑定的源头 state，更新自己的 prop
-    const propBindings = this.schema.bindings.filter(bd => bd.type === 'state' && bd.target.id === comp.id)
+    const propBindings = this.schema.bindings.filter(bd => bd.type === 'state' && bd.target.id === schema.id)
     propBindings.forEach(bd => {
       const source = this.compMap.get(bd.source.id)
       if(source) {
@@ -144,6 +150,12 @@ export class BindingContainer {
     })
     
   
+  }
+
+  // TODO 去掉绑定
+  unRegComp(comp: CompAgent) {
+    this.compMap.delete(comp.id)
+    this.schemaCompMap.delete(comp.schema.id)
   }
 
   triggerAction(compId: string ,actionName: string, payload?: any) {

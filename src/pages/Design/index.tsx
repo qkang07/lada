@@ -17,7 +17,6 @@ const defaultPageSchema = () => Promise.resolve<BindingScopeSchema>({
     name: 'root',
     slots: [{
       name: 'default',
-      type: 'list',
       children: []
     }],
   },

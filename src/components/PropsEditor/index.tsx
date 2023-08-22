@@ -1,7 +1,7 @@
 import { DesignerContext } from '@/components/Designer'
 import { Input, ResizeBox, Tabs } from '@arco-design/web-react'
 import React, { useContext, useMemo, useState } from 'react'
-import { pMan } from '../manager'
+import { uiMan } from '../manager'
 import StyleEditor from './StyleEditor'
 import CustomPropsEditor from './CustomProps'
 import EditorStack from '../EditorStack'

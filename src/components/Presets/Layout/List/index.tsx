@@ -29,6 +29,13 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
   slots: [
     {name: 'default', type: 'list'}
   ],
+  createSchema(initSchema) {
+    initSchema.slots = [{
+      name: 'default',
+      children: []
+    }]
+      return initSchema
+  },
   render: (props) => {
     const style: CSSProperties = {}
     if(props.direction === 'horizon') {

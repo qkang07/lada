@@ -103,10 +103,11 @@ export namespace UIComp {
   
   export interface SlotDef extends SchemaBase {
     type: SlotType
+    display?: 'block' | 'inline'
   }
   export interface SlotSchema extends SchemaBase {
-    type: SlotType
-    display?: 'block' | 'inline'
+    // type: SlotType
+    // display?: 'block' | 'inline'
     children?: Schema[]
   }
   

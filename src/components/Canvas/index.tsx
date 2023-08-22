@@ -11,7 +11,7 @@ import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
 import { BindingContainer } from '../../libs/core/BindingContainer'
 import { CompAgent } from '../../libs/core/CompAgent'
-import { pMan } from '../manager'
+import { uiMan } from '../manager'
 
 
 
@@ -104,7 +104,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
 
-  const [bdCon, setBdCon] = useState<BindingContainer>()
+  const [bdCon, setBdCon] = useState<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
 
   useImperativeHandle(ref, () => {
     return {
@@ -113,8 +113,8 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   }, [bdCon])
 
   useEffect(() => {
-    if(initSchema) {
-      setBdCon(new BindingContainer(pMan, initSchema))
+    if(initSchema && !bdCon) {
+      setBdCon(new BindingContainer(initSchema))
     }
   }, [initSchema])
 
@@ -131,7 +131,6 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   //   return void 0
   // }
 
-  console.log('schema, uiroot', initSchema?.uiRoot)
 
   return (
     <CanvasContext.Provider value={{

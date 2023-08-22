@@ -38,7 +38,6 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     return {}
   },
   render: (props) => {
-    console.log('button prop', props)
     return <Button type={props.type}
     onClick={props.onClick}>{props.children || '按钮'}</Button>
   },

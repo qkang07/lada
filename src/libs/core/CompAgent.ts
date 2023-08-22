@@ -1,6 +1,6 @@
 import { Optional, randomId } from "@/utils"
 import { CompDefBase, CompSchemaBase } from "./Def"
-import { pMan } from "../../components/manager"
+import { uiMan } from "../../components/manager"
 import { action, makeAutoObservable } from "mobx"
 import { BindingContainer } from "./BindingContainer"
 
@@ -25,7 +25,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   constructor(schema: S, container?: BindingContainer){
     makeAutoObservable(this)    
     this.schema = schema
-    const def = pMan.getComp(schema.provider)
+    const def = uiMan.getComp(schema.provider)
     if(def) {
       this.def = def as D
     } else {
@@ -175,6 +175,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
       this.schema.defaultProps = {}
     }
     this.schema.defaultProps[propName] = value
+    this.schema.defaultProps = {...this.schema.defaultProps}
   }
 
  

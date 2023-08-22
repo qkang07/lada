@@ -1,8 +1,4 @@
-import {
-  DataSourceRuntime,
-  DataSourceSchema,
-  DataSourceType,
-} from "@/libs/core/Def";
+import { DataSource } from "@/libs/core/Def";
 import React, { useState } from "react";
 import styles from "./index.module.less";
 import {
@@ -20,13 +16,13 @@ import AsyncDataSource from "./Async";
 import SidePane from "@/components/SidePane";
 
 type Props = {
-  schemas: DataSourceSchema[];
-  onAdd: (ds: DataSourceSchema) => void;
+  schemas: DataSource.Schema[];
+  onAdd: (ds: DataSource.Schema) => void;
 };
 
 const DSTypes: {
   label: string;
-  value: DataSourceType;
+  value: DataSource.DataSourceType;
 }[] = [
   { label: "变量", value: "var" },
   { label: "环境变量", value: "getter" },
