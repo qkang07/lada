@@ -1,12 +1,22 @@
 import { Optional, randomId } from "@/utils"
-import { CompDefBase, CompSchemaBase } from "./Def"
+import { BindingInfo, CompDefBase, CompSchemaBase } from "./Def"
 import { uiMan } from "../../components/manager"
 import { action, makeAutoObservable } from "mobx"
 import { BindingContainer } from "./BindingContainer"
 
 export type HandlerShape = (payload?: any) => void
+
 export type HandlerRegTable = Map<string, HandlerShape[]>
+
+export interface BindingRegInfo extends BindingInfo {
+  // schema id
+  // type: 'action' | 'prop'
+  handler: HandlerShape
+}
+
 type HandlerType = 'others' | 'event' | 'action' | 'state' | 'prop'
+
+// export type BindingRegTable = Map<string, BindingTarget>
 
 
 // 这就是层代理，用于沟通 binding scope 和具体的组件实现
@@ -150,7 +160,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     Object.keys(s).forEach(k => {
       this.getHandlerList('state', k).forEach(h => h(s[k]))
     })
-    this.getHandlerList('others', 'state').forEach(h => h(this.state))
+    // this.getHandlerList('others', 'state').forEach(h => h(this.state))
   }
 
 
@@ -159,12 +169,16 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   // 向内 调用组件的 action
   callAction(action: string, payload?: any) {
-    this.getHandlerList('action', action).forEach(h => h(payload))
+    if(this.def.actions?.some(a => a.name === action)) {
+      this.getHandlerList('action', action).forEach(h => h(payload))
+    }
   }
 
   // 向内 更新组件的 prop
   updateProp(prop: string, value?: any) {
-    this.getHandlerList('prop', prop).forEach(h => h(value))
+    if(this.def.props?.some(p => p.name === prop)) {
+      this.getHandlerList('prop', prop).forEach(h => h(value))
+    }
   }
 
 

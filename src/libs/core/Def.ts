@@ -119,6 +119,7 @@ export namespace UIComp {
     style?: string;
     classNames?: string;
     // agent: CompAgent
+    updateState? :(name: string, value?: any) => void
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
   } & T
   
@@ -131,21 +132,19 @@ export namespace UIComp {
   };
 }
 
+export type BindingInfo = {
+  id: string
+  prop: string
+}
 
 export type BindingSchema = {
-  source: {
-    id: string
-    prop: string
-  }
-  target: {
-    id: string
-    prop: string
-  }
+  source: BindingInfo
+  target: BindingInfo
   type: 'event' | 'state'
 }
 
 export interface BindingInstance {
-  id: string
+  // id: string
   schema: BindingSchema
   handler: (payload?: any) => void
 }

@@ -1,6 +1,7 @@
 import { UIComp } from "@/libs/core/Def"
 import { Input } from "@arco-design/web-react"
 import { action, makeAutoObservable } from "mobx"
+import { useEffect, useState } from "react"
 
 
 type InputProps = {
@@ -30,10 +31,27 @@ const InputDef: UIComp.Def<InputProps> = {
   // },
 
   render(props) {
-    const {style, classNames, maxLength, value, onChange} = props
-    return <Input value={value} onChange={onChange} maxLength={maxLength} className={classNames}  />
+    const {style, classNames, maxLength, value, onChange, updateState} = props
+    const [innerValue, setInnerValue] = useState(props.value || '')
+    useEffect(() => {
+      if(value !== undefined && value !== null) {
+        setInnerValue(value)
+      }
+    }, [value])
+    const handleChange = (v: string) => {
+      setInnerValue(v)
+      onChange?.(v)
+      updateState?.('value', v)
+    }
+    return <Input value={value} onChange={handleChange} maxLength={maxLength} className={classNames}  />
   },
   props: [
+    {
+      name: 'value',
+      type: 'string'
+    }
+  ],
+  states: [
     {
       name: 'value',
       type: 'string'

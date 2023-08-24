@@ -1,15 +1,23 @@
 import React, { useContext, useState } from 'react'
 import styles from './index.module.less'
-import { Modal } from '@arco-design/web-react'
+import { Modal, Tabs } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
 import { DesignerContext } from '@/components/Designer'
+import { UIComp } from '@/libs/core/Def'
 
-type Props = {}
+type Props = {
+  type: 'event' | 'action' | 'state' | 'prop'
+
+}
 
 const BindingPlate = observer((props: Props) => {
   const {bdCon} = useContext(DesignerContext)
   const [visible, setVisible] = useState(false)
   
+  const compList: UIComp.Schema[] = []
+  bdCon?.compMap.forEach((comp) => {
+    compList.push(comp.schema)
+  })
   
   return (
     <Modal visible={visible} footer={null}>
@@ -22,8 +30,8 @@ const BindingPlate = observer((props: Props) => {
               <span>数据</span>
             </div>
             <div className={styles.comps}>
-              {canvasStore?.dataSources.map(ds => {
-                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
+              {bdCon?.schema?.dataSources.map(ds => {
+                return <div className={styles.compItem} key={ds.name}>{ds.name}</div>
               })}
             </div>
           </div>
@@ -32,8 +40,8 @@ const BindingPlate = observer((props: Props) => {
               <span>组件</span>
             </div>
             <div className={styles.comps}>
-              {canvasStore?.c.map(ds => {
-                return <div className={styles.compItem} key={ds.schema.name}>{ds.schema.name}</div>
+              {compList.map(comp => {
+                return <div className={styles.compItem} key={comp.name}>{comp.name}</div>
               })}
             </div>
           </div>
@@ -49,7 +57,13 @@ const BindingPlate = observer((props: Props) => {
           </div>
         
         </div>
-        <div className={styles.bindingItems}>
+        <Tabs className={styles.bindingItems}>
+          <Tabs.TabPane key={'prop'} title='Prop'></Tabs.TabPane>
+          <Tabs.TabPane key={'state'} title='State'></Tabs.TabPane>
+          <Tabs.TabPane key={'event'} title='Event'></Tabs.TabPane>
+          <Tabs.TabPane key={'action'} title='Action'></Tabs.TabPane>
+        </Tabs>
+        {/* <div className={styles.bindingItems}>
           <div>
             <div>Props</div>
           </div>
@@ -63,7 +77,7 @@ const BindingPlate = observer((props: Props) => {
             <div>Events</div>
           </div>
           
-        </div>
+        </div> */}
       </div>
     </Modal>
   )
