@@ -19,6 +19,7 @@ import { uiMan } from '@/components/manager'
 import { BindingContainer } from '@/libs/core/BindingContainer'
 import { CompAgent } from '@/libs/core/CompAgent'
 import { observer } from 'mobx-react'
+import BindingPlate from '../BindingPlate'
 
 
 
@@ -116,6 +117,17 @@ const Designer = observer((props: Props) => {
 
   const canvasRef = useRef<CanvasRef | null>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
+
+  const [bdPlateVisible, setBDPlateVisible] = useState(false)
+
+  const bdPlateRef = useRef<{
+    visible?: boolean
+    type?: 'event' | 'action' | 'state' | 'prop'
+  }>(observable({}))
+
+  // const bindingRef = useRef<{
+  //   plateVisible?: boolean
+  // }>({})
 
   const currentRefs = useRef<{
     compInfo?: CompInfo
@@ -241,7 +253,7 @@ const Designer = observer((props: Props) => {
             <PropsEditor />
           </div>
         </div>
-        
+        <BindingPlate visible={bdPlateVisible} type={bdPlateRef.current.type}/>
       </div>
     </DesignerContext.Provider>
   )

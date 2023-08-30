@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from './index.module.less'
 import { Modal, Tabs } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
@@ -6,13 +6,12 @@ import { DesignerContext } from '@/components/Designer'
 import { UIComp } from '@/libs/core/Def'
 
 type Props = {
-  type: 'event' | 'action' | 'state' | 'prop'
-
+  type?: 'event' | 'action' | 'state' | 'prop'
+  visible?: boolean
 }
 
 const BindingPlate = observer((props: Props) => {
   const {bdCon} = useContext(DesignerContext)
-  const [visible, setVisible] = useState(false)
   
   const compList: UIComp.Schema[] = []
   bdCon?.compMap.forEach((comp) => {
@@ -20,7 +19,7 @@ const BindingPlate = observer((props: Props) => {
   })
   
   return (
-    <Modal visible={visible} footer={null}>
+    <Modal visible={props.visible} footer={null}>
 
       <div className={styles.bindingPlate}>
         <div className={styles.compTypeList}>
