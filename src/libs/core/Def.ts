@@ -140,7 +140,7 @@ export type BindingInfo = {
 export type BindingSchema = {
   source: BindingInfo
   target: BindingInfo
-  type: 'event' | 'state'
+  type: 'event-action' | 'state-prop'
 }
 
 export interface BindingInstance {

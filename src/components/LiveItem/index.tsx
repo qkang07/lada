@@ -9,12 +9,12 @@ import styles from './index.module.less'
 type Props = {
   title?: string
   right?: any
-
+  onClick?: () => void
 }
 
 const LiveItem = (props: Props) => {
   return (
-    <div className={styles.liveItem}>
+    <div className={styles.liveItem} onClick={props.onClick}>
       <span>
         {props.title}
       </span>

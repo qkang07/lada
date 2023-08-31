@@ -102,6 +102,7 @@ type DesignerContextType = {
   bdCon?: BindingContainer
   currentCompAgent?: CompAgent<UIComp.Schema>
   deleteComp?: (id: any) => any
+  openBinding?: () => void
 }
 
 
@@ -217,13 +218,18 @@ const Designer = observer((props: Props) => {
   const deleteComp = action((id: string) => {
   })
 
+  const openBinding = () => {
+    setBDPlateVisible(true)
+  }
+
 
   return (
     <DesignerContext.Provider value={{
       isDesign: true,
       deleteComp,
       bdCon: canvasRef.current?.bdCon,
-      currentCompAgent: currentRefs.current.compInfo?.agent
+      currentCompAgent: currentRefs.current.compInfo?.agent,
+      openBinding
     }}>
 
       <div className={styles.designer}>
@@ -253,7 +259,7 @@ const Designer = observer((props: Props) => {
             <PropsEditor />
           </div>
         </div>
-        <BindingPlate visible={bdPlateVisible} type={bdPlateRef.current.type}/>
+        <BindingPlate visible={bdPlateVisible} type={bdPlateRef.current.type} onClose={() => setBDPlateVisible(false)}/>
       </div>
     </DesignerContext.Provider>
   )

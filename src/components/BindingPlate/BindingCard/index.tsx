@@ -1,22 +1,24 @@
 import React from 'react'
 import styles from './index.module.less'
-import { ActionSchema } from '@/libs/core/Def'
+import { ActionSchema, PropDef, PropType, SchemaBase } from '@/libs/core/Def'
 
 type Props = {
-  action: ActionSchema
+  def: PropDef
   onClick?: () => void
 }
 
 const BindingCard = (props: Props) => {
-  
+  const {def} = props
   return (
-    <div onClick={props.onClick} className={styles.actionCard}>
-      <div className={styles.name}></div>
-      <div className={styles.params}>
-        {props.action.params?.map(p=>{
-          return <div key={p.name} className={styles.param}></div>
-        })}
+    <div onClick={props.onClick} className={styles.bdCard}>
+      <div>
+
+      <div className={styles.name}>
+        {def.name}
+        </div>
+        <div>{def.type}</div>
       </div>
+      <div>{}</div>
     </div>
   )
 }

@@ -3,23 +3,50 @@ import styles from './index.module.less'
 import { Modal, Tabs } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
 import { DesignerContext } from '@/components/Designer'
-import { UIComp } from '@/libs/core/Def'
+import { BindingSchema, CompSchemaBase, PropDef, UIComp } from '@/libs/core/Def'
+import { CompAgent } from '@/libs/core/CompAgent'
+import BindingCard from './BindingCard'
 
 type Props = {
   type?: 'event' | 'action' | 'state' | 'prop'
+  sourceComp?: CompAgent
+  sourceProp?: PropDef
+  bdType?: BindingSchema['type']
   visible?: boolean
+  onClose?: () =>void
 }
 
 const BindingPlate = observer((props: Props) => {
+  const {visible, sourceComp, sourceProp} = props
   const {bdCon} = useContext(DesignerContext)
   
-  const compList: UIComp.Schema[] = []
+  const compList: CompAgent[] = []
   bdCon?.compMap.forEach((comp) => {
-    compList.push(comp.schema)
+    compList.push(comp)
   })
+
+  const [targetComp, setTargetComp] = useState<CompAgent>()
+
+  const chooseTargetComp = (comp:CompAgent) => {
+    setTargetComp(comp)
+  }
+
+  const chooseTarget = (prop: PropDef) => {
+    bdCon?.addBinding({
+      target: {
+        id: targetComp?.schema.id!,
+        prop: prop.name
+      },
+      source: {
+        prop:sourceProp?.name!,
+        id: sourceComp?.schema.id!
+      },
+      type: props?.bdType!
+    })
+  }
   
   return (
-    <Modal visible={props.visible} footer={null}>
+    <Modal visible={props.visible} onCancel={props.onClose} style={{width: '80%'}} footer={null}>
 
       <div className={styles.bindingPlate}>
         <div className={styles.compTypeList}>
@@ -40,7 +67,7 @@ const BindingPlate = observer((props: Props) => {
             </div>
             <div className={styles.comps}>
               {compList.map(comp => {
-                return <div className={styles.compItem} key={comp.name}>{comp.name}</div>
+                return <div onClick={() =>{chooseTarget(comp)}} className={styles.compItem} key={comp.schema.name}>{comp.schema.name}</div>
               })}
             </div>
           </div>
@@ -57,10 +84,26 @@ const BindingPlate = observer((props: Props) => {
         
         </div>
         <Tabs className={styles.bindingItems}>
-          <Tabs.TabPane key={'prop'} title='Prop'></Tabs.TabPane>
-          <Tabs.TabPane key={'state'} title='State'></Tabs.TabPane>
-          <Tabs.TabPane key={'event'} title='Event'></Tabs.TabPane>
-          <Tabs.TabPane key={'action'} title='Action'></Tabs.TabPane>
+          <Tabs.TabPane key={'prop'} title='Prop'>
+            {targetComp?.def.props?.map(prop => {
+              return <BindingCard onClick={() => chooseTarget(prop)} def={prop}/>
+            })}
+          </Tabs.TabPane>
+          <Tabs.TabPane key={'state'} title='State'>
+          {targetComp?.def.states?.map(prop => {
+              return <BindingCard onClick={() => chooseTarget(prop)}  def={prop}/>
+            })}
+          </Tabs.TabPane>
+          <Tabs.TabPane key={'event'} title='Event'>
+          {targetComp?.def.events?.map(prop => {
+              return <BindingCard onClick={() => chooseTarget(prop)}  def={prop}/>
+            })}
+          </Tabs.TabPane>
+          <Tabs.TabPane key={'action'} title='Action'>
+          {targetComp?.def.actions?.map(prop => {
+              return <BindingCard onClick={() => chooseTarget(prop)}  def={prop}/>
+            })}
+          </Tabs.TabPane>
         </Tabs>
         {/* <div className={styles.bindingItems}>
           <div>
