@@ -48,19 +48,19 @@ const InputDef: UIComp.Def<InputProps> = {
   props: [
     {
       name: 'value',
-      type: 'string'
+      valueType: 'string'
     }
   ],
   states: [
     {
       name: 'value',
-      type: 'string'
+      valueType: 'string'
     }
   ],
   events: [
     {
       name: 'onChange',
-      payload: 'string'
+      valueType: 'string'
     }
   ]
 

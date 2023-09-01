@@ -9,6 +9,7 @@ import Design from '@/pages/Design';
 
 import AppCreate from '@/pages/AppCreate';
 import { createBrowserRouter } from 'react-router-dom';
+import PageRunner from '@/pages/PageRunner';
 
 
 
@@ -43,6 +44,10 @@ const baseRoutes = createBrowserRouter([
   {
     path: '/create',
     element: <AppCreate/>,
+  },
+  {
+    path: '/pagerunner',
+    element: <PageRunner/>
   },
 
   {

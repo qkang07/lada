@@ -6,6 +6,8 @@ import styles from './index.module.less'
 
 type Props = {
   onSave: () => any
+  onPreview?: () => void
+  onPublish?: () => void
 }
 
 const DesignerHeader = (props: Props) => {
@@ -22,9 +24,9 @@ const DesignerHeader = (props: Props) => {
       </div>
       <div>
         <Space>
-          <Button>Preview</Button>
+          <Button onClick={props.onPreview}>Preview</Button>
           <Button onClick={props.onSave}>Save</Button>
-          <Button>Publish</Button>
+          <Button onClick={props.onPublish}>Publish</Button>
         </Space>
       </div>
     </div>

@@ -6,12 +6,9 @@ export type SchemaBase = {
   desc?: string
 }
 
-export interface EventDef extends SchemaBase {
-  payload?: any
-}
+export interface EventActionDef extends SchemaBase {
+  valueType?: ValueType
 
-export interface ActionDef extends SchemaBase {
-  params?: any
 }
 
 // 这个是内置的属性编辑器。
@@ -20,11 +17,11 @@ export type PropEditorType = {
   config?: any
 }
 
-export type PropType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
+export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
 
-export interface PropDef extends SchemaBase  {
+export interface StatePropDef extends SchemaBase  {
   editor?: PropEditorType | string // 需要预设的编辑器
-  type?: PropType
+  valueType?: ValueType
   defaultValue?: any
   required?: boolean
 }
@@ -41,10 +38,10 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   name: string
   label?: string
   desc?: string
-  events?: EventDef[]
-  props?: PropDef[]
-  actions?: ActionDef[]
-  states?: PropDef[]
+  events?: EventActionDef[]
+  props?: StatePropDef[]
+  actions?: EventActionDef[]
+  states?: StatePropDef[]
   // 运行时创建实例
   create?: (agent: CompAgent) => any
   // 设计时初始 schema
@@ -88,7 +85,7 @@ export namespace DataSource {
 
   export interface Def extends CompDefBase<Schema> {
     type: DataSourceType
-    params?: PropDef[]
+    params?: StatePropDef[]
   }
 }
 
@@ -127,7 +124,7 @@ export namespace UIComp {
   export interface Def<P extends Record<string, any> = any> extends CompDefBase<Schema> {
     version?: string;
     url?: string;
-    render?: (props: RenderProps<P>) => JSX.Element
+    render?: (props: RenderProps<P>) => JSX.Element | null
     slots?: SlotDef[]
   };
 }
@@ -137,10 +134,12 @@ export type BindingInfo = {
   prop: string
 }
 
+export type BindingType = 'event-action' | 'state-prop'
+
 export type BindingSchema = {
   source: BindingInfo
   target: BindingInfo
-  type: 'event-action' | 'state-prop'
+  type: BindingType
 }
 
 export interface BindingInstance {

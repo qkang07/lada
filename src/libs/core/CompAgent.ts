@@ -80,6 +80,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   protected regHandler(type: HandlerType, name: string, handler: HandlerShape) {
     const list = this.getHandlerList(type, name)
+    debugger
     if(list.indexOf(handler) < 0) {
       list.push(handler)
     }
@@ -101,7 +102,9 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 向外传递
   // 给自己的 event 绑定 handler
   bindEvent(name: string, handler: HandlerShape){
+    console.log('bind event', name, handler)
     this.regHandler('event', name, handler)
+    debugger
   }
 
   // 给自己的 state 绑定 handler
@@ -147,6 +150,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 组件发出了事件，向外通知
   emitEvent(event: string ,payload?: any) {
     const list = this.getHandlerList('event', event)
+    console.log('event handler list', event, payload, list)
     list.forEach(h => h(payload))
   }
 
@@ -169,6 +173,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   // 向内 调用组件的 action
   callAction(action: string, payload?: any) {
+    console.log('call action', action, payload)
     if(this.def.actions?.some(a => a.name === action)) {
       this.getHandlerList('action', action).forEach(h => h(payload))
     }

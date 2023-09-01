@@ -1,4 +1,4 @@
-import { bind, isEqual } from 'lodash-es';
+import { bind, isEqual, takeRight } from 'lodash-es';
 import { randomId } from "@/utils";
 import { CompAgent } from "./CompAgent";
 import { BindingInfo, BindingInstance, BindingSchema, BindingScopeSchema, CompDefBase, CompSchemaBase } from "./Def";
@@ -62,7 +62,7 @@ export class BindingContainer {
   // 寻找某个组件的bindings，
   findCompBinding(compId: string) {
     return this.schema.bindings.filter(bd => {
-      return bd.type === 'state' && bd.target.id === compId || bd.type === 'event' && bd.source.id === compId
+      return bd.type === 'state-prop' && bd.target.id === compId || bd.type === 'event-action' && bd.source.id === compId
     })
   }
 
@@ -135,9 +135,12 @@ export class BindingContainer {
 
 
     const bindings = this.schema.bindings.filter(bd => bd.source.id === schema.id)
+
+    console.log('bind one comp', bindings)
     bindings.forEach(bd => {
-      if(bd.type === 'event') {
+      if(bd.type === 'event-action') {
         const handler = (payload: any) => {
+          console.log('trigger action', bd, payload)
           this.triggerAction(bd.target, payload)
         }
         comp.bindEvent(bd.source.prop, handler)
@@ -145,7 +148,7 @@ export class BindingContainer {
           schema: bd,
           handler
         })
-      } else if(bd.type === 'state') {
+      } else if(bd.type === 'state-prop') {
         this.updateProp(bd.target, comp.state[bd.source.prop])
         const handler = (payload: any) => {
           this.updateProp(bd.target, payload)
@@ -217,9 +220,9 @@ export class BindingContainer {
 
     const bindings = this.bindingInstanceList.filter(bd => bd.schema.source.id === schema.id)
     bindings.forEach(bd => {
-      if(bd.schema.type === 'event') {
+      if(bd.schema.type === 'event-action') {
         comp.unBindEvent(bd.schema.source.prop, bd.handler)
-      } else if(bd.schema.type === 'state') {
+      } else if(bd.schema.type === 'state-prop') {
         comp.unBindState(bd.schema.source.prop, bd.handler)
       }
     })
@@ -267,7 +270,8 @@ export class BindingContainer {
 
   triggerAction(targetInfo: BindingInfo, payload?: any) {
     const {id, prop} = targetInfo
-    const comp = this.compMap.get(id) 
+    const comp = this.schemaCompMap.get(id) 
+    console.log('con.triggerAction', targetInfo, payload)
     if(comp) {
       comp.callAction(prop, payload)
     } else {
@@ -277,7 +281,7 @@ export class BindingContainer {
 
   updateProp(targetInfo: BindingInfo, value: any) {
     const {id, prop} = targetInfo
-    const comp = this.compMap.get(id)
+    const comp = this.schemaCompMap.get(id)
     if(comp) {
       comp.updateProp(prop, value)
     } else {

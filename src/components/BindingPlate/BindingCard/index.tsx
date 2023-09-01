@@ -1,14 +1,16 @@
 import React from 'react'
 import styles from './index.module.less'
-import { ActionSchema, PropDef, PropType, SchemaBase } from '@/libs/core/Def'
+import { ActionSchema, EventActionDef, SchemaBase, StatePropDef } from '@/libs/core/Def'
+import { IconCheckCircleFill } from '@arco-design/web-react/icon'
 
 type Props = {
-  def: PropDef
+  def: StatePropDef | EventActionDef
   onClick?: () => void
+  selected?: boolean
 }
 
 const BindingCard = (props: Props) => {
-  const {def} = props
+  const {def, selected} = props
   return (
     <div onClick={props.onClick} className={styles.bdCard}>
       <div>
@@ -16,9 +18,9 @@ const BindingCard = (props: Props) => {
       <div className={styles.name}>
         {def.name}
         </div>
-        <div>{def.type}</div>
+        <div>{def.valueType}</div>
       </div>
-      <div>{}</div>
+      <div>{selected && <IconCheckCircleFill/>}</div>
     </div>
   )
 }

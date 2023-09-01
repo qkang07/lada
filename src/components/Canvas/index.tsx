@@ -1,7 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import { ActionDef, CompSchemaBase, DataSource, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
+import {  CompSchemaBase, DataSource, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
 import {  DesignerContext } from '../Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
@@ -87,7 +87,7 @@ export const CanvasContext = createContext<CanvasContextType>({} as any)
 
 type Props = {
   initSchema?: BindingScopeSchema
-  onCanvasClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
+  onCanvasClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => void
   onCompSelect?: () => void
 }
 

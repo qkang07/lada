@@ -1,14 +1,22 @@
-import { PageRuntime, PageSchema } from '@/libs/core/Def'
 import React, { useRef } from 'react'
+import styles from './index.module.less'
+import Canvas from '@/components/Canvas'
+import { observable } from 'mobx'
+import { BindingScopeSchema } from '@/libs/core/Def'
 
 type Props = {}
 
-const index = (props: Props) => {
-  const pageSchema = useRef<PageSchema>()
-  
+export const schemaRef: {value?:BindingScopeSchema} = {}
+
+const PageRunner =  (props: Props) => {
+  console.log('run schema', schemaRef.value)
   return (
-    <div>index</div>
+    <div>
+      <div className={styles.canvasWrapper}>
+        <Canvas initSchema={schemaRef.value}/>
+      </div>
+    </div>
   )
 }
 
-export default index
+export default PageRunner
