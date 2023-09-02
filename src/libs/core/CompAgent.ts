@@ -33,7 +33,6 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   parentAgent?: CompAgent
 
   constructor(schema: S, container?: BindingContainer){
-    makeAutoObservable(this)    
     this.schema = schema
     const def = uiMan.getComp(schema.provider)
     if(def) {
