@@ -1,7 +1,7 @@
 import { UIComp } from "@/libs/core/Def";
 import { Button } from "@arco-design/web-react";
 import { FinalButtonProps } from "@arco-design/web-react/es/Button/interface";
-import { ReactNode, forwardRef, useImperativeHandle, useState } from "react";
+import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from "react";
 
 type ButtonProps = {
   onClick: () => any
@@ -28,6 +28,12 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     defaultValue: false,
     valueType: 'boolean',
     editor: {type: 'boolean'}
+  }, {
+    name: 'children',
+    label: '内容',
+    defaultValue: '按钮',
+    valueType: 'string',
+    editor: {type:'string'}
   }],
   events: [
     {
@@ -52,6 +58,11 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
         }
       }
     },[])
+    useEffect(() => {
+      if(props.children) {
+        setInnerChild(props.children)
+      }
+    },[props.children])
     return <Button type={props.type}
     onClick={props.onClick}>{innerChild}</Button>
   }),

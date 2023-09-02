@@ -1,3 +1,4 @@
+import styles from './index.module.less'
 import SidePane from "@/components/SidePane";
 import {
   // BindScopeEnum,
@@ -5,18 +6,19 @@ import {
   // BindingSchema,
 } from "@/libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
-import { Input, Radio, Select, Switch } from "@arco-design/web-react";
+import { Input, Radio, Select, Switch, Button } from "@arco-design/web-react";
 import React, { useContext, useEffect, useState } from "react";
 import pstyle from "../index.module.less";
 import { observer } from "mobx-react";
 import { action, autorun, makeAutoObservable } from "mobx";
+import { IconLink } from '@arco-design/web-react/icon';
 
 type Props = {
 };
 
 const CustomPropsEditor = observer((props: Props) => {
 
-  const { currentCompAgent } = useContext(DesignerContext);
+  const { currentCompAgent, openBinding } = useContext(DesignerContext);
 
   const compSchema = currentCompAgent?.schema
   const compDef = currentCompAgent?.def
@@ -56,7 +58,7 @@ const CustomPropsEditor = observer((props: Props) => {
         return (
           <div className={pstyle.propField} key={prop.name}>
             <span className={pstyle.label}>{prop.label || prop.name}</span>
-            {editor?.type === "input" && (
+            {editor?.type === "string" && (
               <Input
                 size="small"
                 value={value}
@@ -93,6 +95,12 @@ const CustomPropsEditor = observer((props: Props) => {
                 handlePropChange(prop.name, v)
               }}/>
             )}
+            <div className={styles.bd}>
+              <Button size="mini" icon={<IconLink  />} onClick={() => {
+                openBinding?.('state-prop', prop.name)
+              }} shape="circle"></Button>
+              
+            </div>
           </div>
         );
       })}

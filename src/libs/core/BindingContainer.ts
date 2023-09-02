@@ -52,6 +52,7 @@ export class BindingContainer {
   // 添加绑定。设计时使用，只更新 schema 不实例化
   addBinding(bdSchema: BindingSchema) {
     // this.regBinding(bdSchema)
+    console.log('add binding', bdSchema)
     this.schema.bindings.push(bdSchema)
     if(!this.schema.bindings.find(bd => isEqual(bd, bdSchema))) {
       this.schema.bindings.push(bdSchema)

@@ -53,7 +53,7 @@ const Renderer = observer((props: Props) => {
       //   console.log('default props change', schema.defaultProps)
       // })
       if(!agentRef.current) {
-        console.log('later agent')
+        // console.log('later agent')
         agentRef.current = new CompAgent(schema, bdCon)
       }
       const agent = agentRef.current
@@ -96,7 +96,7 @@ const Renderer = observer((props: Props) => {
   // 绑定 event
   agent?.def.events?.forEach(ev => {
     renderProps[ev.name] = (payload: any) => {
-      console.log('comp emit event', ev.name, payload)
+      // console.log('comp emit event', ev.name, payload)
       agent.emitEvent(ev.name, payload)
     }
   })

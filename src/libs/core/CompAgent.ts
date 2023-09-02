@@ -1,7 +1,6 @@
 import { Optional, randomId } from "@/utils"
 import { BindingInfo, CompDefBase, CompSchemaBase } from "./Def"
 import { uiMan } from "../../components/manager"
-import { action, makeAutoObservable } from "mobx"
 import { BindingContainer } from "./BindingContainer"
 
 export type HandlerShape = (payload?: any) => void
@@ -101,14 +100,16 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 向外传递
   // 给自己的 event 绑定 handler
   bindEvent(name: string, handler: HandlerShape){
-    console.log('bind event', name, handler)
+    // console.log('bind event', name, handler)
     this.regHandler('event', name, handler)
     // debugger
   }
 
   // 给自己的 state 绑定 handler
   bindState(name: string, handler: HandlerShape){
+    console.log('bind state', name, handler)
     this.regHandler('state', name, handler)
+    debugger
   }
 
 
@@ -120,7 +121,6 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   onActionCall(name: string, handler: HandlerShape){
     console.log('bind action call', name)
     this.regHandler('action', name, handler)
-    debugger
   }
   
 
@@ -151,7 +151,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 组件发出了事件，向外通知
   emitEvent(event: string ,payload?: any) {
     const list = this.getHandlerList('event', event)
-    console.log('event handler list', event, payload, list)
+    // console.log('event handler list', event, payload, list)
     list.forEach(h => h(payload))
   }
 
@@ -162,6 +162,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
       ...this.state,
       ...s
     }
+    console.log('update state', s)
     Object.keys(s).forEach(k => {
       this.getHandlerList('state', k).forEach(h => h(s[k]))
     })
@@ -174,7 +175,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   // 向内 调用组件的 action
   callAction(action: string, payload?: any) {
-    console.log('call action', action, payload)
+    // console.log('call action', action, payload)
     if(this.def.actions?.some(a => a.name === action)) {
       this.getHandlerList('action', action).forEach(h => h(payload))
     }
