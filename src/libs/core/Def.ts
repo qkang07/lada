@@ -134,6 +134,8 @@ export type BindingInfo = {
   prop: string
 }
 
+export type BindingElement = 'event' | 'action' | 'state' | 'prop'
+
 export type BindingType = 'event-action' | 'state-prop'
 
 export type BindingSchema = {
@@ -150,5 +152,7 @@ export interface BindingInstance {
 export interface BindingScopeSchema extends CompSchemaBase {
   uiRoot: UIComp.Schema
   dataSources: DataSource.Schema[]
+  contextComps: CompSchemaBase[]
   bindings: BindingSchema[]
+  
 }

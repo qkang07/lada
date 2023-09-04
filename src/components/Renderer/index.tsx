@@ -34,14 +34,18 @@ const Renderer = observer((props: Props) => {
   const [compProps, setCompProps] = useState<Record<string, any>>({})
 
   const makeProps = () => {
-    // 初始化 props
-    agent?.def.props?.forEach(prop => {
-      compProps[prop.name] = schema?.defaultProps?.[prop.name] || prop.defaultValue 
-      agent.onPropChange(prop.name, (v) => {
-        compProps[prop.name] = v
-        setCompProps({...compProps})
-      })
-    })
+    console.log('make props', agent)
+    // 初始化 props 
+    // TODO 如何进行初次触发
+    // agent?.def.props?.forEach(prop => {
+    //   compProps[prop.name] = schema?.defaultProps?.[prop.name] || prop.defaultValue 
+    //   console.log('bind prop change', prop)
+    //   agent.onPropChange(prop.name, (v) => {
+    //     console.log('prop change', prop.name, v)
+    //     compProps[prop.name] = v
+    //     setCompProps({...compProps})
+    //   })
+    // })
 
     setCompProps({...compProps})
   }
@@ -66,6 +70,13 @@ const Renderer = observer((props: Props) => {
             if(typeof instanceRef.current[act.name] === 'function') {
               instanceRef.current[act.name](params)
             }
+          })
+        })
+
+        agent.def.props?.forEach(prop => {
+          agent.onPropChange(prop.name, (v) => {
+            compProps[prop.name] = v
+            setCompProps({...compProps})
           })
         })
       }

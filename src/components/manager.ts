@@ -6,14 +6,18 @@ import ParagraphDef from "./Presets/Typo/P";
 import { UIComp, DataSource, CompDefBase } from "../libs/core/Def";
 import { ProviderManager } from "../libs/core/ProviderManager";
 import VarDataSource from "./Presets/DataSources/var";
+import PageDef from "./Presets/Page";
 
-export const uiMan = new ProviderManager<UIComp.Def>()
-export const dMan = new ProviderManager<DataSource.Def>()
+// export const uiMan = new ProviderManager<UIComp.Def>()
+// export const dMan = new ProviderManager<DataSource.Def>()
+export const compMan = new ProviderManager()
 
-dMan.regComp(HTTPDataSource)
-dMan.regComp(VarDataSource)
+compMan.regComp(HTTPDataSource)
+compMan.regComp(VarDataSource)
 
-uiMan.regComp(InputDef)
-uiMan.regComp(ButtonDef)
-uiMan.regComp(ParagraphDef)
-uiMan.regComp(ListLayoutDef)
+compMan.regComp(InputDef)
+compMan.regComp(ButtonDef)
+compMan.regComp(ParagraphDef)
+compMan.regComp(ListLayoutDef)
+
+compMan.regComp(PageDef)

@@ -37,9 +37,11 @@ export class BindingContainer {
   constructor(schema: BindingScopeSchema, options?: ContainerOptions) {
     this.schema = schema
     this.options = Object.assign(this.options, options)
+
+    schema.contextComps.forEach(compSchema =>{
+      this.regComp(new CompAgent(compSchema, this))
+    })
   }
-
-
 
 
   // 删除绑定。设计时使用，只更新 schema 不实例化
@@ -52,7 +54,7 @@ export class BindingContainer {
   // 添加绑定。设计时使用，只更新 schema 不实例化
   addBinding(bdSchema: BindingSchema) {
     // this.regBinding(bdSchema)
-    console.log('add binding', bdSchema)
+    // console.log('add binding', bdSchema)
     this.schema.bindings.push(bdSchema)
     if(!this.schema.bindings.find(bd => isEqual(bd, bdSchema))) {
       this.schema.bindings.push(bdSchema)
@@ -105,7 +107,7 @@ export class BindingContainer {
   // 找到已经注册的组件的 state，绑定当前的 prop
   // 找到已经注册的组件的 prop，绑定自己的 state
   regComp(comp: CompAgent) {
-    console.log('reg comp', comp.schema.name, comp)
+    // console.log('reg comp', comp.schema.name, comp)
     this.compMap.set(comp.id, comp)
     this.schemaCompMap.set(comp.schema.id, comp)
 
@@ -137,7 +139,7 @@ export class BindingContainer {
 
     const bindings = this.schema.bindings.filter(bd => bd.source.id === schema.id)
 
-    console.log('bind one comp', bindings)
+    // console.log('bind one comp', bindings)
     bindings.forEach(bd => {
       if(bd.type === 'event-action') {
         const handler = (payload: any) => {
@@ -152,6 +154,7 @@ export class BindingContainer {
       } else if(bd.type === 'state-prop') {
         this.updateProp(bd.target, comp.state[bd.source.prop])
         const handler = (payload: any) => {
+          console.log('update prop', bd, payload)
           this.updateProp(bd.target, payload)
         }
         // 绑定 state change 事件

@@ -1,65 +1,115 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import styles from './index.module.less'
 import { Modal, Tabs } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
 import { DesignerContext } from '@/components/Designer'
-import { BindingSchema, BindingType, CompSchemaBase, UIComp } from '@/libs/core/Def'
+import { BindingElement, BindingSchema, BindingType, CompSchemaBase, UIComp } from '@/libs/core/Def'
 import { CompAgent } from '@/libs/core/CompAgent'
 import BindingCard from './BindingCard'
+import { Optional } from '@/utils'
 
-type Props = {
-  type?: 'event' | 'action' | 'state' | 'prop'
-  sourceProp?: string
-  bdType?: BindingType
-  visible?: boolean
-  onClose?: () =>void
 
+type OpenParams = {
+  // 此次寻找的 element 类型
+  lookingFor: BindingElement
+  // 自己提供的相应的 element 名
+  name: string
+} 
+
+export type BDPlateType = {
+  open(params: OpenParams) : Promise<any>
 }
 
-const BindingPlate = observer((props: Props) => {
-  const {visible, sourceProp} = props
+
+type Props = {
+}
+
+const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
   const {bdCon, currentCompAgent} = useContext(DesignerContext)
-
-  const sourceComp = currentCompAgent
-  
-
-
 
   const compList: CompAgent[] = []
   bdCon?.compMap.forEach((comp) => {
     compList.push(comp)
   })
 
+  const [visible, setVisible] = useState(false)
 
-  const [targetComp, setTargetComp] = useState<CompAgent>()
+  const [selectedComp, setSelectedComp] = useState<CompAgent>()
 
-  const [targetProp, setTargetProp] = useState<string>()
+  const [selectedElement, setSelectedElement] = useState<string>()
+
+  const contextRef = useRef< {
+    params: OpenParams
+    resolve: (schema: BindingSchema) => void
+  }>()
+
+  const {lookingFor} = contextRef.current?.params || {}
+
+
+  useImperativeHandle(ref, () => {
+    return {
+      open(params: OpenParams){
+      setVisible(true)
+      return new Promise((resolve, reject) => {
+        const context: typeof contextRef['current'] = {
+          params,
+          resolve,
+        }
+        contextRef.current = context
+      })
+      }
+    }
+  }, [])
 
   const chooseTargetComp = (comp:CompAgent) => {
-    setTargetComp(comp)
+    setSelectedComp(comp)
   }
 
-  const chooseTarget = (prop: string) => {
-    setTargetProp(prop)
+  const chooseElement = (prop: string) => {
+    setSelectedElement(prop)
   }
   
   const handleOK = () => {
-    bdCon?.addBinding({
-      target: {
-        id: targetComp?.schema.id!,
-        prop: targetProp!
-      },
-      source: {
-        prop:sourceProp!,
-        id: sourceComp?.schema.id!
-      },
-      type: props?.bdType!
-    })
-    props.onClose?.()
+    const {
+      params :{lookingFor, name},
+      resolve
+    } = contextRef.current!
+    const schema: Optional<BindingSchema>  = {}
+    if(lookingFor === 'prop' || lookingFor === 'state') {
+      schema.type = 'state-prop'
+    } else {
+      schema.type = 'event-action'
+    }
+    if(lookingFor === 'event' || lookingFor === 'state') {
+      schema.source = {
+        prop: selectedElement!,
+        id: selectedComp?.schema.id!
+       
+      }
+      schema.target = {
+        prop: name!,
+        id: currentCompAgent?.schema.id!
+      }
+    } else {
+      schema.source = {
+        prop: name,
+        id: currentCompAgent?.schema.id!
+       
+      }
+      schema.target = {
+        prop: selectedElement!,
+        id: selectedComp?.schema.id!
+      }
+    }
+    bdCon?.addBinding(schema as BindingSchema)
+    resolve?.(schema as BindingSchema)
+    setVisible(false)
   }
   
   return (
-    <Modal visible={visible} onCancel={props.onClose} style={{width: '80%'}} 
+    <Modal visible={visible} onCancel={() => {
+      setVisible(false)
+    }} style={{width: '80%'}} 
       onOk={() => {
         handleOK()
       }}
@@ -93,7 +143,14 @@ const BindingPlate = observer((props: Props) => {
               <span>环境</span>
             </div>
             <div className={styles.comps}>
-              <div className={styles.compItem}>页面</div>
+              {
+                // bdCon?.schema.contextComps.map(compSchema => {
+                //   return <div className={styles.compItem}>{compSchema.name}</div>
+                // })
+              }
+              {/* <div className={styles.compItem} onClick={() => {
+                chooseTargetComp()
+              }}>页面</div> */}
               <div className={styles.compItem}>应用</div>
              
             </div>
@@ -101,26 +158,34 @@ const BindingPlate = observer((props: Props) => {
         
         </div>
         <Tabs className={styles.bindingItems}>
-          <Tabs.TabPane key={'prop'} title='Prop'>
-            {targetComp?.def.props?.map(prop => {
-              return <BindingCard selected={targetProp === prop.name}  key={prop.name}  onClick={() => chooseTarget(prop.name)} def={prop}/>
-            })}
-          </Tabs.TabPane>
-          <Tabs.TabPane key={'state'} title='State'>
-          {targetComp?.def.states?.map(prop => {
-              return <BindingCard selected={targetProp === prop.name}  key={prop.name}  onClick={() => chooseTarget(prop.name)}  def={prop}/>
-            })}
-          </Tabs.TabPane>
-          <Tabs.TabPane key={'event'} title='Event'>
-          {targetComp?.def.events?.map(prop => {
-              return <BindingCard selected={targetProp === prop.name} key={prop.name} onClick={() => chooseTarget(prop.name)}  def={prop}/>
-            })}
-          </Tabs.TabPane>
-          <Tabs.TabPane key={'action'} title='Action'>
-          {targetComp?.def.actions?.map(prop => {
-              return <BindingCard selected={targetProp === prop.name}  key={prop.name}  onClick={() => chooseTarget(prop.name)}  def={prop}/>
-            })}
-          </Tabs.TabPane>
+          {
+            lookingFor === 'prop' && ( <Tabs.TabPane key={'prop'} title='Prop'>
+              {selectedComp?.def.props?.map(prop => {
+                return <BindingCard selected={selectedElement === prop.name}  key={prop.name}  onClick={() => chooseElement(prop.name)} def={prop}/>
+              })}
+            </Tabs.TabPane>)
+          }
+           {
+            lookingFor === 'state' && ( <Tabs.TabPane key={'state'} title='State'>
+              {selectedComp?.def.states?.map(prop => {
+                return <BindingCard selected={selectedElement === prop.name}  key={prop.name}  onClick={() => chooseElement(prop.name)} def={prop}/>
+              })}
+            </Tabs.TabPane>)
+          }
+           {
+            lookingFor === 'event' && ( <Tabs.TabPane key={'event'} title='Event'>
+              {selectedComp?.def.events?.map(prop => {
+                return <BindingCard selected={selectedElement === prop.name}  key={prop.name}  onClick={() => chooseElement(prop.name)} def={prop}/>
+              })}
+            </Tabs.TabPane>)
+          }
+           {
+            lookingFor === 'action' && ( <Tabs.TabPane key={'action'} title='Action'>
+              {selectedComp?.def.actions?.map(prop => {
+                return <BindingCard selected={selectedElement === prop.name}  key={prop.name}  onClick={() => chooseElement(prop.name)} def={prop}/>
+              })}
+            </Tabs.TabPane>)
+          }
         </Tabs>
         {/* <div className={styles.bindingItems}>
           <div>

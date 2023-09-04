@@ -97,7 +97,7 @@ const CustomPropsEditor = observer((props: Props) => {
             )}
             <div className={styles.bd}>
               <Button size="mini" icon={<IconLink  />} onClick={() => {
-                openBinding?.('state-prop', prop.name)
+                openBinding?.('state', prop.name)
               }} shape="circle"></Button>
               
             </div>

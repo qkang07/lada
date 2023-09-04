@@ -1,23 +1,22 @@
-import { PageDef } from "@/libs/core/Def";
+import { CompDefBase } from "@/libs/core/Def";
 
 
 
-const DefaultPageDef: PageDef = {
+const PageDef: CompDefBase = {
 
-  name:'defaultPage',
+  name:'page',
+  desc: '页面',
   actions: [
     {
-      name: 'refresh'
+      name: 'reload',
+      desc: '刷新页面'
     },
-   
   ],
-
-  create(ctx) {
-    
-    return {
-      
-    }
+  create(agent) {
+    agent.onActionCall('reload', () => {
+      location.reload()
+    })
   }
 }
 
-export default DefaultPageDef
+export default PageDef

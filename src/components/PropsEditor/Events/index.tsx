@@ -13,7 +13,7 @@ const CompEvents = (props: Props) => {
       {
         currentCompAgent?.def.events?.map(ev => {
           return <LiveItem title={ev.name} onClick={() => {
-            openBinding?.('event-action', ev.name)
+            openBinding?.('action', ev.name)
           }} />
         })
       }

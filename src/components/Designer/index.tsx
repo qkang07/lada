@@ -9,6 +9,7 @@ import styles from "./index.module.less";
 import CompBox from "./CompBox";
 import Canvas, { CanvasRef } from "@/components/Canvas";
 import {
+  BindingElement,
   BindingScopeSchema,
   BindingType,
   CompSchemaBase,
@@ -27,11 +28,11 @@ import { action, autorun, makeAutoObservable, observable } from "mobx";
 import { Optional, randomId } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "ahooks";
-import { uiMan } from "@/components/manager";
+import { compMan } from "@/components/manager";
 import { BindingContainer } from "@/libs/core/BindingContainer";
 import { CompAgent } from "@/libs/core/CompAgent";
 import { observer } from "mobx-react";
-import BindingPlate from "../BindingPlate";
+import BindingPlate, { BDPlateType } from "../BindingPlate";
 import { schemaRef } from "@/pages/PageRunner";
 
 type CompDomInfo = {
@@ -103,7 +104,7 @@ type DesignerContextType = {
   bdCon?: BindingContainer;
   currentCompAgent?: CompAgent<UIComp.Schema>;
   deleteComp?: (id: any) => any;
-  openBinding?: (type:BindingType, propName: string) => void;
+  openBinding?: (lookingFor:BindingElement, propName: string) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType>({} as any);
@@ -120,12 +121,7 @@ const Designer = observer((props: Props) => {
   const canvasRef = useRef<CanvasRef | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
-  const [bdPlateVisible, setBDPlateVisible] = useState(false);
-
-  const bdPlateRef = useRef<{
-    visible?: boolean;
-    type?: "event" | "action" | "state" | "prop";
-  }>(observable({}));
+  const bdPlateRef = useRef<BDPlateType>(null);
 
   // const bindingRef = useRef<{
   //   plateVisible?: boolean
@@ -144,10 +140,6 @@ const Designer = observer((props: Props) => {
   const currentSlotInfoRef = observable(useRef<SlotInfo>());
   const currentSlotInfo = currentSlotInfoRef.current;
 
-  const currentPropRef = useRef<string>();
-  const currentProp = currentPropRef.current;
-  const bdTypeRef = useRef<BindingType>()
-
   const [obsSchema, setObsSchema] = useState<BindingScopeSchema>();
 
   useEffect(() => {
@@ -163,7 +155,7 @@ const Designer = observer((props: Props) => {
   };
 
   const addComp = action((provider: string) => {
-    const compDef = uiMan.getComp(provider);
+    const compDef = compMan.getComp(provider);
     const id = randomId();
     let schema: UIComp.Schema = {
       provider,
@@ -224,10 +216,11 @@ const Designer = observer((props: Props) => {
 
   const deleteComp = action((id: string) => {});
 
-  const openBinding = (type: BindingType, prop: string) => {
-    currentPropRef.current = prop;
-    bdTypeRef.current = type
-    setBDPlateVisible(true);
+  const openBinding = (lookingFor: BindingElement, prop: string) => {
+    bdPlateRef.current?.open({
+      lookingFor,
+      name: prop
+    })
   };
 
   return (
@@ -279,11 +272,7 @@ const Designer = observer((props: Props) => {
           </div>
         </div>
         <BindingPlate
-          visible={bdPlateVisible}
-          sourceProp={currentProp}
-          type={bdPlateRef.current.type}
-          bdType={bdTypeRef.current}
-          onClose={() => setBDPlateVisible(false)}
+          ref={bdPlateRef}
         />
       </div>
     </DesignerContext.Provider>

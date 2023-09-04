@@ -11,7 +11,6 @@ import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
 import { BindingContainer } from '../../libs/core/BindingContainer'
 import { CompAgent } from '../../libs/core/CompAgent'
-import { uiMan } from '../manager'
 
 
 

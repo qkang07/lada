@@ -1,6 +1,6 @@
 import { Optional, randomId } from "@/utils"
 import { BindingInfo, CompDefBase, CompSchemaBase } from "./Def"
-import { uiMan } from "../../components/manager"
+import { compMan } from "../../components/manager"
 import { BindingContainer } from "./BindingContainer"
 
 export type HandlerShape = (payload?: any) => void
@@ -33,7 +33,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   constructor(schema: S, container?: BindingContainer){
     this.schema = schema
-    const def = uiMan.getComp(schema.provider)
+    const def = compMan.getComp(schema.provider)
     if(def) {
       this.def = def as D
     } else {
@@ -41,6 +41,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     }
     this.id = randomId()
     this.state = {} as ST
+    def.create?.(this)
     if(container) {
       container.regComp(this)
     }
@@ -58,6 +59,10 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   
   protected actionHandlers: HandlerRegTable = new Map()
   protected propHandlers: HandlerRegTable = new Map()
+
+  protected log(name: string, ...args: any[]) {
+    console.log(name, this.schema.name, ...args)
+  }
 
 
   protected getHandlerList( type: HandlerType, name: string) {
@@ -100,26 +105,27 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 向外传递
   // 给自己的 event 绑定 handler
   bindEvent(name: string, handler: HandlerShape){
-    // console.log('bind event', name, handler)
+    this.log('bind event', name)
     this.regHandler('event', name, handler)
     // debugger
   }
 
   // 给自己的 state 绑定 handler
   bindState(name: string, handler: HandlerShape){
-    console.log('bind state', name, handler)
+    this.log('bind state', name)
+    // debugger
     this.regHandler('state', name, handler)
-    debugger
   }
 
 
   // 向内传递
   onPropChange(name: string, handler: HandlerShape){
+    this.log('onprop', name)
     this.regHandler('prop', name, handler)
   }
 
   onActionCall(name: string, handler: HandlerShape){
-    console.log('bind action call', name)
+    this.log('onaction', name)
     this.regHandler('action', name, handler)
   }
   
@@ -151,10 +157,9 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 组件发出了事件，向外通知
   emitEvent(event: string ,payload?: any) {
     const list = this.getHandlerList('event', event)
-    // console.log('event handler list', event, payload, list)
+    this.log('emit event', event, payload, list)
     list.forEach(h => h(payload))
   }
-
 
   // 组件改变了 state
   updateState(s: Optional<ST>) {
@@ -162,9 +167,10 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
       ...this.state,
       ...s
     }
-    console.log('update state', s)
     Object.keys(s).forEach(k => {
-      this.getHandlerList('state', k).forEach(h => h(s[k]))
+      const list = this.getHandlerList('state', k)
+      console.log('update state', k, s[k], list)
+      list.forEach(h => h(s[k]))
     })
     // this.getHandlerList('others', 'state').forEach(h => h(this.state))
   }
@@ -177,14 +183,18 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   callAction(action: string, payload?: any) {
     // console.log('call action', action, payload)
     if(this.def.actions?.some(a => a.name === action)) {
-      this.getHandlerList('action', action).forEach(h => h(payload))
+      const list = this.getHandlerList('action', action)
+      this.log('call action', action, payload, list)
+      list.forEach(h => h(payload))
     }
   }
 
   // 向内 更新组件的 prop
   updateProp(prop: string, value?: any) {
     if(this.def.props?.some(p => p.name === prop)) {
-      this.getHandlerList('prop', prop).forEach(h => h(value))
+      const list = this.getHandlerList('prop', prop)
+      this.log('update prop', prop, value, list)
+      list.forEach(h => h(value))
     }
   }
 

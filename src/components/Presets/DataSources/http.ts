@@ -9,20 +9,20 @@ const HTTPDataSource: DataSource.Def = {
     {
       name: 'url',
       label :'URL',
-      type: 'string',
+      valueType: 'string',
       required: true
     },
     {
       name: 'method',
-      type: 'string'
+      valueType: 'string'
     },
     {
       name: 'query',
-      type: 'string'
+      valueType: 'string'
     },
     {
       name: 'body',
-      type: 'any'
+      valueType: 'any'
     }
   ],
   actions: [

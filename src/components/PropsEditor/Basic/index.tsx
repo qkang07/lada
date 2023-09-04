@@ -2,7 +2,7 @@ import SidePane from '@/components/SidePane'
 import React, { useContext } from 'react'
 import pstyle from '../index.module.less'
 import { Input } from '@arco-design/web-react'
-import { uiMan } from '@/components/manager'
+import { compMan } from '@/components/manager'
 import { DesignerContext } from '@/components/Designer'
 import { observer } from 'mobx-react'
 
@@ -13,7 +13,7 @@ const BasicProps = observer((props: Props) => {
   
   const schema = currentCompAgent?.schema
 
-  const compDef = uiMan.getComp(schema?.provider!);
+  const compDef = compMan.getComp(schema?.provider!);
   return (
     <SidePane title='基本属性'>
       <div className={pstyle.propField}>

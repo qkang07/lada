@@ -20,6 +20,13 @@ const defaultPageSchema = () => Promise.resolve<BindingScopeSchema>({
       children: []
     }],
   },
+  contextComps: [
+    {
+      id: randomId(),
+      provider: 'page',
+      name: 'page'
+    }
+  ],
   bindings:[],
   dataSources: []
 })
