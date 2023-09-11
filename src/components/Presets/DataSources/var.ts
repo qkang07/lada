@@ -1,32 +1,53 @@
 import { action, makeAutoObservable } from "mobx";
-import { DataSource } from "../../../libs/core/Def";
+import { UIComp } from "../../../libs/core/Def";
 
-const VarDataSource: DataSource.Def = {
+type VarProps = {
+  value?: any
+  
+}
+
+
+const VarDataSource: UIComp.Def<VarProps> = {
   name: 'var',
-  type: 'var',
+  label: '变量',
   actions:[
     {
-      name: 'set',
+      name: 'setData',
+      label: '设置值'
     }
   ],
   events: [
     {
       name: 'change',
+      label: '数据更改事件'
     }
   ],
+  props: [
+    {
+      name: 'valueType',
+      label: '数据类型'
+    }
+  ],
+  
   create(agent){
     const data = makeAutoObservable({
       value: undefined
     })
 
-    const set = action((v: any) => {
+    
+
+    const setData = action((v: any) => {
       data.value = v
       agent.updateState({data: data.value})
       agent.emitEvent('change', data.value)
     })
-    agent.onActionCall('set',(value) => {
-      set(value)
+    agent.onActionCall('setData',(value) => {
+      setData(value)
     })
+
+    return {
+      setData
+    }
 
   }
 }

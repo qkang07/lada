@@ -34,7 +34,7 @@ export interface CompSchemaBase extends SchemaBase {
 }
 
 
-export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
+export type CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> = {
   name: string
   label?: string
   desc?: string
@@ -43,7 +43,7 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase> = {
   actions?: EventActionDef[]
   states?: StatePropDef[]
   // 运行时创建实例
-  create?: (agent: CompAgent) => any
+  create?: (agent: CompAgent) => I
   // 设计时初始 schema
   createSchema?: (initSchema: S) => S
 }
@@ -61,33 +61,21 @@ export type PropValueSchema = {
 
 }
 
-export namespace DataSource {
+// export namespace DataSource {
 
-  export type DataSourceType = 'var' | 'props' | 'getter' | 'async'
+//   export type DataSourceType = 'var' | 'props' | 'getter' | 'async'
   
-  export interface Schema extends CompSchemaBase {
-    type: DataSourceType
-    initValue?: any
-    immediate?: boolean
-  }
+//   export interface Schema extends CompSchemaBase {
+//     type: DataSourceType
+//     initValue?: any
+//     // immediate?: boolean
+//   }
   
-  export type Hook<D = any, P = any> = (params: any) => {
-    data: D | undefined
-    setData: (data: D) => void
-    fetch: (params: P) => D
-    loading: boolean
-  }
-  
-  export interface AsyncHook<D = any, P = {}> extends Hook<D> {
-    run: (params: P) => Promise<D | undefined>
-    loading: boolean
-  }
-
-  export interface Def extends CompDefBase<Schema> {
-    type: DataSourceType
-    params?: StatePropDef[]
-  }
-}
+//   export interface Def extends CompDefBase<Schema> {
+//     type: DataSourceType
+//     params?: StatePropDef[]
+//   }
+// }
 
 export interface ActionSchema extends SchemaBase {
   params?: SchemaBase[]
@@ -112,19 +100,20 @@ export namespace UIComp {
     slots?: SlotSchema[]
   }
   
-  export type RenderProps<T extends Record<string, any> = Record<string, any>> = {
+  export type RenderProps<T extends Record<string, any> = Record<string, any>, I = any> = {
     style?: string;
     classNames?: string;
     // agent: CompAgent
+    instance?: I
     updateState? :(name: string, value?: any) => void
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
   } & T
   
   
-  export interface Def<P extends Record<string, any> = any> extends CompDefBase<Schema> {
+  export interface Def<P extends Record<string, any> = any, I = any> extends CompDefBase<Schema> {
     version?: string;
     url?: string;
-    render?: (props: RenderProps<P>) => JSX.Element | null
+    render?: (props: RenderProps<P, I>) => JSX.Element | null
     slots?: SlotDef[]
   };
 }
@@ -151,7 +140,7 @@ export interface BindingInstance {
 }
 export interface BindingScopeSchema extends CompSchemaBase {
   uiRoot: UIComp.Schema
-  dataSources: DataSource.Schema[]
+  dataSources: UIComp.Schema[]
   contextComps: CompSchemaBase[]
   bindings: BindingSchema[]
   

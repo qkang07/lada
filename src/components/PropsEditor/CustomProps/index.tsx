@@ -18,7 +18,7 @@ type Props = {
 
 const CustomPropsEditor = observer((props: Props) => {
 
-  const { currentCompAgent, openBinding } = useContext(DesignerContext);
+  const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
 
   const compSchema = currentCompAgent?.schema
   const compDef = currentCompAgent?.def
@@ -48,6 +48,8 @@ const CustomPropsEditor = observer((props: Props) => {
   return (
     <SidePane title={"自定义属性"}>
       {compDef?.props?.map((prop) => {
+
+        const bound = bdCon?.schema.bindings.some(bd => bd.type === 'state-prop' && bd.target.id === compSchema?.id && bd.target.prop === prop.name)
         // const binding = compSchema?.?.find(
         //   (b) => b.prop === prop.name
         // );
@@ -57,50 +59,56 @@ const CustomPropsEditor = observer((props: Props) => {
 
         return (
           <div className={pstyle.propField} key={prop.name}>
-            <span className={pstyle.label}>{prop.label || prop.name}</span>
-            {editor?.type === "string" && (
-              <Input
-                size="small"
-                value={value}
-                onChange={(v) => {
-                  handlePropChange(prop.name, v);
-                }}
-              />
-            )}
-            {editor?.type === "select" && (
-              <Select
-                size="small"
-                options={editor.config}
-                value={value}
-                onChange={(v) => {
-                  handlePropChange(prop.name, v);
-                }}
-              />
-            )}
-            {editor?.type === "radio" && (
-              <Radio.Group
-                size="small"
-                value={value}
-                onChange={(v) => {
-                  handlePropChange(prop.name, v);
-                }}
-              >
-                {editor.config.map((option: any) => {
-                  return <Radio key={option.value} value={option.value}>{option.label}</Radio>;
-                })}
-              </Radio.Group>
-            )}
-            {editor?.type === 'boolean' && (
-              <Switch checked={!!value} onChange={(v) => {
-                handlePropChange(prop.name, v)
-              }}/>
-            )}
-            <div className={styles.bd}>
-              <Button size="mini" icon={<IconLink  />} onClick={() => {
-                openBinding?.('state', prop.name)
-              }} shape="circle"></Button>
-              
-            </div>
+
+              <span className={pstyle.label}>{prop.label || prop.name}</span>
+              <div className={pstyle.rightPart}>
+
+                {editor?.type === "string" && (
+                  <Input
+                    size="small"
+                    value={value}
+                    onChange={(v) => {
+                      handlePropChange(prop.name, v);
+                    }}
+                  />
+                )}
+                {editor?.type === "select" && (
+                  <Select
+                    size="small"
+                    options={editor.config}
+                    value={value}
+                    onChange={(v) => {
+                      handlePropChange(prop.name, v);
+                    }}
+                  />
+                )}
+                {editor?.type === "radio" && (
+                  <Radio.Group
+                    size="small"
+                    value={value}
+                    onChange={(v) => {
+                      handlePropChange(prop.name, v);
+                    }}
+                  >
+                    {editor.config.map((option: any) => {
+                      return <Radio key={option.value} value={option.value}>{option.label}</Radio>;
+                    })}
+                  </Radio.Group>
+                )}
+                {editor?.type === 'boolean' && (
+                  <Switch checked={!!value} onChange={(v) => {
+                    handlePropChange(prop.name, v)
+                  }}/>
+                )}
+
+
+              <div className={styles.bd}>
+                <Button type={bound ? 'primary' : 'secondary'} size="mini" icon={<IconLink  />} onClick={() => {
+                  openBinding?.('state', prop.name)
+                }} shape="circle"></Button>
+                
+              </div>
+              </div>
           </div>
         );
       })}

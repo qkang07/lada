@@ -43,7 +43,7 @@ const StyleEditor = (props: Props) => {
           tabSize: 2,
           
         }}
-        height={400}
+        height={800}
         theme="vs"
       />
     </SidePane>

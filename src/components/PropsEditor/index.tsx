@@ -21,14 +21,14 @@ const PropsEditor = (props: Props) => {
 
   return (
     <div>
-      <EditorStack items={[
-        <BasicProps/>,
-        <CustomPropsEditor/>,
-        <CompSlots/>,
-        <CompEvents/>,
-        <CompActions/>,
-        <StyleEditor/>
-      ]}></EditorStack>
+      <BasicProps/>
+      <CustomPropsEditor/>
+      <CompSlots/>
+      <CompEvents/>
+      <CompActions/>
+      {/* <StyleEditor/> */}
+      {/* <EditorStack items={[
+      ]}></EditorStack> */}
    
     </div>
   )

@@ -31,6 +31,8 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   parentAgent?: CompAgent
 
+  instance?: any
+
   constructor(schema: S, container?: BindingContainer){
     this.schema = schema
     const def = compMan.getComp(schema.provider)
@@ -41,7 +43,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     }
     this.id = randomId()
     this.state = {} as ST
-    def.create?.(this)
+    this.instance = def.create?.(this)
     if(container) {
       container.regComp(this)
     }

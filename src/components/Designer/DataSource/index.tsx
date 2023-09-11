@@ -1,4 +1,3 @@
-import { DataSource } from "@/libs/core/Def";
 import React, { useState } from "react";
 import styles from "./index.module.less";
 import {
@@ -11,22 +10,21 @@ import {
   Trigger,
 } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
-import VarDataSource from "./Variables";
-import AsyncDataSource from "./Async";
 import SidePane from "@/components/SidePane";
+import { UIComp } from "@/libs/core/Def";
 
 type Props = {
-  schemas: DataSource.Schema[];
-  onAdd: (ds: DataSource.Schema) => void;
+  schemas: UIComp.Schema[];
+  onAdd: (ds: UIComp.Schema) => void;
 };
 
 const DSTypes: {
   label: string;
-  value: DataSource.DataSourceType;
+  value: string;
 }[] = [
+  { label: "HTTP", value: "http" },
   { label: "变量", value: "var" },
-  { label: "环境变量", value: "getter" },
-  { label: "异步", value: "async" },
+  // { label: "环境变量", value: "getter" },
 ];
 
 const DataSources = (props: Props) => {
@@ -57,7 +55,7 @@ const DataSources = (props: Props) => {
   return (
     <SidePane
       title="数据"
-      actions={
+    >
         <Popover
           title="编辑数据源"
           position="rt"
@@ -85,8 +83,6 @@ const DataSources = (props: Props) => {
                 <Form.Item label="类型" field={"type"}>
                   <Select options={DSTypes} />
                 </Form.Item>
-                {newType === "var" && <VarDataSource />}
-                {newType === "async" && <AsyncDataSource />}
               </Form>
               <div className={styles.dsEditFooter}>
                 <Space align="end">
@@ -112,14 +108,12 @@ const DataSources = (props: Props) => {
             onClick={add}
           ></Button>
         </Popover>
-      }
-    >
       <div className={styles.dsList}>
         {schemas.map((ds, i) => {
           return (
             <div key={i} className={styles.dataSourceItem}>
               <span className={styles.dsName}>{ds.name}</span>
-              <span className={styles.dsType}>{ds.type}</span>
+              <span className={styles.dsType}>{ds.label}</span>
             </div>
           );
         })}

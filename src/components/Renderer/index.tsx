@@ -69,6 +69,8 @@ const Renderer = observer((props: Props) => {
           agent.onActionCall(act.name, (params) => {
             if(typeof instanceRef.current[act.name] === 'function') {
               instanceRef.current[act.name](params)
+            } else if(typeof agent.instance[act.name] === 'function') {
+              agent.instance[act.name](params)
             }
           })
         })

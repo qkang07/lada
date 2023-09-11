@@ -121,6 +121,8 @@ const Designer = observer((props: Props) => {
   const canvasRef = useRef<CanvasRef | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
+  const bdCon = canvasRef.current?.bdCon
+
   const bdPlateRef = useRef<BDPlateType>(null);
 
   // const bindingRef = useRef<{
@@ -249,9 +251,11 @@ const Designer = observer((props: Props) => {
             <EditorStack
               items={[
                 <CompBox onCompClick={handleCompAdd} />,
-                // <DataSources schemas={pageSchema.dataSources} onAdd={ds => {
-                //   pageSchema.dataSources.push(ds)
-                // }}/>,
+                <DataSources schemas={bdConSchema?.dataSources || []} onAdd={ds => {
+                  bdConSchema?.dataSources.push(ds)
+                  
+                  // pageSchema.dataSources.push(ds)
+                }}/>,
                 <TreeView schema={obsSchema?.uiRoot!} />,
               ]}
             />

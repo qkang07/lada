@@ -32,6 +32,8 @@ export class BindingContainer {
   // bindingMap: Map<string, BindingInstance> = new Map()
   bindingInstanceList: BindingInstance[] =[]
 
+  contextCompAgents: CompAgent[] = []
+
   protected options: ContainerOptions = {}
 
   constructor(schema: BindingScopeSchema, options?: ContainerOptions) {
@@ -39,7 +41,9 @@ export class BindingContainer {
     this.options = Object.assign(this.options, options)
 
     schema.contextComps.forEach(compSchema =>{
-      this.regComp(new CompAgent(compSchema, this))
+      const agent = new CompAgent(compSchema, this)
+      this.contextCompAgents.push(agent)
+      this.regComp(agent)
     })
   }
 
