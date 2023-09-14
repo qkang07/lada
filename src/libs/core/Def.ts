@@ -145,3 +145,7 @@ export interface BindingScopeSchema extends CompSchemaBase {
   bindings: BindingSchema[]
   
 }
+
+export interface DesignSchema extends BindingScopeSchema {
+  
+}

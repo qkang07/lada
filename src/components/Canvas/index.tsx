@@ -1,7 +1,7 @@
 import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
-import {  CompSchemaBase, DataSource, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
+import {  CompSchemaBase, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
 import {  DesignerContext } from '../Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
