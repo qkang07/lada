@@ -99,21 +99,35 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const {initSchema, onCanvasClick} = props
 
+  const {isDesign} = useContext(DesignerContext)
+
 
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
 
-  const [bdCon, setBdCon] = useState<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
+  const bdConRef = useRef<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
 
   useImperativeHandle(ref, () => {
     return {
-      bdCon
+      bdCon: bdConRef.current
     }
-  }, [bdCon])
+  }, [])
 
   useEffect(() => {
-    if(initSchema && !bdCon) {
-      setBdCon(new BindingContainer(initSchema))
+    if(initSchema) {
+      if(!bdConRef.current) {
+        bdConRef.current = new BindingContainer(initSchema)
+      }
+      if(isDesign) {
+        // 设计模式 datasource 由 
+      } else {
+        initSchema.dataSources.forEach(ds => {
+          new CompAgent(ds, bdConRef.current)
+        })
+      }
+      initSchema.contextComps.forEach(c => {
+        new CompAgent(c, bdConRef.current)
+      })
     }
   }, [initSchema])
 
@@ -133,7 +147,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   return (
     <CanvasContext.Provider value={{
-      bdCon,
+      bdCon: bdConRef.current,
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
         <div className={styles.canvasContext}  onClick={onCanvasClick }>

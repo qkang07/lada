@@ -104,6 +104,7 @@ const Renderer = observer((props: Props) => {
       agent?.updateState({[state]: value})
     },
     ...compProps,
+    state: agent?.state
   }
 
   // 绑定 event

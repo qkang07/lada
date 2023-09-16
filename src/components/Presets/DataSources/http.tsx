@@ -158,8 +158,6 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
 
   render(props) {
     const [form] = Form.useForm()
-
-    
     
     return <div>
       <Form form={form}>
