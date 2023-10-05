@@ -28,6 +28,7 @@ const makeTreeData = (schemas?: UIComp.Schema[]): any[] => {
 
 type Props = {
   schema?: UIComp.Schema
+  onChoose?: (id: string) => void
 }
 
 const TreeView = observer((props: Props) => {

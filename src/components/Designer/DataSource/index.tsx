@@ -16,6 +16,7 @@ import { UIComp } from "@/libs/core/Def";
 type Props = {
   schemas: UIComp.Schema[];
   onAdd: (ds: UIComp.Schema) => void;
+  onChoose?: (id: string) => void
 };
 
 const DSTypes: {
@@ -34,6 +35,8 @@ const DataSources = (props: Props) => {
 
   const [newVisible, setNewVisible] = useState(false);
   const [newType, setNewType] = useState("var");
+
+  const dsTypes = ['http', 'var']
 
   const add = () => {
     form.setFieldsValue({
@@ -68,7 +71,7 @@ const DataSources = (props: Props) => {
           }}
           content={
             <div className={styles.newPop}>
-              <Form
+              {/* <Form
                 form={form}
                 onValuesChange={(v) => {
                   if (v.type) {
@@ -97,7 +100,12 @@ const DataSources = (props: Props) => {
                     保存
                   </Button>
                 </Space>
-              </div>
+              </div> */}
+              {dsTypes.map(dst=>{
+                return <div key={dst} className={styles.dsType}>
+                  {dst}
+                </div>
+              })}
             </div>
           }
         >
@@ -111,7 +119,9 @@ const DataSources = (props: Props) => {
       <div className={styles.dsList}>
         {schemas.map((ds, i) => {
           return (
-            <div key={i} className={styles.dataSourceItem}>
+            <div onClick={() => {
+              props.onChoose?.(ds.id)
+            }} key={i} className={styles.dataSourceItem}>
               <span className={styles.dsName}>{ds.name}</span>
               <span className={styles.dsType}>{ds.label}</span>
             </div>

@@ -130,7 +130,8 @@ const Designer = observer((props: Props) => {
   // }>({})
 
   const currentRefs = useRef<{
-    compInfo?: CompInfo;
+    agent?: CompAgent
+    compDom?: HTMLElement
     slotInfo?: SlotInfo;
   }>(
     observable({
@@ -196,11 +197,8 @@ const Designer = observer((props: Props) => {
       const bdCon = canvasRef.current?.bdCon;
       if (compDomInfo?.id) {
         const agent = bdCon?.compMap.get(compDomInfo.id)!;
-        currentRefs.current.compInfo = {
-          id: compDomInfo.id,
-          dom: compDomInfo.dom,
-          agent,
-        };
+        currentRefs.current.agent = agent
+        currentRefs.current.compDom = compDomInfo.dom
       }
 
       const theSlot = findSlot(source);
@@ -215,6 +213,16 @@ const Designer = observer((props: Props) => {
       }
     }
   );
+
+  const chooseNormalComp = (id: string) => {
+    const agent = bdCon?.compMap.get(id)
+    if(agent) {
+      currentRefs.current.agent = agent
+      currentRefs.current.compDom = undefined
+    } else {
+      // this should not happen
+    }
+  }
 
   const deleteComp = action((id: string) => {});
 
@@ -231,7 +239,7 @@ const Designer = observer((props: Props) => {
         isDesign: true,
         deleteComp,
         bdCon: canvasRef.current?.bdCon,
-        currentCompAgent: currentRefs.current.compInfo?.agent,
+        currentCompAgent: currentRefs.current?.agent,
         openBinding,
       }}
     >
@@ -255,7 +263,9 @@ const Designer = observer((props: Props) => {
                   bdConSchema?.dataSources.push(ds)
                   
                   // pageSchema.dataSources.push(ds)
-                }}/>,
+                }}
+                  onChoose={chooseNormalComp}
+                />,
                 <TreeView schema={obsSchema?.uiRoot!} />,
               ]}
             />
@@ -268,7 +278,7 @@ const Designer = observer((props: Props) => {
             />
             <FocusFrame
               containerDom={canvasContainerRef.current as HTMLElement}
-              target={currentRefs.current.compInfo?.dom}
+              target={currentRefs.current.compDom}
             />
           </div>
           <div className={styles.editor}>
