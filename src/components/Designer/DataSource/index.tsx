@@ -11,11 +11,11 @@ import {
 } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import SidePane from "@/components/SidePane";
-import { UIComp } from "@/libs/core/Def";
+import { CompSchemaBase, UIComp } from "@/libs/core/Def";
 
 type Props = {
-  schemas: UIComp.Schema[];
-  onAdd: (ds: UIComp.Schema) => void;
+  schemas: CompSchemaBase[];
+  onAdd: (ds: CompSchemaBase) => void;
   onChoose?: (id: string) => void
 };
 
@@ -102,7 +102,9 @@ const DataSources = (props: Props) => {
                 </Space>
               </div> */}
               {dsTypes.map(dst=>{
-                return <div key={dst} className={styles.dsType}>
+                return <div key={dst} className={styles.dsType} onClick={() => {
+                  props.onAdd()
+                }}>
                   {dst}
                 </div>
               })}

@@ -20,7 +20,7 @@ const defaultPageSchema = () => Promise.resolve<BindingScopeSchema>({
       children: []
     }],
   },
-  contextComps: [
+  normalComps: [
     {
       id: randomId(),
       provider: 'page',

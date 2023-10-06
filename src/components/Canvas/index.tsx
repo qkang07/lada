@@ -125,7 +125,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
           new CompAgent(ds, bdConRef.current)
         })
       }
-      initSchema.contextComps.forEach(c => {
+      initSchema.normalComps.forEach(c => {
         new CompAgent(c, bdConRef.current)
       })
     }

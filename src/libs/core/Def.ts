@@ -21,6 +21,7 @@ export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | '
 
 export interface StatePropDef extends SchemaBase  {
   editor?: PropEditorType | string // 需要预设的编辑器
+  editorRender?: () => JSX.Element
   valueType?: ValueType
   defaultValue?: any
   required?: boolean
@@ -141,7 +142,7 @@ export interface BindingInstance {
 export interface BindingScopeSchema extends CompSchemaBase {
   uiRoot: UIComp.Schema
   dataSources: UIComp.Schema[]
-  contextComps: CompSchemaBase[]
+  normalComps: CompSchemaBase[]
   bindings: BindingSchema[]
   
 }

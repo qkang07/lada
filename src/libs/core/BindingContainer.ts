@@ -40,7 +40,7 @@ export class BindingContainer {
     this.schema = schema
     this.options = Object.assign(this.options, options)
 
-    schema.contextComps.forEach(compSchema =>{
+    schema.normalComps.forEach(compSchema =>{
       const agent = new CompAgent(compSchema, this)
       this.contextCompAgents.push(agent)
       this.regComp(agent)
