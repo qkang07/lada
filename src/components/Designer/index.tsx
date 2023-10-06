@@ -12,6 +12,7 @@ import {
   BindingElement,
   BindingScopeSchema,
   BindingType,
+  CompDefBase,
   CompSchemaBase,
   StatePropDef,
   UIComp,
@@ -103,6 +104,10 @@ type DesignerContextType = {
   isDesign?: boolean;
   bdCon?: BindingContainer;
   currentCompAgent?: CompAgent<UIComp.Schema>;
+  currentComp?: {
+    def: CompDefBase
+    schema:CompSchemaBase
+  }
   deleteComp?: (id: any) => any;
   openBinding?: (lookingFor:BindingElement, propName: string) => void;
 };

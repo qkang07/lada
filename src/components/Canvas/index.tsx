@@ -1,4 +1,4 @@
-import React, { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, { createContext, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import Renderer from '../Renderer'
 import {  CompSchemaBase, SchemaBase, UIComp, BindingScopeSchema} from '../../libs/core/Def'
@@ -92,6 +92,7 @@ type Props = {
 
 export type CanvasRef = {
   bdCon?: BindingContainer
+  initNormalComp?: (schema: CompSchemaBase) => CompAgent
 }
 
 
@@ -107,11 +108,19 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const bdConRef = useRef<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
 
+  const initNormalComp = useCallback((schema: CompSchemaBase) => {
+    const agent = new CompAgent(schema, bdConRef.current)
+    return agent
+  },[])
+
   useImperativeHandle(ref, () => {
     return {
-      bdCon: bdConRef.current
+      bdCon: bdConRef.current,
+      initNormalComp
     }
   }, [])
+
+  
 
   useEffect(() => {
     if(initSchema) {

@@ -1,4 +1,5 @@
-import { CompDefBase, UIComp } from "./Def";
+import { randomId } from "@/utils";
+import { CompDefBase, CompSchemaBase, UIComp } from "./Def";
 
 declare var window: Window & {
   $comp?: {
@@ -88,6 +89,23 @@ export class ProviderManager<D extends CompDefBase> {
 
   names() {
     return Object.keys(this.regTable);
+  }
+
+  createSchema(provider: string): CompSchemaBase | undefined {
+    const def = this.getComp(provider)
+    if(def) {
+      const id = randomId()
+      let schema: CompSchemaBase = {
+        id,
+        name: provider + id,
+        provider
+      }
+      if(def.createSchema){
+        schema = def.createSchema(schema)
+      }
+      return schema
+    }
+    return undefined
   }
 
   protected handleScriptLoad(script: HTMLScriptElement) {

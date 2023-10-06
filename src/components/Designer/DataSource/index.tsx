@@ -12,6 +12,7 @@ import {
 import { IconPlus } from "@arco-design/web-react/icon";
 import SidePane from "@/components/SidePane";
 import { CompSchemaBase, UIComp } from "@/libs/core/Def";
+import { compMan } from "@/components/manager";
 
 type Props = {
   schemas: CompSchemaBase[];
@@ -54,6 +55,13 @@ const DataSources = (props: Props) => {
     props.onAdd(values);
     setNewVisible(false);
   };
+
+  const handleAdd = (provider: string) => {
+    const schema = compMan.createSchema(provider)
+    if(schema) {
+      props.onAdd(schema)
+    }
+  }
 
   return (
     <SidePane
@@ -103,7 +111,7 @@ const DataSources = (props: Props) => {
               </div> */}
               {dsTypes.map(dst=>{
                 return <div key={dst} className={styles.dsType} onClick={() => {
-                  props.onAdd()
+                  handleAdd(dst)
                 }}>
                   {dst}
                 </div>

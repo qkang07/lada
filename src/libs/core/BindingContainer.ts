@@ -21,6 +21,7 @@ export type ContainerOptions = {
 /**
  * Binding Scope ， 即「绑定」的容器，容器内的组件在此处理绑定信息。
  * 这里相当于收集组件之间的依赖，给组件之间的绑定做路由。
+ * 这里除了运行时处理确定的组件绑定，也处理设计时动态的组件绑定。
  */
 export class BindingContainer {
   compMap: Map<string, CompAgent> = new Map()

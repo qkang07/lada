@@ -12,8 +12,8 @@ import PageDef from "./Presets/Page";
 // export const dMan = new ProviderManager<DataSource.Def>()
 export const compMan = new ProviderManager()
 
-// compMan.regComp(HTTPDataSource)
-// compMan.regComp(VarDataSource)
+compMan.regComp(HTTPDataSource)
+compMan.regComp(VarDataSource)
 
 compMan.regComp(InputDef)
 compMan.regComp(ButtonDef)
