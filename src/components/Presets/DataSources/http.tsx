@@ -27,19 +27,34 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
   ],
   props: [
     {
+      name: 'url',
+      valueType: 'string',
+      label: 'URL',
+      editor: {type: 'textarea'}
+    },
+    {
+      name: 'method',
+      valueType: 'string',
+      label: '请求方式',
+      editor: {type: 'select', config: ['GET','POST','PUT','DELETE','HEAD']}
+    },
+    {
       name: 'defaultParams',
       valueType: 'any',
-      label: '默认参数'
+      label: '默认参数',
+      editor: {type: 'string'}
     },
     {
       name: 'timeout',
       label: '超时时间',
-      valueType: 'number'
+      valueType: 'number',
+      editor: {type:'number'}
     },
     {
       name: 'debounceWait',
       label: '防抖时间',
-      valueType: 'number'
+      valueType: 'number',
+      editor: {type: 'number'}
     }
   ],
   actions: [

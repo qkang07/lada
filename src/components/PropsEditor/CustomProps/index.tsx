@@ -6,7 +6,7 @@ import {
   // BindingSchema,
 } from "@/libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
-import { Input, Radio, Select, Switch, Button } from "@arco-design/web-react";
+import { Input, Radio, Select, Switch, Button, InputNumber } from "@arco-design/web-react";
 import React, { useContext, useEffect, useState } from "react";
 import pstyle from "../index.module.less";
 import { observer } from "mobx-react";
@@ -67,6 +67,26 @@ const CustomPropsEditor = observer((props: Props) => {
                   <Input
                     size="small"
                     value={value}
+                    onChange={(v) => {
+                      handlePropChange(prop.name, v);
+                    }}
+                  />
+                )}
+                {editor?.type === "textarea" && (
+                  <Input.TextArea
+                    value={value}
+                    onChange={(v) => {
+                      handlePropChange(prop.name, v);
+                    }}
+                  />
+                )}
+                {editor?.type === "number" && (
+                  <InputNumber
+                    size="small"
+                    value={value}
+                    min={editor.config?.min}
+                    max={editor.config?.max}
+                    step={editor.config?.step}
                     onChange={(v) => {
                       handlePropChange(prop.name, v);
                     }}

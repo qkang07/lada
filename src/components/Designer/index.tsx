@@ -41,10 +41,6 @@ type CompDomInfo = {
   dom: HTMLElement;
 };
 
-export interface CompInfo extends CompDomInfo {
-  agent: CompAgent<UIComp.Schema>;
-}
-
 export type SlotInfo = {
   dom: HTMLElement;
   // id: string
@@ -265,8 +261,10 @@ const Designer = observer((props: Props) => {
               items={[
                 <CompBox onCompClick={handleCompAdd} />,
                 <DataSources schemas={bdConSchema?.dataSources || []} onAdd={ds => {
+                  // 这里 schema 和 agent 的处理分开了。。
                   bdConSchema?.dataSources.push(ds)
-                  
+                  const agent = canvasRef.current?.initNormalComp?.(ds)
+                  currentRefs.current.agent = agent
                   // pageSchema.dataSources.push(ds)
                 }}
                   onChoose={chooseNormalComp}

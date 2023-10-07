@@ -108,6 +108,7 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
 
   const bdConRef = useRef<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
 
+  // 实例化非 UI 组件
   const initNormalComp = useCallback((schema: CompSchemaBase) => {
     const agent = new CompAgent(schema, bdConRef.current)
     return agent
@@ -131,11 +132,11 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
         // 设计模式 datasource 由 
       } else {
         initSchema.dataSources.forEach(ds => {
-          new CompAgent(ds, bdConRef.current)
+          initNormalComp(ds)
         })
       }
       initSchema.normalComps.forEach(c => {
-        new CompAgent(c, bdConRef.current)
+        initNormalComp(c)
       })
     }
   }, [initSchema])

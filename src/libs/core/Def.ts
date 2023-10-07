@@ -13,14 +13,14 @@ export interface EventActionDef extends SchemaBase {
 
 // 这个是内置的属性编辑器。
 export type PropEditorType = {
-  type: string
+  type: 'string' | 'select' | 'radio' | 'boolean' | 'number' | 'textarea',
   config?: any
 }
 
 export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
 
 export interface StatePropDef extends SchemaBase  {
-  editor?: PropEditorType | string // 需要预设的编辑器
+  editor?: PropEditorType // 需要预设的编辑器
   editorRender?: () => JSX.Element
   valueType?: ValueType
   defaultValue?: any

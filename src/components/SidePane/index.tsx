@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { CSSProperties, ReactNode, useState } from 'react'
 import styles from './index.module.less'
 import { IconMinus, IconPlus } from '@arco-design/web-react/icon'
 
@@ -32,5 +32,21 @@ const SidePane = (props: Props) => {
     </div>
   )
 }
+
+type ItemProps = {
+  children?: ReactNode
+  onClick?: () => void
+  className?: string
+  style?: CSSProperties
+}
+
+const SidePaneItem = (props: ItemProps) => {
+  return <div className={`${styles.listItem} ${props.className || ''}`}
+    style={{...props.style}}
+    onClick={props.onClick}
+  >{props.children}</div>
+}
+
+export {SidePaneItem} 
 
 export default SidePane

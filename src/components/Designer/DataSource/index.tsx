@@ -10,7 +10,7 @@ import {
   Trigger,
 } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
-import SidePane from "@/components/SidePane";
+import SidePane, { SidePaneItem } from "@/components/SidePane";
 import { CompSchemaBase, UIComp } from "@/libs/core/Def";
 import { compMan } from "@/components/manager";
 
@@ -69,13 +69,14 @@ const DataSources = (props: Props) => {
     >
         <Popover
           title="编辑数据源"
-          position="rt"
-          popupVisible={newVisible}
+          // position="rt"
+          // popupVisible={newVisible}
+          trigger={'click'}
           triggerProps={{
-            autoFitPosition: false,
-            popupStyle: {
-              width: 480,
-            },
+            // autoFitPosition: false,
+            // popupStyle: {
+            //   width: 480,
+            // },
           }}
           content={
             <div className={styles.newPop}>
@@ -110,11 +111,11 @@ const DataSources = (props: Props) => {
                 </Space>
               </div> */}
               {dsTypes.map(dst=>{
-                return <div key={dst} className={styles.dsType} onClick={() => {
+                return <Button key={dst} className={styles.dsType} onClick={() => {
                   handleAdd(dst)
                 }}>
                   {dst}
-                </div>
+                </Button>
               })}
             </div>
           }
@@ -129,12 +130,12 @@ const DataSources = (props: Props) => {
       <div className={styles.dsList}>
         {schemas.map((ds, i) => {
           return (
-            <div onClick={() => {
+            <SidePaneItem onClick={() => {
               props.onChoose?.(ds.id)
             }} key={i} className={styles.dataSourceItem}>
               <span className={styles.dsName}>{ds.name}</span>
-              <span className={styles.dsType}>{ds.label}</span>
-            </div>
+              <span className={styles.dsType}>{ds.provider}</span>
+            </SidePaneItem>
           );
         })}
       </div>

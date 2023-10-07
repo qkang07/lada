@@ -25,7 +25,12 @@ const VarDataSource: UIComp.Def<VarProps> = {
   props: [
     {
       name: 'valueType',
-      label: '数据类型'
+      label: '数据类型',
+      valueType: 'string',
+      editor: {
+        type: 'select',
+        config: ['string','number','boolean']
+      }
     }
   ],
   
@@ -33,8 +38,6 @@ const VarDataSource: UIComp.Def<VarProps> = {
     const data = makeAutoObservable({
       value: undefined
     })
-
-    
 
     const setData = action((v: any) => {
       data.value = v
