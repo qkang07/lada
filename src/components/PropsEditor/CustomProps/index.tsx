@@ -120,6 +120,11 @@ const CustomPropsEditor = observer((props: Props) => {
                     handlePropChange(prop.name, v)
                   }}/>
                 )}
+                {editor?.type === 'options' && (
+                  <Input.TextArea value={value} onChange={(v) => {
+                    handlePropChange(prop.name, v)
+                  }}/>
+                )}
 
 
               <div className={styles.bd}>

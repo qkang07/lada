@@ -13,7 +13,7 @@ export interface EventActionDef extends SchemaBase {
 
 // 这个是内置的属性编辑器。
 export type PropEditorType = {
-  type: 'string' | 'select' | 'radio' | 'boolean' | 'number' | 'textarea',
+  type: 'string' | 'select' | 'radio' | 'boolean' | 'number' | 'textarea' | 'options',
   config?: any
 }
 

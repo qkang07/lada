@@ -55,6 +55,12 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
       label: '防抖时间',
       valueType: 'number',
       editor: {type: 'number'}
+    },
+    {
+      name: 'autorun',
+      label: '立即执行',
+      valueType: 'boolean',
+      editor: {type: 'boolean'}
     }
   ],
   actions: [
@@ -171,28 +177,28 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
     })
   },
 
-  render(props) {
-    const [form] = Form.useForm()
+  // render(props) {
+  //   const [form] = Form.useForm()
     
-    return <div>
-      <Form form={form}>
-        <Form.Item label={'URL'} field={'url'}>
-          <Input/>
-        </Form.Item>
-        <Form.Item label={'Method'} field={'method'}>
-          <Select>
-            <Select.Option value={'GET'}>GET</Select.Option>
-            <Select.Option value={'POST'}>POST</Select.Option>
-            <Select.Option value={'PUT'}>PUT</Select.Option>
-            <Select.Option value={'DELETE'}>DELETE</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label={'Data'} field={'data'}>
+  //   return <div>
+  //     <Form form={form}>
+  //       <Form.Item label={'URL'} field={'url'}>
+  //         <Input/>
+  //       </Form.Item>
+  //       <Form.Item label={'Method'} field={'method'}>
+  //         <Select>
+  //           <Select.Option value={'GET'}>GET</Select.Option>
+  //           <Select.Option value={'POST'}>POST</Select.Option>
+  //           <Select.Option value={'PUT'}>PUT</Select.Option>
+  //           <Select.Option value={'DELETE'}>DELETE</Select.Option>
+  //         </Select>
+  //       </Form.Item>
+  //       <Form.Item label={'Data'} field={'data'}>
 
-        </Form.Item>
-      </Form>
-    </div>
-  }
+  //       </Form.Item>
+  //     </Form>
+  //   </div>
+  // }
 }
 
 export default HTTPDataSource
