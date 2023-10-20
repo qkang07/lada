@@ -142,7 +142,7 @@ export interface BindingInstance {
 export interface BindingScopeSchema extends CompSchemaBase {
   uiRoot: UIComp.Schema
   dataSources: UIComp.Schema[]
-  normalComps: CompSchemaBase[]
+  pureComps: CompSchemaBase[]
   bindings: BindingSchema[]
   
 }

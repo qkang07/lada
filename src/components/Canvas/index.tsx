@@ -6,8 +6,6 @@ import {  DesignerContext } from '../Designer'
 import FocusFrame from '../FocusFrame'
 import { Optional, randomId } from '@/utils'
 import { Drawer } from '@arco-design/web-react'
-import { action, autorun, makeAutoObservable } from 'mobx'
-import { observer } from 'mobx-react'
 import { isEqual } from 'lodash-es'
 import { BindingContainer } from '../../libs/core/BindingContainer'
 import { CompAgent } from '../../libs/core/CompAgent'
@@ -92,11 +90,11 @@ type Props = {
 
 export type CanvasRef = {
   bdCon?: BindingContainer
-  initNormalComp?: (schema: CompSchemaBase) => CompAgent
+  initPureComp?: (schema: CompSchemaBase) => CompAgent
 }
 
 
-const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
+const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
 
   const {initSchema, onCanvasClick} = props
 
@@ -106,37 +104,42 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
 
-  const bdConRef = useRef<BindingContainer | undefined>(initSchema ? new BindingContainer(initSchema) : undefined)
+
+  let [bdCon, setBdCon] = useState<BindingContainer | undefined>(() => {
+    return initSchema ? new BindingContainer(initSchema) : undefined
+  })
 
   // 实例化非 UI 组件
-  const initNormalComp = useCallback((schema: CompSchemaBase) => {
-    const agent = new CompAgent(schema, bdConRef.current)
+  const initPureComp = useCallback((schema: CompSchemaBase) => {
+    const agent = new CompAgent(schema, bdCon)
     return agent
   },[])
 
   useImperativeHandle(ref, () => {
     return {
-      bdCon: bdConRef.current,
-      initNormalComp
+      bdCon,
+      initPureComp
     }
-  }, [])
+  }, [bdCon])
 
   
 
   useEffect(() => {
+    console.log('init schema', initSchema)
     if(initSchema) {
-      if(!bdConRef.current) {
-        bdConRef.current = new BindingContainer(initSchema)
+      if(!bdCon) {
+        bdCon = new BindingContainer(initSchema)
+        setBdCon(bdCon)
       }
       if(isDesign) {
         // 设计模式 datasource 由 
       } else {
         initSchema.dataSources.forEach(ds => {
-          initNormalComp(ds)
+          initPureComp(ds)
         })
       }
-      initSchema.normalComps.forEach(c => {
-        initNormalComp(c)
+      initSchema.pureComps.forEach(c => {
+        initPureComp(c)
       })
     }
   }, [initSchema])
@@ -154,18 +157,21 @@ const Canvas = observer(forwardRef<CanvasRef, Props>((props, ref) => {
   //   return void 0
   // }
 
-
+console.log('canvas render')
   return (
     <CanvasContext.Provider value={{
-      bdCon: bdConRef.current,
+      bdCon,
     }}>
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
-        <div className={styles.canvasContext}  onClick={onCanvasClick }>
-          <Renderer schema={initSchema?.uiRoot} />
-        </div>
+        {
+          initSchema && <div className={styles.canvasContext}  onClick={onCanvasClick }>
+            <Renderer schema={initSchema?.uiRoot} />
+          </div>
+        }
+        
       </div>
     </CanvasContext.Provider>
   )
-}))
+})
 
 export default Canvas

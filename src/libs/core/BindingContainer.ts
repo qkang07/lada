@@ -28,7 +28,7 @@ export class BindingContainer {
 
   schemaCompMap: Map<string, CompAgent> = new Map()
 
-  schema: BindingScopeSchema
+  schema?: BindingScopeSchema
 
   // bindingMap: Map<string, BindingInstance> = new Map()
   bindingInstanceList: BindingInstance[] =[]
@@ -37,11 +37,17 @@ export class BindingContainer {
 
   protected options: ContainerOptions = {}
 
-  constructor(schema: BindingScopeSchema, options?: ContainerOptions) {
-    this.schema = schema
+  constructor(schema?: BindingScopeSchema, options?: ContainerOptions) {
+    if(schema) {
+      this.setSchema(schema)
+    }
     this.options = Object.assign(this.options, options)
 
-    schema.normalComps.forEach(compSchema =>{
+  }
+
+  setSchema(schema: BindingScopeSchema) {
+    this.schema = schema
+    schema.pureComps.forEach(compSchema =>{
       const agent = new CompAgent(compSchema, this)
       this.contextCompAgents.push(agent)
       this.regComp(agent)
@@ -52,24 +58,26 @@ export class BindingContainer {
   // 删除绑定。设计时使用，只更新 schema 不实例化
   removeBinding(bdSchema: BindingSchema) {
     // const schema = this.unRegBinding(id)
-    const schemaIndex = this.schema.bindings.findIndex(bd=> isEqual(bd, bdSchema) )
-    this.schema.bindings.splice(schemaIndex, 1)
+    const schemaIndex = this.schema?.bindings.findIndex(bd=> isEqual(bd, bdSchema) ) || -1
+    if(schemaIndex >= 0) {
+      this.schema?.bindings.splice(schemaIndex, 1)
+    }
   }
 
   // 添加绑定。设计时使用，只更新 schema 不实例化
   addBinding(bdSchema: BindingSchema) {
     // this.regBinding(bdSchema)
     // console.log('add binding', bdSchema)
-    this.schema.bindings.push(bdSchema)
-    if(!this.schema.bindings.find(bd => isEqual(bd, bdSchema))) {
-      this.schema.bindings.push(bdSchema)
+    this.schema?.bindings.push(bdSchema)
+    if(!this.schema?.bindings.find(bd => isEqual(bd, bdSchema))) {
+      this.schema?.bindings.push(bdSchema)
     }
     
   }
 
   // 寻找某个组件的bindings，
   findCompBinding(compId: string) {
-    return this.schema.bindings.filter(bd => {
+    return this.schema?.bindings.filter(bd => {
       return bd.type === 'state-prop' && bd.target.id === compId || bd.type === 'event-action' && bd.source.id === compId
     })
   }
@@ -142,10 +150,10 @@ export class BindingContainer {
     // 只用考虑绑定 source 的处理，因为只有 source 是主动的，target 是被动接收方，即使没有 target，source 也可以发出动作。
 
 
-    const bindings = this.schema.bindings.filter(bd => bd.source.id === schema.id)
+    const bindings = this.schema?.bindings.filter(bd => bd.source.id === schema.id)
 
     // console.log('bind one comp', bindings)
-    bindings.forEach(bd => {
+    bindings?.forEach(bd => {
       if(bd.type === 'event-action') {
         const handler = (payload: any) => {
           console.log('trigger action', bd, payload)

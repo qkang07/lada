@@ -4,9 +4,7 @@ import { randomId } from '@/utils'
 import { UIComp} from '../../libs/core/Def'
 import { DesignerContext } from '../Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
-import { observer } from 'mobx-react'
 import { CompAgent } from '../../libs/core/CompAgent'
-import { observable, observe } from 'mobx'
 
 
 
@@ -15,7 +13,7 @@ type Props = {
   schema?: UIComp.Schema
 }
 
-const Renderer = observer((props: Props) => {
+const Renderer = (props: Props) => {
 
   const {schema} = props
 
@@ -51,7 +49,7 @@ const Renderer = observer((props: Props) => {
   }
 
   useEffect(() => {
-
+    console.log(schema, bdCon)
     if(schema && bdCon) {
       // observe(schema.defaultProps || observable({}), () => {
       //   console.log('default props change', schema.defaultProps)
@@ -130,6 +128,6 @@ const Renderer = observer((props: Props) => {
     return <span>未找到组件 {schema.provider}</span>
   }
   return <></>
-})
+}
 
 export default Renderer

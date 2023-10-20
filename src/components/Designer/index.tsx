@@ -18,7 +18,7 @@ import {
   UIComp,
 } from "@/libs/core/Def";
 import PropsEditor from "@/components/PropsEditor";
-import FocusFrame from "@/components/FocusFrame";
+import FocusFrame, { FocusFrameType } from "@/components/FocusFrame";
 import DesignerHeader from "./Header";
 import { ResizeBox } from "@arco-design/web-react";
 import DataSources from "./DataSource";
@@ -32,7 +32,6 @@ import { useRequest } from "ahooks";
 import { compMan } from "@/components/manager";
 import { BindingContainer } from "@/libs/core/BindingContainer";
 import { CompAgent } from "@/libs/core/CompAgent";
-import { observer } from "mobx-react";
 import BindingPlate, { BDPlateType } from "../BindingPlate";
 import { schemaRef } from "@/pages/PageRunner";
 
@@ -114,7 +113,7 @@ type Props = {
   bdConSchema?: BindingScopeSchema;
 };
 
-const Designer = observer((props: Props) => {
+const Designer = (props: Props) => {
   const { bdConSchema } = props;
 
   const nav = useNavigate();
@@ -126,30 +125,17 @@ const Designer = observer((props: Props) => {
 
   const bdPlateRef = useRef<BDPlateType>(null);
 
-  // const bindingRef = useRef<{
-  //   plateVisible?: boolean
-  // }>({})
+  const focusFrameRef = useRef<FocusFrameType>(null)
 
-  const currentRefs = useRef<{
-    agent?: CompAgent
-    compDom?: HTMLElement
-    slotInfo?: SlotInfo;
-  }>(
-    observable({
-      compInfo: undefined,
-      slotInfo: undefined,
-    })
-  );
-
-  const currentSlotInfoRef = observable(useRef<SlotInfo>());
-  const currentSlotInfo = currentSlotInfoRef.current;
+  const [currentAgent, setCurrentAgent] = useState<CompAgent>()
+  const [currentSlot, setCurrentSlot] = useState<SlotInfo>()
 
   const [obsSchema, setObsSchema] = useState<BindingScopeSchema>();
 
   useEffect(() => {
     if (bdConSchema) {
       setObsSchema(
-        observable<BindingScopeSchema>(bdConSchema, undefined, { deep: true })
+        bdConSchema
       );
     }
   }, [bdConSchema]);
@@ -158,7 +144,7 @@ const Designer = observer((props: Props) => {
     addComp(name);
   };
 
-  const addComp = action((provider: string) => {
+  const addComp = (provider: string) => {
     const compDef = compMan.getComp(provider);
     const id = randomId();
     let schema: UIComp.Schema = {
@@ -171,14 +157,13 @@ const Designer = observer((props: Props) => {
       schema = compDef.createSchema(schema);
     }
 
-    const slotInfo = currentRefs.current.slotInfo;
-
-    if (slotInfo) {
-      const slotDef = slotInfo.compAgent.def.slots?.find(
-        (s) => s.name === slotInfo.name
+    if (currentSlot) {
+      console.log(currentSlot)
+      const slotDef = currentSlot.compAgent.def.slots?.find(
+        (s) => s.name === currentSlot.name
       );
-      const slotSchema = slotInfo.compAgent.schema.slots?.find(
-        (s) => s.name === slotInfo.name
+      const slotSchema = currentSlot.compAgent.schema.slots?.find(
+        (s) => s.name === currentSlot.name
       );
       // single 和 loop 的 slot 只能放一个子组件
       if (!slotSchema?.children?.length || slotDef?.type === "list") {
@@ -189,37 +174,36 @@ const Designer = observer((props: Props) => {
       // newComp.parent = runtimeSchema
       // runtimeSchema.slots?.[0].children?.push(newComp)
     }
-  });
+  }
 
-  const handleCanvasClick = action(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const source = e.nativeEvent.target as HTMLElement;
       const compDomInfo = findComp(source);
       const bdCon = canvasRef.current?.bdCon;
       if (compDomInfo?.id) {
         const agent = bdCon?.compMap.get(compDomInfo.id)!;
-        currentRefs.current.agent = agent
-        currentRefs.current.compDom = compDomInfo.dom
+        setCurrentAgent(agent)
+        focusFrameRef.current?.setCompDom(compDomInfo.dom)
       }
 
       const theSlot = findSlot(source);
+      // debugger
       if (theSlot?.name) {
         const agent = bdCon?.compMap.get(theSlot.compDomInfo.id);
-        currentRefs.current.slotInfo = {
+        setCurrentSlot({
           name: theSlot.name,
           dom: theSlot.dom,
           compDomInfo: theSlot.compDomInfo,
           compAgent: agent!,
-        };
+        })
       }
     }
-  );
 
   const chooseNormalComp = (id: string) => {
     const agent = bdCon?.compMap.get(id)
     if(agent) {
-      currentRefs.current.agent = agent
-      currentRefs.current.compDom = undefined
+      setCurrentAgent(agent)
+      focusFrameRef.current?.setCompDom(undefined)
     } else {
       // this should not happen
     }
@@ -240,7 +224,7 @@ const Designer = observer((props: Props) => {
         isDesign: true,
         deleteComp,
         bdCon: canvasRef.current?.bdCon,
-        currentCompAgent: currentRefs.current?.agent,
+        currentCompAgent: currentAgent,
         openBinding,
       }}
     >
@@ -263,9 +247,8 @@ const Designer = observer((props: Props) => {
                 <DataSources schemas={bdConSchema?.dataSources || []} onAdd={ds => {
                   // 这里 schema 和 agent 的处理分开了。。
                   bdConSchema?.dataSources.push(ds)
-                  const agent = canvasRef.current?.initNormalComp?.(ds)
-                  currentRefs.current.agent = agent
-                  // pageSchema.dataSources.push(ds)
+                  const agent = canvasRef.current?.initPureComp?.(ds)
+                  setCurrentAgent(agent)
                 }}
                   onChoose={chooseNormalComp}
                 />,
@@ -280,8 +263,7 @@ const Designer = observer((props: Props) => {
               initSchema={obsSchema!}
             />
             <FocusFrame
-              containerDom={canvasContainerRef.current as HTMLElement}
-              target={currentRefs.current.compDom}
+              ref={focusFrameRef}
             />
           </div>
           <div className={styles.editor}>
@@ -294,6 +276,6 @@ const Designer = observer((props: Props) => {
       </div>
     </DesignerContext.Provider>
   );
-});
+}
 
 export default Designer;

@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import React, { CSSProperties, ReactNode, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import styles from './index.module.less'
 import { IconDelete } from '@arco-design/web-react/icon'
 import { debounce } from 'lodash-es'
@@ -18,43 +18,56 @@ function getDomRect(doms: Element[]) {
 
 
 type Props = {
-  target?: HTMLElement
   actions?: ReactNode
   styles?: CSSProperties
-  containerDom?: HTMLElement
 }
 
-const FocusFrame = (props: Props) => {
-  const {target, containerDom} = props
-  const [renderState, setRenderState] = useState(0)
+export type FocusFrameType = {
+  setCompDom(dom?: HTMLElement): void
+  setContainer(dom: HTMLElement): void
+}
+
+const FocusFrame = forwardRef<FocusFrameType, Props>((props, ref) => {
+  const [frameStyle, setFrameStyle] = useState<CSSProperties>({})
+  const [actionStyle, setActionStyle] = useState<CSSProperties>({})
+
+  const selfDomRef = useRef<HTMLDivElement>(null)
+
+  const domRef = useRef<{target?: HTMLElement, container?: HTMLElement}>({})
 
   const observerRef = useRef(new MutationObserver((e) => {
-    // console.log('dom change',e)
     calcFrame()
   }))
 
+  useImperativeHandle(ref, () => {
+    return {
+      setCompDom(dom?: HTMLElement){
+        domRef.current.target = dom
+        observerRef.current.disconnect()
+        if(dom) {
+          observerRef.current.observe(dom, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          })
+        }
+        calcFrame()
+      },
+      setContainer(dom: HTMLElement) {
+        domRef.current.container = dom
+        calcFrame()
+      }
+    }
+  })
 
   useEffect(() => {
-    if(target) {
-      observerRef.current.disconnect()
-      observerRef.current.observe(target, {
-        childList: true,
-        subtree: true,
-        attributes: true
-      })
-      
-    }
     return () => {
       observerRef.current.disconnect()
     }
-    
-  }, [target])
+  }, [])
+
 
   const calcFrame = debounce(() => {
-    setRenderState(Math.random())
-  }, 0)
-
-  const style = useMemo(() => {
     const frameStyle: CSSProperties = {
       display: 'none',
       position: 'absolute'
@@ -63,36 +76,36 @@ const FocusFrame = (props: Props) => {
       display: 'none',
       position: 'absolute'
     }
-    if(target && containerDom) {
+    const {target} = domRef.current
+    const container = domRef.current.container || selfDomRef.current?.parentElement
+    if(target && container) {
       const targetRect = target.getBoundingClientRect()
-      const canvasRect = containerDom.getBoundingClientRect()
+      const canvasRect = container.getBoundingClientRect()
       frameStyle.left = targetRect.left - canvasRect.left
       frameStyle.top = targetRect.top - canvasRect.top
       frameStyle.height = target.clientHeight
       frameStyle.width = target.clientWidth
       frameStyle.display = 'block'
-
+  
       actionStyle.top = frameStyle.top + frameStyle.height
       actionStyle.left = frameStyle.left
       actionStyle.display = 'inline-block'
-
+  
     }
-    return {
-      frameStyle, actionStyle
-    }
-  }, [renderState, target])
-
-
+    setFrameStyle(frameStyle)
+    setActionStyle(actionStyle)
+   
+  }, 0)
 
   return (
-    <div>
-      <div className={styles.frame}  style={{...style.frameStyle, ...props.styles}}></div>
-      <div className={styles.actions} style={{...style.actionStyle}}>
+    <div ref={selfDomRef}>
+      <div className={styles.frame}  style={{...frameStyle, ...props.styles}}></div>
+      <div className={styles.actions} style={{...actionStyle}}>
         {props.actions}
         <IconDelete/>
       </div>
     </div>
   )
-}
+})
 
 export default FocusFrame
