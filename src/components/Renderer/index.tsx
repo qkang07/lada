@@ -11,6 +11,7 @@ import { CompAgent } from '../../libs/core/CompAgent'
 
 type Props = {
   schema?: UIComp.Schema
+  slot: UIComp.SlotSchema
 }
 
 const Renderer = (props: Props) => {
@@ -57,6 +58,7 @@ const Renderer = (props: Props) => {
       if(!agentRef.current) {
         // console.log('later agent')
         agentRef.current = new CompAgent(schema, bdCon)
+        agentRef.current.parentSlot = props.slot
       }
       const agent = agentRef.current
   

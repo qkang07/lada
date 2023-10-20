@@ -55,7 +55,7 @@ const SlotHolder = observer((props: Props) => {
 
       {hasChildren &&
         slotSchema.children?.map((comp, i) => {
-          return <Renderer schema={comp} key={i} />;
+          return <Renderer slot={slotSchema} schema={comp} key={i} />;
         })}
       {/* {
         isDesign && <span

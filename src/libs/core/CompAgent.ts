@@ -1,5 +1,5 @@
 import { Optional, randomId } from "@/utils"
-import { BindingInfo, CompDefBase, CompSchemaBase } from "./Def"
+import { BindingInfo, CompDefBase, CompSchemaBase, UIComp } from "./Def"
 import { compMan } from "../../components/manager"
 import { BindingContainer } from "./BindingContainer"
 
@@ -31,6 +31,8 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   parentAgent?: CompAgent
 
+  parentSlot?: UIComp.SlotSchema
+
   instance?: any
 
   constructor(schema: S, container?: BindingContainer){
@@ -50,6 +52,8 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     // makeAutoObservable(this)
   }
 
+  
+
   // 组件上所拥有的 binding，用于设计时
   // propBindings: BindingScope.BindingInstance[] = []
   // actionBindings: BindingScope.BindingInstance[] = []
@@ -66,6 +70,17 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     console.log(name, this.schema.name, ...args)
   }
 
+  destroy() {
+    // this.schema = undefined
+    this.parentAgent = undefined
+    this.instance = undefined
+    this.parentSlot = undefined
+    this.otherHandlers.clear()
+    this.stateHandlers.clear()
+    this.eventHandlers.clear()
+    this.actionHandlers.clear()
+    this.propHandlers.clear()
+  }
 
   protected getHandlerList( type: HandlerType, name: string) {
     const regTable = {
@@ -209,6 +224,16 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     }
     this.schema.defaultProps[propName] = value
     this.schema.defaultProps = {...this.schema.defaultProps}
+  }
+
+  onSchemaChange(cb: () => {
+
+  }) {
+
+  }
+  // 设计时更新 schema
+  updateSchema(schema: S) {
+    this.schema = schema
   }
 
  

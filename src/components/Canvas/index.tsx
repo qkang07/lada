@@ -103,6 +103,8 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
 
   const canvasDomRef = useRef<HTMLDivElement>(null)
 
+  const rootSlotRef = useRef<UIComp.SlotSchema>({name: 'root', children: []})
+
 
 
   let [bdCon, setBdCon] = useState<BindingContainer | undefined>(() => {
@@ -165,7 +167,7 @@ console.log('canvas render')
       <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
         {
           initSchema && <div className={styles.canvasContext}  onClick={onCanvasClick }>
-            <Renderer schema={initSchema?.uiRoot} />
+            <Renderer slot={rootSlotRef.current} schema={initSchema?.uiRoot} />
           </div>
         }
         

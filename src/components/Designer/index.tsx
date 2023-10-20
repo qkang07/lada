@@ -25,7 +25,6 @@ import DataSources from "./DataSource";
 import EditorStack from "@/components/EditorStack";
 import TreeView from "./TreeView";
 import SidePane from "@/components/SidePane";
-import { action, autorun, makeAutoObservable, observable } from "mobx";
 import { Optional, randomId } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "ahooks";
@@ -176,6 +175,14 @@ const Designer = (props: Props) => {
     }
   }
 
+  const deleteComp = (id: string) => {
+    const agent = bdCon?.compMap.get(id);
+    if(agent) {
+      const plist = agent?.parentSlot?.children
+      plist?.splice(plist.indexOf(agent.schema), 1)
+    }
+  }
+
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const source = e.nativeEvent.target as HTMLElement;
       const compDomInfo = findComp(source);
@@ -209,7 +216,7 @@ const Designer = (props: Props) => {
     }
   }
 
-  const deleteComp = action((id: string) => {});
+
 
   const openBinding = (lookingFor: BindingElement, prop: string) => {
     bdPlateRef.current?.open({
