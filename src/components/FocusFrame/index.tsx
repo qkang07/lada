@@ -68,14 +68,8 @@ const FocusFrame = forwardRef<FocusFrameType, Props>((props, ref) => {
 
 
   const calcFrame = debounce(() => {
-    const frameStyle: CSSProperties = {
-      display: 'none',
-      position: 'absolute'
-    }
-    const actionStyle: CSSProperties = {
-      display: 'none',
-      position: 'absolute'
-    }
+    const frameStyle: CSSProperties = {}
+    const actionStyle: CSSProperties = {}
     const {target} = domRef.current
     const container = domRef.current.container || selfDomRef.current?.parentElement
     if(target && container) {

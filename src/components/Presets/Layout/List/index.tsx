@@ -42,7 +42,6 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
       style.display = 'flex'
     }
     const defaultSlot = props.slots?.[0]
-
     return <div style={style} className={styles.listLayout}>
       {
         defaultSlot ? <SlotHolder schema={defaultSlot} /> : <></>

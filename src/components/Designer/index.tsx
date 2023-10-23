@@ -33,6 +33,7 @@ import { BindingContainer } from "@/libs/core/BindingContainer";
 import { CompAgent } from "@/libs/core/CompAgent";
 import BindingPlate, { BDPlateType } from "../BindingPlate";
 import { schemaRef } from "@/pages/PageRunner";
+import { action, makeAutoObservable } from "mobx";
 
 type CompDomInfo = {
   id: string;
@@ -134,7 +135,7 @@ const Designer = (props: Props) => {
   useEffect(() => {
     if (bdConSchema) {
       setObsSchema(
-        bdConSchema
+        makeAutoObservable(bdConSchema,{},{deep: true})
       );
     }
   }, [bdConSchema]);
@@ -143,7 +144,7 @@ const Designer = (props: Props) => {
     addComp(name);
   };
 
-  const addComp = (provider: string) => {
+  const addComp = action((provider: string) => {
     const compDef = compMan.getComp(provider);
     const id = randomId();
     let schema: UIComp.Schema = {
@@ -173,7 +174,7 @@ const Designer = (props: Props) => {
       // newComp.parent = runtimeSchema
       // runtimeSchema.slots?.[0].children?.push(newComp)
     }
-  }
+  })
 
   const deleteComp = (id: string) => {
     const agent = bdCon?.compMap.get(id);

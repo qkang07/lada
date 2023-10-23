@@ -59,7 +59,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
       }
     },[])
     useEffect(() => {
-      console.log('chagned')
+      // console.log('chagned')
       if(props.children) {
         setInnerChild(props.children)
       }

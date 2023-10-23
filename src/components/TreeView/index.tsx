@@ -1,7 +1,6 @@
 import React, { ReactNode, createContext, useContext, useState } from 'react'
 import styles from './index.module.less'
 import { IconMinus, IconPlus } from '@arco-design/web-react/icon'
-import { UIComp } from '@/libs/core/Def'
 
 
 
@@ -56,7 +55,8 @@ const TreeNode =  (props: NodeProps) => {
 
 type Props = {
   onNodeClick?: (node: NodeDataType) => void
-  root: UIComp.Schema
+  data: NodeDataType[]
+  
 }
 
 const TreeView = (props: Props) => {
