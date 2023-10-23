@@ -6,7 +6,7 @@ import { DesignerContext } from '../Designer'
 import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { CompAgent } from '../../libs/core/CompAgent'
 import { observer } from 'mobx-react'
-
+import styles from './index.module.less'
 
 
 
@@ -31,17 +31,20 @@ const Renderer = observer((props: Props) => {
 
   const instanceRef = useRef<any>()
 
+  const flagRef = useRef<any>()
+
   const [compProps, setCompProps] = useState<Record<string, any>>({})
 
   useEffect(() => {
     // console.log(schema, bdCon)
     if(schema && bdCon) {
+
       if(!agentRef.current) {
-        // console.log('later agent')
         agentRef.current = new CompAgent(schema, bdCon)
-        agentRef.current.parentSlot = props.slot
       }
       const agent = agentRef.current
+      agent.parentSlot = props.slot
+      agent.flagDom = flagRef.current
   
       // 绑定 action
       if(!isDesign) {
@@ -108,7 +111,7 @@ const Renderer = observer((props: Props) => {
 
     return <>
     {
-      isDesign && <span data-lada-comp-id={agent?.id}></span>
+      isDesign && <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span>
     }
       <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
     </>

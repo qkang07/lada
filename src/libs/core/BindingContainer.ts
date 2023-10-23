@@ -26,7 +26,8 @@ export type ContainerOptions = {
 export class BindingContainer {
   compMap: Map<string, CompAgent> = new Map()
 
-  schemaCompMap: Map<string, CompAgent> = new Map()
+  // 通过 schema id 找到 agent。
+  schemaCompMap: Map<string, CompAgent[]> = new Map()
 
   schema?: BindingScopeSchema
 
@@ -122,7 +123,11 @@ export class BindingContainer {
   regComp(comp: CompAgent) {
     // console.log('reg comp', comp.schema.name, comp)
     this.compMap.set(comp.id, comp)
-    this.schemaCompMap.set(comp.schema.id, comp)
+    if(this.schemaCompMap.has(comp.schema.id)) {
+      this.schemaCompMap.get(comp.schema.id)?.push(comp)
+    } else {
+      this.schemaCompMap.set(comp.schema.id, [comp])
+    }
 
     // 非设计时，需要实例化绑定。
     if(!this.options.isDesign) {
@@ -133,7 +138,10 @@ export class BindingContainer {
   // 组件注销
   unRegComp(comp: CompAgent) {
     this.compMap.delete(comp.id)
-    this.schemaCompMap.delete(comp.schema.id)
+    const agents = this.schemaCompMap.get(comp.schema.id)
+    if(agents) {
+      agents.splice(agents.indexOf(comp))
+    }
 
     // 非设计时，需要实例化绑定。
     if(!this.options.isDesign) {
@@ -287,10 +295,12 @@ export class BindingContainer {
 
   triggerAction(targetInfo: BindingInfo, payload?: any) {
     const {id, prop} = targetInfo
-    const comp = this.schemaCompMap.get(id) 
+    const agents = this.schemaCompMap.get(id) 
     console.log('con.triggerAction', targetInfo, payload)
-    if(comp) {
-      comp.callAction(prop, payload)
+    if(agents) {
+      agents.forEach(agent => {
+        agent.callAction(prop, payload)
+      })
     } else {
       console.log('no such comp for action call: ', id)
     }
@@ -298,9 +308,11 @@ export class BindingContainer {
 
   updateProp(targetInfo: BindingInfo, value: any) {
     const {id, prop} = targetInfo
-    const comp = this.schemaCompMap.get(id)
-    if(comp) {
-      comp.updateProp(prop, value)
+    const agents = this.schemaCompMap.get(id)
+    if(agents) {
+      agents.forEach(agent => {
+        agent.updateProp(prop, value)
+      })
     } else {
       console.log('no such comp for prop update: ', targetInfo)
     }

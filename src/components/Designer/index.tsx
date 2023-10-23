@@ -260,7 +260,7 @@ const Designer = (props: Props) => {
                 }}
                   onChoose={chooseNormalComp}
                 />,
-                <TreeView schema={obsSchema?.uiRoot!} />,
+                <TreeView root={obsSchema?.uiRoot!} />,
               ]}
             />
           </div>

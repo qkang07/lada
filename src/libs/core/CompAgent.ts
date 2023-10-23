@@ -35,6 +35,8 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   instance?: any
 
+  flagDom?: HTMLElement
+
   constructor(schema: S, container?: BindingContainer){
     this.schema = schema
     const def = compMan.getComp(schema.provider)
@@ -117,6 +119,8 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
       list.splice(0)
     }
   }
+
+  
 
 
   // 向外传递

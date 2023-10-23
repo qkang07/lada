@@ -1,81 +1,88 @@
-import React, { ReactNode, createContext, useContext, useState } from 'react'
-import styles from './index.module.less'
-import { IconMinus, IconPlus } from '@arco-design/web-react/icon'
-import { UIComp } from '@/libs/core/Def'
-
-
-
-
-
-export type NodeDataType<T = any> = {
-  content?: string | ReactNode
-  children?: NodeDataType<T>[]
-  id: string | number
-  rawData?: T
-  
-}
-
+import React, { ReactNode, createContext, useContext, useState } from "react";
+import styles from "./index.module.less";
+import { IconMinus, IconPlus } from "@arco-design/web-react/icon";
+import { UIComp } from "@/libs/core/Def";
+import { observer } from "mobx-react";
 
 const TreeContext = createContext<{
-  indent?: number
-  onNodeClick?: (node: NodeDataType) => void
-}>({})
-
+  indent?: number;
+  onNodeClick?: (node: UIComp.Schema) => void;
+}>({});
 
 type NodeProps = {
-  node: NodeDataType
-  level: number
-}
+  schema: UIComp.Schema;
+  // level: number
+};
 
-const TreeNode =  (props: NodeProps) => {
-  const {indent, onNodeClick} = useContext(TreeContext)
-  const [expanded, setExpanded] = useState(false)
+const TreeNode = observer((props: NodeProps) => {
+  const { indent, onNodeClick } = useContext(TreeContext);
+  const { schema } = props;
+  const [expanded, setExpanded] = useState(true);
   const style = {
     // paddingLeft: props.level * (indent || 0)
-  }
-  return <div className={`${styles.treeNode}`} style={{...style}}>
-    <div className={styles.content}>
-      <div className={styles.expander} onClick={() => {
-        setExpanded(!expanded)
-      }}>
-        {expanded ? <IconMinus/> : <IconPlus/>}
+  };
+  return (
+    <div className={`${styles.treeNode}`} style={{ ...style }}>
+      <div className={styles.content}>
+        <div className={styles.icon}>
+          {!!schema.slots?.length && (
+            <div
+              className={styles.expander}
+              onClick={() => {
+                setExpanded(!expanded);
+              }}
+            >
+              {expanded ? <IconMinus /> : <IconPlus />}
+            </div>
+          )}
+        </div>
+        <div className={styles.nodeTitle} onClick={() => onNodeClick?.(schema)}>
+          {schema.name}
+        </div>
       </div>
-      <div className={styles.nodeTitle} onClick={() => onNodeClick?.(props.node)}>
-        {props.node.content}
+      <div
+        className={styles.children}
+        style={{ display: expanded ? "block" : "none" }}
+      >
+        {schema.slots?.map((slot) => {
+          return (
+            <div className={styles.slot} key={slot.name}>
+              <div className={styles.slotTitle}>{slot.name}</div>
+              {slot.children?.map((s) => {
+                return <TreeNode schema={s} key={s.id} />;
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
-    <div className={styles.children} style={{display: expanded ? 'block' : 'none'}}>
-      {props.node.children?.map(n => {
-        return <TreeNode node={n} key={n.id} level={props.level + 1}/>
-      })}
-    </div>
-  </div>
-}
-
-
+  );
+});
 
 type Props = {
-  onNodeClick?: (node: NodeDataType) => void
-  root: UIComp.Schema
-}
+  onNodeClick?: (node: UIComp.Schema) => void;
+  root: UIComp.Schema;
+};
 
-const TreeView = (props: Props) => {
-
-  const handleNodeClick = (node: NodeDataType) => {
-
-  }
+const TreeView = observer((props: Props) => {
+  const { root, onNodeClick } = props;
+  const handleNodeClick = (node: UIComp.Schema) => {
+    onNodeClick?.(node);
+  };
   return (
-    <TreeContext.Provider value={{
-      onNodeClick: handleNodeClick,
-      indent: 10
-    }}>
+    <TreeContext.Provider
+      value={{
+        onNodeClick: handleNodeClick,
+        indent: 10,
+      }}
+    >
       <div className={styles.treeView}>
-        {props.data.map(d => {
-          return <TreeNode key={d.id} level={0} node={d}/>
+        {root?.slots?.[0]?.children?.map((s) => {
+          return <TreeNode key={s.id} schema={s} />;
         })}
       </div>
     </TreeContext.Provider>
-  )
-}
+  );
+});
 
-export default TreeView
+export default TreeView;
