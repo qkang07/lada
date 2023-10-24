@@ -120,7 +120,13 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     }
   }
 
-  
+  // 设计时 查找组件 dom
+  findDom() {
+    if(!this.flagDom) {
+      return undefined
+    }
+    return this.flagDom.nextElementSibling as HTMLElement
+  }
 
 
   // 向外传递

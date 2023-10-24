@@ -41,10 +41,10 @@ type CompDomInfo = {
 };
 
 export type SlotInfo = {
-  dom: HTMLElement;
+  
+  // dom: HTMLElement; // 后面再用到
   // id: string
   name: string;
-  compDomInfo: CompDomInfo;
   compAgent: CompAgent<UIComp.Schema, UIComp.Def>;
 };
 
@@ -121,7 +121,6 @@ const Designer = (props: Props) => {
   const canvasRef = useRef<CanvasRef | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
-  const bdCon = canvasRef.current?.bdCon
 
   const bdPlateRef = useRef<BDPlateType>(null);
 
@@ -177,7 +176,8 @@ const Designer = (props: Props) => {
   })
 
   const deleteComp = (id: string) => {
-    const agent = bdCon?.compMap.get(id);
+  const bdCon = canvasRef.current?.bdCon
+  const agent = bdCon?.compMap.get(id);
     if(agent) {
       const plist = agent?.parentSlot?.children
       plist?.splice(plist.indexOf(agent.schema), 1)
@@ -200,23 +200,33 @@ const Designer = (props: Props) => {
         const agent = bdCon?.compMap.get(theSlot.compDomInfo.id);
         setCurrentSlot({
           name: theSlot.name,
-          dom: theSlot.dom,
-          compDomInfo: theSlot.compDomInfo,
+          // dom: theSlot.dom,
+          // compDomInfo: theSlot.compDomInfo,
           compAgent: agent!,
         })
       }
     }
 
   const handleTreeClick = (schema: UIComp.Schema) => {
-    const agents = bdCon?.schemaCompMap.get(schema.id)
+    const agents = canvasRef.current?.bdCon?.schemaCompMap.get(schema.id)
+    console.log(agents)
     if(agents?.length) {
       const agent = agents[0]
+      const dom = agent.findDom()
       setCurrentAgent(agent)
-      focusFrameRef.current?.setCompDom(agent)
+      console.log('comp dom',dom)
+      focusFrameRef.current?.setCompDom(dom)
+      setCurrentSlot({
+        name: agent.parentSlot!.name,
+        compAgent: agent.parentAgent!,
+        // dom: 
+
+      })
     }
   }
 
-  const chooseNormalComp = (id: string) => {
+  const choosePureComp = (id: string) => {
+    const bdCon = canvasRef.current?.bdCon
     const agent = bdCon?.compMap.get(id)
     if(agent) {
       setCurrentAgent(agent)
@@ -267,9 +277,9 @@ const Designer = (props: Props) => {
                   const agent = canvasRef.current?.initPureComp?.(ds)
                   setCurrentAgent(agent)
                 }}
-                  onChoose={chooseNormalComp}
+                  onChoose={choosePureComp}
                 />,
-                <TreeView root={obsSchema?.uiRoot!} onNodeClick={} />,
+                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />,
               ]}
             />
           </div>

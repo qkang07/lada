@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { CanvasContext } from '../Canvas'
 import { randomId } from '@/utils'
 import { UIComp} from '../../libs/core/Def'
@@ -31,7 +31,7 @@ const Renderer = observer((props: Props) => {
 
   const instanceRef = useRef<any>()
 
-  const flagRef = useRef<any>()
+  const flagRef = useRef<HTMLElement>(null)
 
   const [compProps, setCompProps] = useState<Record<string, any>>({})
 
@@ -44,8 +44,11 @@ const Renderer = observer((props: Props) => {
       }
       const agent = agentRef.current
       agent.parentSlot = props.slot
-      agent.flagDom = flagRef.current
-  
+      agent.findDom = () => {
+        if(flagRef.current) {
+          return flagRef.current.nextElementSibling as HTMLElement
+        }
+      }
       // 绑定 action
       if(!isDesign) {
 
@@ -75,7 +78,6 @@ const Renderer = observer((props: Props) => {
     }
 
   }, [schema, bdCon])
-  console.log('renderer render', schema)
 
   const makeProps = () => {
     const initProps = cloneDeep(schema?.defaultProps || {})
@@ -110,9 +112,7 @@ const Renderer = observer((props: Props) => {
   if(CompRender) {
 
     return <>
-    {
-      isDesign && <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span>
-    }
+      <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span>
       <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
     </>
   } 
