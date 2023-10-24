@@ -1,4 +1,3 @@
-import Renderer from '@/components/Renderer'
 import {UIComp } from '@/libs/core/Def'
 import React, { CSSProperties } from 'react'
 import styles from './index.module.less'

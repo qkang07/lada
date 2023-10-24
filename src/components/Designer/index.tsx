@@ -28,7 +28,7 @@ import SidePane from "@/components/SidePane";
 import { Optional, randomId } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "ahooks";
-import { compMan } from "@/components/manager";
+import { compMan } from "@/components/CompManager/manager";
 import { BindingContainer } from "@/libs/core/BindingContainer";
 import { CompAgent } from "@/libs/core/CompAgent";
 import BindingPlate, { BDPlateType } from "../BindingPlate";

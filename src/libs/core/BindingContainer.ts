@@ -49,7 +49,8 @@ export class BindingContainer {
   setSchema(schema: BindingScopeSchema) {
     this.schema = schema
     schema.pureComps.forEach(compSchema =>{
-      const agent = new CompAgent(compSchema, this)
+      const agent = new CompAgent(compSchema)
+      this.regComp(agent)
       this.contextCompAgents.push(agent)
       this.regComp(agent)
     })

@@ -1,4 +1,4 @@
-import { CompAgent } from './CompAgent';
+import type { CompAgent } from './CompAgent';
 
 export type SchemaBase = {
   name: string
@@ -104,7 +104,6 @@ export namespace UIComp {
   export type RenderProps<T extends Record<string, any> = Record<string, any>, I = any> = {
     style?: string;
     classNames?: string;
-    // agent: CompAgent
     instance?: I
     updateState? :(name: string, value?: any) => void
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?

@@ -1,7 +1,6 @@
 import { Optional, randomId } from "@/utils"
 import { BindingInfo, CompDefBase, CompSchemaBase, UIComp } from "./Def"
-import { compMan } from "../../components/manager"
-import { BindingContainer } from "./BindingContainer"
+import { compMan } from "../../components/CompManager/manager"
 
 export type HandlerShape = (payload?: any) => void
 
@@ -37,7 +36,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   flagDom?: HTMLElement
 
-  constructor(schema: S, container?: BindingContainer){
+  constructor(schema: S){
     this.schema = schema
     const def = compMan.getComp(schema.provider)
     if(def) {
@@ -48,9 +47,6 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     this.id = randomId()
     this.state = {} as ST
     this.instance = def.create?.(this)
-    if(container) {
-      container.regComp(this)
-    }
     // makeAutoObservable(this)
   }
 

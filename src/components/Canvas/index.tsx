@@ -9,6 +9,7 @@ import { Drawer } from '@arco-design/web-react'
 import { isEqual } from 'lodash-es'
 import { BindingContainer } from '../../libs/core/BindingContainer'
 import { CompAgent } from '../../libs/core/CompAgent'
+import { CanvasContext } from './context'
 
 
 
@@ -74,13 +75,6 @@ import { CompAgent } from '../../libs/core/CompAgent'
 
 // }
 
-export type CanvasContextType = {
-  bdCon?: BindingContainer
-  // processBinding: (binding: BindingSchema) => any
-}
-
-export const CanvasContext = createContext<CanvasContextType>({} as any)
-
 
 type Props = {
   initSchema?: BindingScopeSchema
@@ -113,7 +107,8 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
 
   // 实例化非 UI 组件
   const initPureComp = useCallback((schema: CompSchemaBase) => {
-    const agent = new CompAgent(schema, bdCon)
+    const agent = new CompAgent(schema)
+    bdCon?.regComp(agent)
     return agent
   },[])
 

@@ -1,7 +1,6 @@
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.less";
 import { BindingSchema, UIComp } from "../../libs/core/Def";
-import { CanvasContext } from "../Canvas";
 import { DesignerContext } from "@/components/Designer";
 import Renderer from "../Renderer";
 import { observer } from "mobx-react";

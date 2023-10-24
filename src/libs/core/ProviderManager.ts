@@ -1,5 +1,5 @@
 import { randomId } from "@/utils";
-import { CompDefBase, CompSchemaBase, UIComp } from "./Def";
+import type { CompDefBase, CompSchemaBase, UIComp } from "./Def";
 
 declare var window: Window & {
   $comp?: {

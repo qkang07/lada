@@ -1,4 +1,4 @@
-import { CanvasContext } from '@/components/Canvas'
+import { CanvasContext } from '@/components/Canvas/context'
 import SidePane from '@/components/SidePane'
 import { DesignerContext } from '@/components/Designer'
 import Editor from '@monaco-editor/react'

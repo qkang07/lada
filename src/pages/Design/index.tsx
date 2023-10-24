@@ -21,11 +21,7 @@ const defaultPageSchema = () => Promise.resolve<BindingScopeSchema>({
     }],
   },
   pureComps: [
-    {
-      id: randomId(),
-      provider: 'page',
-      name: 'page'
-    }
+    
   ],
   bindings:[],
   dataSources: []

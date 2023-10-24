@@ -1,19 +1,26 @@
+import { UICompRegTable } from '@/components/CompManager/RegList'
 import SidePane from '@/components/SidePane'
-import { compMan } from '@/components/manager'
 import { Button } from '@arco-design/web-react'
 import React from 'react'
+import styles from './index.module.less'
 type Props = {
   onCompClick?: (name: string) => void
 }
 
 const CompBox = (props: Props) => {
 
-  const names = compMan.names()
   return (
     <SidePane title='组件'>
       {
-        names.map(name => {
-          return <Button key={name} onClick={() => props.onCompClick?.(name)}>{name}</Button>
+        UICompRegTable.map(cat => {
+          return <div className={styles.cat} key={cat.category}>
+            <div className={styles.catTitle}>{cat.label}</div>
+            <div className={styles.items}>
+              {cat.items.map(item => {
+                return <Button long key={item.name} onClick={() => props.onCompClick?.(item.name)}>{item.label || item.name}</Button>
+              })}
+            </div>
+          </div>
         })
       }
     </SidePane>

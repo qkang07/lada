@@ -2,7 +2,7 @@ import SidePane from '@/components/SidePane'
 import React, { useContext } from 'react'
 import pstyle from '../index.module.less'
 import { Input } from '@arco-design/web-react'
-import { compMan } from '@/components/manager'
+import { compMan } from '@/components/CompManager/manager'
 import { DesignerContext } from '@/components/Designer'
 import { observer } from 'mobx-react'
 

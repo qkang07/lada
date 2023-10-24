@@ -12,7 +12,7 @@ import {
 import { IconPlus } from "@arco-design/web-react/icon";
 import SidePane, { SidePaneItem } from "@/components/SidePane";
 import { CompSchemaBase, UIComp } from "@/libs/core/Def";
-import { compMan } from "@/components/manager";
+import { compMan } from "@/components/CompManager/manager";
 
 type Props = {
   schemas: CompSchemaBase[];

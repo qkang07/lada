@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { CanvasContext } from '../Canvas'
+import { CanvasContext } from '../Canvas/context'
 import { randomId } from '@/utils'
 import { UIComp} from '../../libs/core/Def'
 import { DesignerContext } from '../Designer'
@@ -40,7 +40,8 @@ const Renderer = observer((props: Props) => {
     if(schema && bdCon) {
 
       if(!agentRef.current) {
-        agentRef.current = new CompAgent(schema, bdCon)
+        agentRef.current = new CompAgent(schema)
+        bdCon.regComp(agentRef.current)
       }
       const agent = agentRef.current
       agent.parentSlot = props.slot
