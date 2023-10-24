@@ -207,6 +207,15 @@ const Designer = (props: Props) => {
       }
     }
 
+  const handleTreeClick = (schema: UIComp.Schema) => {
+    const agents = bdCon?.schemaCompMap.get(schema.id)
+    if(agents?.length) {
+      const agent = agents[0]
+      setCurrentAgent(agent)
+      focusFrameRef.current?.setCompDom(agent)
+    }
+  }
+
   const chooseNormalComp = (id: string) => {
     const agent = bdCon?.compMap.get(id)
     if(agent) {
@@ -260,7 +269,7 @@ const Designer = (props: Props) => {
                 }}
                   onChoose={chooseNormalComp}
                 />,
-                <TreeView root={obsSchema?.uiRoot!} />,
+                <TreeView root={obsSchema?.uiRoot!} onNodeClick={} />,
               ]}
             />
           </div>
