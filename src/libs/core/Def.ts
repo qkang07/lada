@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react';
 import type { CompAgent } from './CompAgent';
 
 export type SchemaBase = {
@@ -39,6 +40,7 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> = {
   name: string
   label?: string
   desc?: string
+  icon?: JSX.Element
   events?: EventActionDef[]
   props?: StatePropDef[]
   actions?: EventActionDef[]
@@ -102,7 +104,7 @@ export namespace UIComp {
   }
   
   export type RenderProps<T extends Record<string, any> = Record<string, any>, I = any> = {
-    style?: string;
+    style?: CSSProperties;
     classNames?: string;
     instance?: I
     updateState? :(name: string, value?: any) => void

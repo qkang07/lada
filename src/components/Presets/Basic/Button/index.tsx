@@ -7,6 +7,7 @@ type ButtonProps = {
   onClick: () => any
   children?: ReactNode
   type?: FinalButtonProps['type']
+  disabled?: boolean
 }
 
 const ButtonDef: UIComp.Def<ButtonProps> = {
@@ -65,6 +66,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
       }
     },[props.children])
     return <Button type={props.type}
+      disabled={props.disabled}
     onClick={props.onClick}>{innerChild}</Button>
   }),
   createSchema(schema: UIComp.Schema) {

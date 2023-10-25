@@ -231,11 +231,11 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     this.schema.defaultProps[propName] = value
     // this.schema.defaultProps = {...this.schema.defaultProps}
     this.getHandlerList('others', 'schemaChange').forEach(h => {
-      h()
+      h(this.schema)
     })
   }
 
-  onSchemaChange(cb: () => void) {
+  onSchemaChange(cb: (schema: CompSchemaBase) => void) {
     this.regHandler('others', 'schemaChange', cb)
   }
   // 设计时更新 schema

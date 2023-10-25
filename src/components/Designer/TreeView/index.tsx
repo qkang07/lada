@@ -3,6 +3,7 @@ import styles from "./index.module.less";
 import { IconMinus, IconPlus } from "@arco-design/web-react/icon";
 import { UIComp } from "@/libs/core/Def";
 import { observer } from "mobx-react";
+import SidePane from "@/components/SidePane";
 
 const TreeContext = createContext<{
   indent?: number;
@@ -70,18 +71,21 @@ const TreeView = observer((props: Props) => {
     onNodeClick?.(node);
   };
   return (
-    <TreeContext.Provider
-      value={{
-        onNodeClick: handleNodeClick,
-        indent: 10,
-      }}
-    >
-      <div className={styles.treeView}>
-        {root?.slots?.[0]?.children?.map((s) => {
-          return <TreeNode key={s.id} schema={s} />;
-        })}
-      </div>
-    </TreeContext.Provider>
+    <SidePane title="UI组件树">
+
+      <TreeContext.Provider
+        value={{
+          onNodeClick: handleNodeClick,
+          indent: 10,
+        }}
+      >
+        <div className={styles.treeView}>
+          {root?.slots?.[0]?.children?.map((s) => {
+            return <TreeNode key={s.id} schema={s} />;
+          })}
+        </div>
+      </TreeContext.Provider>
+    </SidePane>
   );
 });
 

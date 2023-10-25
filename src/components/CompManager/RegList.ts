@@ -1,10 +1,11 @@
 import HTTPDataSource from "@/components/Presets/DataSources/http";
 import ButtonDef from "@/components/Presets/Basic/Button";
-import InputDef from "@/components/Presets/Basic/Input";
+import InputDef from "@/components/Presets/Input/Input";
 import ListLayoutDef from "@/components/Presets/Layout/List";
-import ParagraphDef from "@/components/Presets/Typo/P";
+import ParagraphDef from "@/components/Presets/Basic/P";
 import { UIComp, CompDefBase } from "@/libs/core/Def";
 import VarDataSource from "@/components/Presets/DataSources/var";
+import AlertDef from "../Presets/Feedback/Alert";
 
 
 export type CompRegCat = {
@@ -38,6 +39,13 @@ export const UICompRegTable: CompRegCat[] = [
     label: 'Input',
     items: [
       InputDef
+    ]
+  },
+  {
+    category: 'feedback',
+    label: '反馈',
+    items: [
+      AlertDef
     ]
   }
 ]

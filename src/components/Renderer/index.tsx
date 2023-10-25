@@ -42,33 +42,39 @@ const Renderer = observer((props: Props) => {
       if(!agentRef.current) {
         agentRef.current = new CompAgent(schema)
         bdCon.regComp(agentRef.current)
-      }
-      const agent = agentRef.current
-      agent.parentSlot = props.slot
-      agent.findDom = () => {
-        if(flagRef.current) {
-          return flagRef.current.nextElementSibling as HTMLElement
+        const agent = agentRef.current
+        agent.parentSlot = props.slot
+        agent.findDom = () => {
+          if(flagRef.current) {
+            return flagRef.current.nextElementSibling as HTMLElement
+          }
         }
-      }
-      // 绑定 action
-      if(!isDesign) {
-
-        agent.def.actions?.forEach(act => {
-          agent.onActionCall(act.name, (params) => {
-            if(typeof instanceRef.current[act.name] === 'function') {
-              instanceRef.current[act.name](params)
-            } else if(typeof agent.instance[act.name] === 'function') {
-              agent.instance[act.name](params)
-            }
+        // 绑定 action
+        if(!isDesign) {
+  
+          agent.def.actions?.forEach(act => {
+            agent.onActionCall(act.name, (params) => {
+              if(typeof instanceRef.current[act.name] === 'function') {
+                instanceRef.current[act.name](params)
+              } else if(typeof agent.instance[act.name] === 'function') {
+                agent.instance[act.name](params)
+              }
+            })
           })
-        })
+  
+          agent.def.props?.forEach(prop => {
+            agent.onPropChange(prop.name, (v) => {
+              compProps[prop.name] = v
+              setCompProps({...compProps})
+            })
 
-        agent.def.props?.forEach(prop => {
-          agent.onPropChange(prop.name, (v) => {
-            compProps[prop.name] = v
-            setCompProps({...compProps})
           })
-        })
+        } else {
+          // 设计时监听 schema change
+          agent.onSchemaChange(() => {
+            makeProps()
+          })
+        }
       }
       
       makeProps()
@@ -81,14 +87,15 @@ const Renderer = observer((props: Props) => {
   }, [schema, bdCon])
 
   const makeProps = () => {
-    const initProps = cloneDeep(schema?.defaultProps || {})
+    // console.log(agentRef.current?.schema)
+    const initProps = cloneDeep(agentRef.current?.schema?.defaultProps || {})
     setCompProps(initProps)
   }
 
   // 设计时会改变 default props
-  useEffect(() => {
-    makeProps()
-  }, [schema?.defaultProps])
+  // useEffect(() => {
+  //   makeProps()
+  // }, [schema?.defaultProps])
 
   const renderProps: UIComp.RenderProps = {
     // agent,
