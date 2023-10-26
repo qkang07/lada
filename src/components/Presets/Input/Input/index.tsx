@@ -47,7 +47,8 @@ const InputDef: UIComp.Def<InputProps> = {
   props: [
     {
       name: 'value',
-      valueType: 'string'
+      valueType: 'string',
+      
     }
   ],
   states: [

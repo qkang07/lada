@@ -1,4 +1,4 @@
-import { Optional, randomId } from "@/utils"
+import { Optional, randomId } from "../../utils"
 import { BindingInfo, CompDefBase, CompSchemaBase, UIComp } from "./Def"
 import { compMan } from "../../components/CompManager/manager"
 

@@ -33,7 +33,7 @@ import { BindingContainer } from "@/libs/core/BindingContainer";
 import { CompAgent } from "@/libs/core/CompAgent";
 import BindingPlate, { BDPlateType } from "../BindingPlate";
 import { schemaRef } from "@/pages/PageRunner";
-import { action, makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, toJS } from "mobx";
 
 type CompDomInfo = {
   id: string;
@@ -261,7 +261,8 @@ const Designer = (props: Props) => {
             onSave={() => {}}
             onPreview={() => {
               // TODO
-              schemaRef.value = obsSchema;
+              schemaRef.value = toJS(obsSchema);
+              console.log(schemaRef.value)
               nav("/pagerunner");
             }}
           />

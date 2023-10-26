@@ -1,4 +1,4 @@
-import { randomId } from "@/utils";
+import { randomId } from "../../utils";
 import type { CompDefBase, CompSchemaBase, UIComp } from "./Def";
 
 declare var window: Window & {

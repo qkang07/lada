@@ -95,7 +95,15 @@ const CustomPropsEditor = observer((props: Props) => {
                 {editor?.type === "select" && (
                   <Select
                     size="small"
-                    options={editor.config}
+                    options={editor.config.map((item: any)=>{
+                      if(['string', 'number','boolean'].includes(typeof item)) {
+                        return {value: item, label: item}
+                      }
+                      return {
+                        value: item.value,
+                        label: item.label || item.value
+                      }
+                    })}
                     value={value}
                     onChange={(v) => {
                       handlePropChange(prop.name, v);
