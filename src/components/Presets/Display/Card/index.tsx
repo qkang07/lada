@@ -32,7 +32,7 @@ const Def: UIComp.Def<IProps> = {
       name: 'size',
       valueType: 'boolean',
       label: '卡片尺寸',
-    }typescript-json-schema
+    }
   ],
   states: [
     {

@@ -1,0 +1,27 @@
+{
+  "name": "space",
+  "label": "间距",
+  "props": [
+    {
+      "name": "size",
+      "label": "尺寸",
+      "valueType": "string",
+      "editor": {"type": "select","config":["mini","small","medium","large"]}
+    },{
+      "name": "direction",
+      "label": "方向",
+      "valueType": "string",
+      "editor": {"type": "select","config":["vertical","horizontal"]}
+    },{
+      "name": "align",
+      "label": "对齐方式",
+      "valueType": "string",
+      "editor": {"type": "options","config":["start","end","center","baseline"]}
+    },{
+      "name": "wrap",
+      "label": "是否折行",
+      "valueType": "boolean",
+      "editor": {"type": "boolean"}
+    }
+  ]
+}
