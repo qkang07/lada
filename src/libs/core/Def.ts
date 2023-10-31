@@ -1,13 +1,13 @@
 import { CSSProperties } from 'react';
 import type { CompAgent } from './CompAgent';
 
-export type SchemaBase = {
+export type DescBase = {
   name: string
   label?: string
   desc?: string
 }
 
-export interface EventActionDef extends SchemaBase {
+export interface EventActionDef extends DescBase {
   valueType?: ValueType
 
 }
@@ -20,7 +20,7 @@ export type PropEditorType = {
 
 export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
 
-export interface StatePropDef extends SchemaBase  {
+export interface StatePropDef extends DescBase  {
   editor?: PropEditorType // 需要预设的编辑器
   editorRender?: () => JSX.Element
   valueType?: ValueType
@@ -29,16 +29,13 @@ export interface StatePropDef extends SchemaBase  {
 }
 
 
-export interface CompSchemaBase extends SchemaBase {
+export interface CompSchemaBase extends DescBase {
   id: string // comp schema 也需要ID，为的是在 schema 中定位。区别于 comp instance 的 id
   provider: string
   defaultProps?: Record<string, any>
 }
 
-export type CompMetaBase = {
-  name: string
-  label?: string
-  desc?: string
+export interface CompMetaBase extends DescBase {
   icon?: JSX.Element
   events?: EventActionDef[]
   props?: StatePropDef[]
@@ -56,7 +53,7 @@ export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any>
 
 export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
 
-export interface CompPropSchema extends SchemaBase {
+export interface CompPropSchema extends DescBase {
   defaultValue?: any
   type?: CompPropType
 }
@@ -83,8 +80,8 @@ export type PropValueSchema = {
 //   }
 // }
 
-export interface ActionSchema extends SchemaBase {
-  params?: SchemaBase[]
+export interface ActionSchema extends DescBase {
+  params?: DescBase[]
 }
 
 
@@ -92,18 +89,23 @@ export namespace UIComp {
 
   export type SlotType = 'single' | 'list' | 'loop'
   
-  export interface SlotDef extends SchemaBase {
+
+  export interface UIPropDef extends StatePropDef {
+    slotType?: SlotType
+  }
+  export interface SlotDef extends DescBase {
     type: SlotType
     display?: 'block' | 'inline'
   }
-  export interface SlotSchema extends SchemaBase {
+  export interface SlotSchema extends DescBase {
     // type: SlotType
     // display?: 'block' | 'inline'
     children?: Schema[]
   }
 
   export interface CompMeta extends CompMetaBase {
-    slots?: SlotSchema[]
+    // slots?: SlotDef[]
+    
   }
   
   export interface Schema extends CompSchemaBase {
