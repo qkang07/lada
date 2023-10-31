@@ -35,8 +35,7 @@ export interface CompSchemaBase extends SchemaBase {
   defaultProps?: Record<string, any>
 }
 
-
-export type CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> = {
+export type CompMetaBase = {
   name: string
   label?: string
   desc?: string
@@ -45,6 +44,10 @@ export type CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> = {
   props?: StatePropDef[]
   actions?: EventActionDef[]
   states?: StatePropDef[]
+}
+
+
+export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> extends CompMetaBase {
   // 运行时创建实例
   create?: (agent: CompAgent) => I
   // 设计时初始 schema
@@ -97,6 +100,10 @@ export namespace UIComp {
     // type: SlotType
     // display?: 'block' | 'inline'
     children?: Schema[]
+  }
+
+  export interface CompMeta extends CompMetaBase {
+    slots?: SlotSchema[]
   }
   
   export interface Schema extends CompSchemaBase {
