@@ -152,20 +152,20 @@ const Designer = (props: Props) => {
       id,
     };
 
-    if (compDef?.createSchema) {
-      schema = compDef.createSchema(schema);
+    if (compDef?.onSchemaCreate) {
+      schema = compDef.onSchemaCreate(schema);
     }
 
     if (currentSlot) {
       console.log(currentSlot)
-      const slotDef = currentSlot.compAgent.def.slots?.find(
+      const slotDef = currentSlot.compAgent.def.meta.slots?.find(
         (s) => s.name === currentSlot.name
       );
       const slotSchema = currentSlot.compAgent.schema.slots?.find(
         (s) => s.name === currentSlot.name
       );
       // single 和 loop 的 slot 只能放一个子组件
-      if (!slotSchema?.children?.length || slotDef?.type === "list") {
+      if (!slotSchema?.children?.length || !slotDef?.single) {
         slotSchema?.children?.push(schema);
       }
     } else {

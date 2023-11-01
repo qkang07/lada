@@ -1,0 +1,29 @@
+{
+  "name": "input",
+  "label": "输入框",
+  "props": [
+    {
+      "name": "value",
+      "valueType": "string",
+      "editor": {"type": "string"}
+    },{
+      "name": "maxLength",
+      "label": "最大长度",
+      "valueType": "number",
+      "editor": {"type": "number", "config": {
+        "min": 0
+      }}
+    }
+  ],
+  "states": [
+    {
+      "name": "value",
+      "valueType": "string"
+    }
+  ],
+  "events": [{
+    "name": "onChange",
+    "valueType": "string"
+  }]
+  
+}

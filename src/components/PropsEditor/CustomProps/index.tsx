@@ -47,7 +47,7 @@ const CustomPropsEditor = observer((props: Props) => {
   });
   return (
     <SidePane title={"自定义属性"}>
-      {compDef?.props?.map((prop) => {
+      {compDef?.meta.props?.map((prop) => {
 
         const bound = bdCon?.schema?.bindings.some(bd => bd.type === 'state-prop' && bd.target.id === compSchema?.id && bd.target.prop === prop.name)
         // const binding = compSchema?.?.find(

@@ -73,7 +73,7 @@ export class ProviderManager<D extends CompDefBase> {
   }
 
   regComp(def: D) {
-    const name = def.name;
+    const name = def.meta.name;
     this.regTable[name] = def;
   }
 
@@ -100,8 +100,8 @@ export class ProviderManager<D extends CompDefBase> {
         name: provider + id,
         provider
       }
-      if(def.createSchema){
-        schema = def.createSchema(schema)
+      if(def.onSchemaCreate){
+        schema = def.onSchemaCreate(schema)
       }
       return schema
     }

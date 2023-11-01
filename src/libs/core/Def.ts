@@ -22,7 +22,7 @@ export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | '
 
 export interface StatePropDef extends DescBase  {
   editor?: PropEditorType // 需要预设的编辑器
-  editorRender?: () => JSX.Element
+  editorRender?: string | (() => JSX.Element)
   valueType?: ValueType
   defaultValue?: any
   required?: boolean
@@ -36,7 +36,8 @@ export interface CompSchemaBase extends DescBase {
 }
 
 export interface CompMetaBase extends DescBase {
-  icon?: JSX.Element
+  version?: string
+  icon?: string | JSX.Element
   events?: EventActionDef[]
   props?: StatePropDef[]
   actions?: EventActionDef[]
@@ -44,11 +45,12 @@ export interface CompMetaBase extends DescBase {
 }
 
 
-export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> extends CompMetaBase {
+export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any>  {
+  meta: CompMetaBase
   // 运行时创建实例
-  create?: (agent: CompAgent) => I
+  onCreate?: (agent: CompAgent) => I
   // 设计时初始 schema
-  createSchema?: (initSchema: S) => S
+  onSchemaCreate?: (initSchema: S) => S
 }
 
 export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
@@ -89,23 +91,16 @@ export namespace UIComp {
 
   export type SlotType = 'single' | 'list' | 'loop'
   
-
-  export interface UIPropDef extends StatePropDef {
-    slotType?: SlotType
-  }
   export interface SlotDef extends DescBase {
-    type: SlotType
-    display?: 'block' | 'inline'
+    single?: boolean
+    prop?: StatePropDef
   }
   export interface SlotSchema extends DescBase {
-    // type: SlotType
-    // display?: 'block' | 'inline'
     children?: Schema[]
   }
 
   export interface CompMeta extends CompMetaBase {
-    // slots?: SlotDef[]
-    
+    slots?: SlotDef[]
   }
   
   export interface Schema extends CompSchemaBase {
@@ -122,10 +117,8 @@ export namespace UIComp {
   
   
   export interface Def<P extends Record<string, any> = any, I = any> extends CompDefBase<Schema> {
-    version?: string;
-    url?: string;
+    meta: CompMeta
     render?: (props: RenderProps<P, I>) => JSX.Element | null
-    slots?: SlotDef[]
   };
 }
 
@@ -155,6 +148,11 @@ export interface BindingScopeSchema extends CompSchemaBase {
   pureComps: CompSchemaBase[]
   bindings: BindingSchema[]
   
+}
+
+export type JsonSchemaTypes = {
+  compMetaBase: CompMetaBase
+  uiCompMeta: UIComp.CompMeta
 }
 
 export interface DesignSchema extends BindingScopeSchema {

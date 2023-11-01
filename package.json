@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "schema": "typescript-json-schema src/libs/core/Def.ts * -o jj.json"
+    "schema:comp": "typescript-json-schema src/libs/core/CompJsonSchema.ts * -o ../cdef.schema.json",
+    "schema:ui": "typescript-json-schema src/libs/core/UICompJsonSchema.ts * -o ../uidef.schema.json",
+    "schema": "schema:comp && schema:ui"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.45.1",

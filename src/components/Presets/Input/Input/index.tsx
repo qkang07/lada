@@ -2,6 +2,8 @@ import { UIComp } from "@/libs/core/Def"
 import { Input } from "@arco-design/web-react"
 import { useEffect, useState } from "react"
 
+import meta from './uimeta.json'
+
 
 type InputProps = {
   maxLength?: number
@@ -12,8 +14,7 @@ type InputProps = {
 
 
 const InputDef: UIComp.Def<InputProps> = {
-  name: 'input',
-  label: '输入框',
+  meta: meta as UIComp.CompMeta,
 
   // create(ctx) {
   //   const store = makeAutoObservable({
@@ -44,25 +45,6 @@ const InputDef: UIComp.Def<InputProps> = {
     }
     return <Input value={innerValue} onChange={handleChange} maxLength={maxLength} className={classNames}  />
   },
-  props: [
-    {
-      name: 'value',
-      valueType: 'string',
-      
-    }
-  ],
-  states: [
-    {
-      name: 'value',
-      valueType: 'string'
-    }
-  ],
-  events: [
-    {
-      name: 'onChange',
-      valueType: 'string'
-    }
-  ]
 
 }
 
