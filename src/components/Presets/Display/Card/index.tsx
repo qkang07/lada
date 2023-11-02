@@ -57,11 +57,11 @@ const Def: UIComp.Def<IProps> = {
   ],
   slots: [
     {
-      name: '',
-      type: 'single',
+      name:'default',
+      single: false
     }
   ],
-  create(agent) {
+  onCreate(agent) {
 
   },
   render(props) {

@@ -26,9 +26,9 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
     }
   ],
   slots: [
-    {name: 'default', type: 'list'}
+    {name: 'default', single: false}
   ],
-  createSchema(initSchema) {
+  onSchemaCreate(initSchema) {
     initSchema.slots = [{
       name: 'default',
       children: []

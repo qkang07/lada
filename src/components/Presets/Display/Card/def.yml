@@ -1,9 +1,0 @@
-name: card
-label: 卡片
-props: 
-  -
-    name: bordered
-    valueType: boolean
-    label: 是否有边框
-    editor: 
-      type: boolean

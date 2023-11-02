@@ -43,8 +43,8 @@ const TitleDef: UIComp.Def<ITitleProps> = {
   actions: [
    
   ],
-  create(agent) {
-
+  onCreate(agent) {
+    
   },
   render(props) {
    return <Typography.Title heading={props.level}>{props.text}</Typography.Title>

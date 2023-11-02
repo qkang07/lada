@@ -12,7 +12,7 @@ const ParagraphDef: UIComp.Def<PProps> = {
   props: [],
   slots: [{
     name: 'default',
-    type: 'single'
+    single: true
   }],
   render: (props) => {
     return <Typography.Paragraph>

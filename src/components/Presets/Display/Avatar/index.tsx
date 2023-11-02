@@ -51,10 +51,10 @@ const AvatarDef: UIComp.Def<IAvatarProps> = {
   slots: [
     {
       name: 'default',
-      type: 'single'
+      single: true
     }
   ],
-  create(agent) {
+  onCreate(agent) {
 
   },
   render(props) {

@@ -15,6 +15,7 @@ type IAlertProps = {
 }
 
 const AlertDef: UIComp.Def<IAlertProps> = {
+
   name: 'alertDisplay',
   label: '警告提示',
   icon: <></>,
@@ -93,7 +94,7 @@ const AlertDef: UIComp.Def<IAlertProps> = {
       desc: '',
     }
   ],
-  create(agent) {
+  onCreate(agent) {
 
   },
   render(props) {

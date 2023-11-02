@@ -45,8 +45,7 @@ export interface CompMetaBase extends DescBase {
 }
 
 
-export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any>  {
-  meta: CompMetaBase
+export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any> extends CompMetaBase  {
   // 运行时创建实例
   onCreate?: (agent: CompAgent) => I
   // 设计时初始 schema
@@ -116,8 +115,7 @@ export namespace UIComp {
   } & T
   
   
-  export interface Def<P extends Record<string, any> = any, I = any> extends CompDefBase<Schema> {
-    meta: CompMeta
+  export interface Def<P extends Record<string, any> = any, I = any> extends CompDefBase<Schema>, CompMeta {
     render?: (props: RenderProps<P, I>) => JSX.Element | null
   };
 }

@@ -40,8 +40,8 @@ const TextDef: UIComp.Def<ITextProps> = {
       desc: '',
     }
   ],
-  create(agent) {
-
+  onCreate(agent) {
+    return agent
   },
   render(props) {
    return <span className={props.classNames} style={props.style}>{props.text}</span>

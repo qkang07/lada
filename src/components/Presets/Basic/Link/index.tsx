@@ -57,7 +57,7 @@ const LinkDef: UIComp.Def<ILinkProps> = {
   actions: [
   
   ],
-  create(agent) {
+  onCreate(agent) {
 
   },
   render(props) {

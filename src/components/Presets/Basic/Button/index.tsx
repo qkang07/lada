@@ -46,7 +46,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
       name: 'setText'
     }
   ],
-  create(ctx) {
+  onCreate(ctx) {
     return {}
   },
   render: forwardRef(( props, ref) => {
@@ -69,7 +69,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
       disabled={props.disabled}
     onClick={props.onClick}>{innerChild}</Button>
   }),
-  createSchema(schema: UIComp.Schema) {
+  onSchemaCreate(schema: UIComp.Schema) {
     
     // schema.bindings = [
     //   {

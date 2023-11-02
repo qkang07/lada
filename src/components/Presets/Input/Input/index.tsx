@@ -14,8 +14,8 @@ type InputProps = {
 
 
 const InputDef: UIComp.Def<InputProps> = {
-  meta: meta as UIComp.CompMeta,
-
+  // meta: meta as UIComp.CompMeta,
+  ...(meta as UIComp.CompMeta),
   // create(ctx) {
   //   const store = makeAutoObservable({
   //     value: undefined
