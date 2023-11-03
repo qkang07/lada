@@ -1,17 +1,30 @@
 import styles from './index.module.less'
 import SidePane from "@/components/SidePane";
-import {
-  // BindScopeEnum,
-  // BindTypeEnum,
-  // BindingSchema,
-} from "@/libs/core/Def";
+import { OptionType, PrimitiveType } from "@/libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
 import { Input, Radio, Select, Switch, Button, InputNumber } from "@arco-design/web-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import pstyle from "../index.module.less";
 import { observer } from "mobx-react";
 import { action, autorun, makeAutoObservable } from "mobx";
 import { IconLink } from '@arco-design/web-react/icon';
+
+
+
+
+function nrmlzOptions(options:OptionType[]) {
+  return options.map(item => {
+    if(typeof item === 'object' && Reflect.has(item, 'value')) {
+      const oitem = item as {value: PrimitiveType, label?: string | ReactNode}
+      return {
+        value: oitem.value,
+        label: oitem.label || oitem.value
+      }
+    }
+    return {value: item, label: item}
+
+  })
+}
 
 type Props = {
 };
@@ -47,7 +60,7 @@ const CustomPropsEditor = observer((props: Props) => {
   });
   return (
     <SidePane title={"自定义属性"}>
-      {compDef?.meta.props?.map((prop) => {
+      {compDef?.props?.map((prop) => {
 
         const bound = bdCon?.schema?.bindings.some(bd => bd.type === 'state-prop' && bd.target.id === compSchema?.id && bd.target.prop === prop.name)
         // const binding = compSchema?.?.find(
@@ -95,15 +108,7 @@ const CustomPropsEditor = observer((props: Props) => {
                 {editor?.type === "select" && (
                   <Select
                     size="small"
-                    options={editor.config.map((item: any)=>{
-                      if(['string', 'number','boolean'].includes(typeof item)) {
-                        return {value: item, label: item}
-                      }
-                      return {
-                        value: item.value,
-                        label: item.label || item.value
-                      }
-                    })}
+                    options={nrmlzOptions(editor.options)}
                     value={value}
                     onChange={(v) => {
                       handlePropChange(prop.name, v);
@@ -118,7 +123,7 @@ const CustomPropsEditor = observer((props: Props) => {
                       handlePropChange(prop.name, v);
                     }}
                   >
-                    {editor.config.map((option: any) => {
+                    {editor.options.map((option: any) => {
                       return <Radio key={option.value} value={option.value}>{option.label}</Radio>;
                     })}
                   </Radio.Group>

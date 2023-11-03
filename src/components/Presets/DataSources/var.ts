@@ -34,7 +34,7 @@ const VarDataSource: UIComp.Def<VarProps> = {
     }
   ],
   
-  create(agent){
+  onCreate(agent){
     const data = makeAutoObservable({
       value: undefined
     })

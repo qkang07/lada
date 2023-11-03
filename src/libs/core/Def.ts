@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import type { CompAgent } from './CompAgent';
 
 export type DescBase = {
@@ -12,13 +12,50 @@ export interface EventActionDef extends DescBase {
 
 }
 
+
+export type PrimitiveType = number| string | boolean | object | Array<any>
+
+export type OptionType = PrimitiveType | {value: PrimitiveType, label?: string | ReactNode}
+
+
 // 这个是内置的属性编辑器。
-export type PropEditorType = {
-  type: 'string' | 'select' | 'radio' | 'boolean' | 'number' | 'textarea' | 'options',
-  config?: any
+export interface PropEditorBase  {
+  type: string // 'string' | 'select' | 'radio' | 'boolean' | 'number' | 'textarea' | 'options',
+  config?: Record<string, any>
 }
 
-export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any'
+export interface SelectEditorType extends PropEditorBase {
+  type: 'select' | 'radio' | 'checkbox',
+  options: OptionType[]
+  config: {
+    multiple?: boolean
+  }
+}
+
+export interface NumberEditorType extends PropEditorBase {
+  type: 'number',
+  config: {
+    max?: number
+    min?: number
+    step?: number
+  }
+}
+
+export interface StringEditorType extends PropEditorBase {
+  type: 'string' | 'textarea',
+  config: {
+    maxLength?: number
+    pattern?: string
+  }
+}
+
+export interface OtherEditorType extends PropEditorBase {
+  type: 'boolean' | 'options',
+}
+
+export type PropEditorType = SelectEditorType | NumberEditorType | StringEditorType | OtherEditorType
+
+export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'enum' | 'any'
 
 export interface StatePropDef extends DescBase  {
   editor?: PropEditorType // 需要预设的编辑器
@@ -52,11 +89,10 @@ export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any>
   onSchemaCreate?: (initSchema: S) => S
 }
 
-export type CompPropType = 'string' | 'number' | 'boolean' | 'array' | 'record' | 'custom'
 
 export interface CompPropSchema extends DescBase {
   defaultValue?: any
-  type?: CompPropType
+  type?: ValueType
 }
 
 export type PropValueSchema = {

@@ -88,7 +88,7 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
       label: '数据'
     }
   ],
-  create(agent) {
+  onCreate(agent) {
     // const {url ,method = 'GET', body} = params
 
     const data = makeAutoObservable({

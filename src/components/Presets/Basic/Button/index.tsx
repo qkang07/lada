@@ -19,7 +19,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     defaultValue: 'default',
     editor: {
       type: 'select',
-      config: ['default','primary','secondary','dashed','text','outline'].map(c => ({label: c, value: c}))
+      config: ['default','primary','secondary','dashed','text','outline']
     },
     valueType: 'string'
   }, {

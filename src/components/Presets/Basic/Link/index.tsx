@@ -38,7 +38,7 @@ const LinkDef: UIComp.Def<ILinkProps> = {
       valueType :'string',
       defaultValue: '_blank',
       editor: {
-        type: 'options',
+        type: 'select',
         config: [
           {value:'_self'},
           {value:'_blank'},
