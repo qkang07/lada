@@ -27,14 +27,14 @@ export interface PropEditorBase  {
 export interface SelectEditorType extends PropEditorBase {
   type: 'select' | 'radio' | 'checkbox',
   options: OptionType[]
-  config: {
+  config?: {
     multiple?: boolean
   }
 }
 
 export interface NumberEditorType extends PropEditorBase {
   type: 'number',
-  config: {
+  config?: {
     max?: number
     min?: number
     step?: number
@@ -43,7 +43,7 @@ export interface NumberEditorType extends PropEditorBase {
 
 export interface StringEditorType extends PropEditorBase {
   type: 'string' | 'textarea',
-  config: {
+  config?: {
     maxLength?: number
     pattern?: string
   }
@@ -57,9 +57,15 @@ export type PropEditorType = SelectEditorType | NumberEditorType | StringEditorT
 
 export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'enum' | 'any'
 
+export type PropEditorRenderType<T = any> = (props: {
+  value: T,
+  onChange: (value: T) => void
+}) => ReactNode
+
+
 export interface StatePropDef extends DescBase  {
   editor?: PropEditorType // 需要预设的编辑器
-  editorRender?: string | (() => JSX.Element)
+  editorRender?: string | PropEditorRenderType
   valueType?: ValueType
   defaultValue?: any
   required?: boolean
@@ -151,7 +157,7 @@ export namespace UIComp {
   } & T
   
   
-  export interface Def<P extends Record<string, any> = any, I = any> extends CompDefBase<Schema>, CompMeta {
+  export interface Def<P extends Record<string, any> = Record<string, any>, I = any> extends CompDefBase<Schema>, CompMeta {
     render?: (props: RenderProps<P, I>) => JSX.Element | null
   };
 }

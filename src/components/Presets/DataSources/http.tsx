@@ -36,7 +36,7 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
       name: 'method',
       valueType: 'string',
       label: '请求方式',
-      editor: {type: 'select', config: ['GET','POST','PUT','DELETE','HEAD']}
+      editor: {type: 'select', options: ['GET','POST','PUT','DELETE','HEAD']}
     },
     {
       name: 'defaultParams',

@@ -1,4 +1,5 @@
 import { UIComp } from "@/libs/core/Def";
+import { Divider } from "@arco-design/web-react";
 
 
 type DividerProps = {
@@ -17,7 +18,7 @@ const DividerDef: UIComp.Def<DividerProps> = {
       valueType: 'enum',
       editor: {
         type: 'radio',
-        config: [
+        options: [
           {label: '水平',value: 'horizontal'},
           {label: '竖直',value: 'vertical'},
         ]
@@ -30,8 +31,17 @@ const DividerDef: UIComp.Def<DividerProps> = {
       valueType: 'enum',
       editor: {
         type: 'select',
-        config: ['left','right','center']
+        options: ['left','right','center']
       }
     }
-  ]
+  ],
+  render(props) {
+    return <Divider orientation={props.orientation}
+      type={props.type}
+      className={props.classNames}
+      style={props.style}
+    />
+  }
 }
+
+export default DividerDef

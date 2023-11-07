@@ -29,7 +29,7 @@ const VarDataSource: UIComp.Def<VarProps> = {
       valueType: 'string',
       editor: {
         type: 'select',
-        config: ['string','number','boolean']
+        options: ['string','number','boolean']
       }
     }
   ],
