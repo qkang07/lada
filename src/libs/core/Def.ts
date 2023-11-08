@@ -55,7 +55,7 @@ export interface OtherEditorType extends PropEditorBase {
 
 export type PropEditorType = SelectEditorType | NumberEditorType | StringEditorType | OtherEditorType
 
-export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'enum' | 'any'
+export type ValueType = 'string' | 'number' | 'boolean' | 'record' | 'array' | 'any' | 'void'
 
 export type PropEditorRenderType<T = any> = (props: {
   value: T,
