@@ -205,7 +205,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 向内 调用组件的 action
   callAction(action: string, payload?: any) {
     // console.log('call action', action, payload)
-    if(this.def.meta.actions?.some(a => a.name === action)) {
+    if(this.def.actions?.some(a => a.name === action)) {
       const list = this.getHandlerList('action', action)
       this.log('call action', action, payload, list)
       list.forEach(h => h(payload))
@@ -214,7 +214,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   // 向内 更新组件的 prop
   updateProp(prop: string, value?: any) {
-    if(this.def.meta.props?.some(p => p.name === prop)) {
+    if(this.def.props?.some(p => p.name === prop)) {
       const list = this.getHandlerList('prop', prop)
       this.log('update prop', prop, value, list)
       list.forEach(h => h(value))

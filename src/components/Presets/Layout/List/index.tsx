@@ -18,7 +18,7 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
       defaultValue: 'vertical',
       editor: {
         type: 'radio',
-        config: [
+        options: [
           {label: '竖向', value: 'vertical'},
           {label: '横向', value: 'horizon'},
         ]

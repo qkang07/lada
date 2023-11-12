@@ -1,5 +1,5 @@
 import { randomId } from "../../utils";
-import type { CompDefBase, CompSchemaBase, UIComp } from "./Def";
+import { CompDefBase, CompSchemaBase, UIComp } from "./Def";
 
 declare var window: Window & {
   $comp?: {
@@ -73,7 +73,7 @@ export class ProviderManager<D extends CompDefBase> {
   }
 
   regComp(def: D) {
-    const name = def.meta.name;
+    const name = def.name;
     this.regTable[name] = def;
   }
 
@@ -99,6 +99,15 @@ export class ProviderManager<D extends CompDefBase> {
         id,
         name: provider + id,
         provider
+      }
+      const uiDef = def as UIComp.Def
+      if(uiDef.slots?.length) {
+        (schema as UIComp.Schema).slots = uiDef.slots.map(slot => {
+          return {
+            name: slot.name,
+            children: [],
+          }
+        })
       }
       if(def.onSchemaCreate){
         schema = def.onSchemaCreate(schema)

@@ -152,3 +152,5 @@ const CarouselDef : UIComp.Def<CarouselType> = {
   })
 
 }
+
+export default CarouselDef

@@ -24,7 +24,7 @@ const AvatarDef: UIComp.Def<IAvatarProps> = {
     {
       name: 'shape',
       valueType: 'string',
-      editor: {type: 'select', config: ['circle','square']}
+      editor: {type: 'select', options: ['circle','square']}
     }
   ],
   states: [

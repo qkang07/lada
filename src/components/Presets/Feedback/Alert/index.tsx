@@ -37,12 +37,8 @@ const AlertDef: UIComp.Def<IAlertProps> = {
       label: '警告类型',
       valueType: 'string',
       defaultValue: 'info',
-      editor: {type: 'select', config: [
-        {value: 'info'},
-        {value: 'success'},
-        {value: 'warning'},
-        {value: 'error'},
-
+      editor: {type: 'select', options: [
+        'info','success','warning','error'
       ]},
     },
     {

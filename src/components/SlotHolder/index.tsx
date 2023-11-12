@@ -27,17 +27,13 @@ const SlotHolder = observer((props: Props) => {
 
 
   return (
-    <div 
-    data-slot-name={slotSchema.name}
-    >
-    {/* {
+    <>
+    {
       isDesign && <span
-      data-slot-name={rtSchema.name}
-      data-slot-id={rtSchema.id}
-      data-slot-comp-id={rtSchema.comp.id}
+      data-slot-name={slotSchema.name}
       data-slot-tag="start"
     ></span>
-    } */}
+    }
       
 
       {isDesign && !hasChildren && (
@@ -56,17 +52,14 @@ const SlotHolder = observer((props: Props) => {
         slotSchema.children?.map((comp, i) => {
           return <Renderer slot={slotSchema} schema={comp} key={i} />;
         })}
-      {/* {
+      {
         isDesign && <span
-        data-slot-name={rtSchema.name}
-        data-slot-id={rtSchema.id}
-
-        data-slot-comp-id={rtSchema.comp.id}
+        data-slot-name={slotSchema.name}
         data-slot-tag="end"
       ></span>
       }
-       */}
-    </div>
+      
+    </>
   );
 });
 

@@ -65,19 +65,21 @@ function findComp(dom: HTMLElement): CompDomInfo | undefined {
 //  这个可以优化
 function findSlot(
   dom: HTMLElement
-): { compDomInfo: CompDomInfo; name: string; dom: HTMLElement } | undefined {
+): { compDomInfo: CompDomInfo; name: string; } | undefined {
   if (dom.dataset.ladaCanvas) {
     return undefined;
   }
 
-  if (dom.dataset.slotName) {
+  if (dom.dataset?.slotName && dom.dataset?.slotTag === 'start') {
     const compDomInfo = findComp(dom)!;
     return {
       compDomInfo,
       name: dom.dataset.slotName!,
-      dom,
     };
+  } else if(dom.previousElementSibling) {
+    return findSlot(dom.previousElementSibling as HTMLElement)
   } else if (dom.parentElement) return findSlot(dom.parentElement);
+  
   return undefined;
 }
 
@@ -158,7 +160,7 @@ const Designer = (props: Props) => {
 
     if (currentSlot) {
       console.log(currentSlot)
-      const slotDef = currentSlot.compAgent.def.meta.slots?.find(
+      const slotDef = currentSlot.compAgent.def.slots?.find(
         (s) => s.name === currentSlot.name
       );
       const slotSchema = currentSlot.compAgent.schema.slots?.find(

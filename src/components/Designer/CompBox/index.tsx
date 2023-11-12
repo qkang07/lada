@@ -17,7 +17,7 @@ const CompBox = (props: Props) => {
             <div className={styles.catTitle}>{cat.label}</div>
             <div className={styles.items}>
               {cat.items.map(item => {
-                return <Button long key={item.meta.name} onClick={() => props.onCompClick?.(item.meta.name)}>{item.meta.label || item.meta.name}</Button>
+                return <Button long key={item.name} onClick={() => props.onCompClick?.(item.name)}>{item.label || item.name}</Button>
               })}
             </div>
           </div>

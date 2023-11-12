@@ -13,7 +13,7 @@ export interface EventActionDef extends DescBase {
 }
 
 
-export type PrimitiveType = number| string | boolean | object | Array<any>
+export type PrimitiveType = number| string | boolean 
 
 export type OptionType = PrimitiveType | {value: PrimitiveType, label?: string | ReactNode}
 
@@ -138,6 +138,7 @@ export namespace UIComp {
   }
   export interface SlotSchema extends DescBase {
     children?: Schema[]
+    text?: string
   }
 
   export interface CompMeta extends CompMetaBase {
@@ -146,6 +147,8 @@ export namespace UIComp {
   
   export interface Schema extends CompSchemaBase {
     slots?: SlotSchema[]
+    style?: string | CSSProperties
+    className?: string
   }
   
   export type RenderProps<T extends Record<string, any> = Record<string, any>, I = any> = {

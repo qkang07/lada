@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { UIComp } from '@/libs/core/Def'
+import { Card } from '@arco-design/web-react'
+import SlotHolder from '@/components/SlotHolder'
 
 type IProps = {
-
+  bordered?: boolean
+  hoverable?: boolean
+  loading?: boolean
+  size?: 'default' | 'small'
   [others:string]:any
 }
 
-const Def: UIComp.Def<IProps> = {
+const CardDef: UIComp.Def<IProps> = {
   name: 'card',
   label: '卡片',
   icon: <></>,
@@ -30,30 +35,24 @@ const Def: UIComp.Def<IProps> = {
     },
     {
       name: 'size',
-      valueType: 'boolean',
+      valueType: 'string',
       label: '卡片尺寸',
+      defaultValue: 'default',
+      editor: {type: 'radio', options: ['default','small']}
+
     }
   ],
   states: [
-    {
-      name: '',
-      valueType: 'string',
-      desc: '',
-    }
+    
   ],
   events: [
     {
-      name: '',
-      valueType: 'string',
-      desc: '',
+      name: 'onClick',
+      valueType: 'any',
     }
   ],
   actions: [
-    {
-      name: '',
-      valueType: 'string',
-      desc: '',
-    }
+   
   ],
   slots: [
     {
@@ -62,11 +61,18 @@ const Def: UIComp.Def<IProps> = {
     }
   ],
   onCreate(agent) {
-
+    return agent
   },
   render(props) {
-   return <></>
+   return <Card
+    bordered={props.bordered}
+    hoverable={props.hoverable}
+    loading={props.loading}
+    size={props.size}
+   >
+    <SlotHolder schema={props.slots?.[0]} />
+   </Card>
   }
 }
 
-export default Def
+export default CardDef

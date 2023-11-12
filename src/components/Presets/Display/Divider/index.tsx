@@ -15,7 +15,7 @@ const DividerDef: UIComp.Def<DividerProps> = {
     {
       name: 'type',
       label: '类型',
-      valueType: 'enum',
+      valueType: 'string',
       editor: {
         type: 'radio',
         options: [
@@ -28,7 +28,7 @@ const DividerDef: UIComp.Def<DividerProps> = {
     {
       name: 'orientation',
       label:"分割线文字位置",
-      valueType: 'enum',
+      valueType: 'string',
       editor: {
         type: 'select',
         options: ['left','right','center']

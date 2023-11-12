@@ -1,17 +1,19 @@
-import { UIComp } from "@/libs/core/Def"
-import { Input } from "@arco-design/web-react"
-import { useEffect, useState } from "react"
+import { OptionType, UIComp } from "@/libs/core/Def"
+import { Input, Select } from "@arco-design/web-react"
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 
 
 type SelectProps = {
   maxLength?: number
   value?: any
+  multiple?: boolean
+  options?: OptionType[]
   setValue?: (v: any) => void
   onChange?: (v: string) => void
 }
 
 
-const InputDef: UIComp.Def<SelectProps> = {
+const SelectDef: UIComp.Def<SelectProps> = {
   name: 'select',
   label: '下拉选择',
 
@@ -37,6 +39,11 @@ const InputDef: UIComp.Def<SelectProps> = {
       name: 'options',
       valueType: 'array',
       editor: {type: 'options'}
+    },{
+      name: 'multiple',
+      valueType: 'boolean',
+      defaultValue: false,
+      editor: {type:'boolean'}
     }
   ],
   states: [
@@ -51,8 +58,14 @@ const InputDef: UIComp.Def<SelectProps> = {
       valueType: 'string'
     }
   ],
+  actions: [
+    {
+      name: 'setValue',
+      valueType: 'any'
+    }
+  ],
 
-  render(props) {
+  render: forwardRef((props, ref) => {
     const {style, classNames, maxLength, value, onChange, updateState} = props
     const [innerValue, setInnerValue] = useState(props.value || '')
     useEffect(() => {
@@ -65,10 +78,19 @@ const InputDef: UIComp.Def<SelectProps> = {
       onChange?.(v)
       updateState?.('value', v)
     }
-    return <Input value={innerValue} onChange={handleChange} maxLength={maxLength} className={classNames}  />
-  },
+
+    useImperativeHandle(ref, () => {
+      return {
+        setValue: (v: any) => {
+          handleChange(v)
+        }
+      }
+    })
+    
+    return <Select value={innerValue} onChange={handleChange} mode={props.multiple ? 'multiple' : undefined} className={classNames}  />
+  }),
 
 
 }
 
-export default InputDef
+export default SelectDef

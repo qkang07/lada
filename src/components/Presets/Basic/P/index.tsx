@@ -14,6 +14,13 @@ const ParagraphDef: UIComp.Def<PProps> = {
     name: 'default',
     single: true
   }],
+  onSchemaCreate(initSchema) {
+    initSchema.slots = [{
+      name: 'default',
+      children: []
+    }]
+      return initSchema
+  },
   render: (props) => {
     return <Typography.Paragraph>
       <SlotHolder schema={props.slots?.[0]} />

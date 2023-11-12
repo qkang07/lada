@@ -13,15 +13,20 @@ import { IconLink } from '@arco-design/web-react/icon';
 
 
 function nrmlzOptions(options:OptionType[]) {
+  if(!options || !(options instanceof Array)) {
+    console.warn('invalid options value!', options)
+    return []
+  }
+  console.log(options)
   return options.map(item => {
     if(typeof item === 'object' && Reflect.has(item, 'value')) {
       const oitem = item as {value: PrimitiveType, label?: string | ReactNode}
       return {
         value: oitem.value,
-        label: oitem.label || oitem.value
+        label: String(oitem.label || oitem.value)
       }
     }
-    return {value: item, label: item}
+    return {value: item, label: String(item)}
 
   })
 }
@@ -66,7 +71,7 @@ const CustomPropsEditor = observer((props: Props) => {
         // const binding = compSchema?.?.find(
         //   (b) => b.prop === prop.name
         // );
-        const value = compSchema?.defaultProps?.[prop.name]
+        const value = compSchema?.defaultProps?.[prop.name] || prop.defaultValue
         const editor =
           typeof prop.editor === "string" ? { type: prop.editor } : prop.editor;
 

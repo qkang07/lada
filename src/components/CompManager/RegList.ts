@@ -6,6 +6,12 @@ import ParagraphDef from "@/components/Presets/Basic/P";
 import { UIComp, CompDefBase } from "@/libs/core/Def";
 import VarDataSource from "@/components/Presets/DataSources/var";
 import AlertDef from "../Presets/Feedback/Alert";
+import CardDef from "../Presets/Display/Card";
+import AvatarDef from "../Presets/Display/Avatar";
+import CarouselDef from "../Presets/Display/Carousel";
+import DividerDef from "../Presets/Display/Divider";
+import SpaceDef from "../Presets/Display/Space";
+import SelectDef from "../Presets/Input/Select";
 
 
 export type CompRegCat = {
@@ -35,10 +41,22 @@ export const UICompRegTable: CompRegCat[] = [
     ]
   },
   {
+    category: 'display',
+    label: 'Display',
+    items: [
+      CardDef,
+      AvatarDef,
+      CarouselDef,
+      DividerDef,
+      SpaceDef
+    ]
+  },
+  {
     category: 'input',
     label: 'Input',
     items: [
-      InputDef
+      InputDef,
+      SelectDef
     ]
   },
   {

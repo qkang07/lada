@@ -52,7 +52,7 @@ const Renderer = observer((props: Props) => {
         // 绑定 action
         if(!isDesign) {
   
-          agent.def.meta.actions?.forEach(act => {
+          agent.def.actions?.forEach(act => {
             agent.onActionCall(act.name, (params) => {
               if(typeof instanceRef.current[act.name] === 'function') {
                 instanceRef.current[act.name](params)
@@ -62,7 +62,7 @@ const Renderer = observer((props: Props) => {
             })
           })
   
-          agent.def.meta.props?.forEach(prop => {
+          agent.def.props?.forEach(prop => {
             agent.onPropChange(prop.name, (v) => {
               compProps[prop.name] = v
               setCompProps({...compProps})
@@ -107,7 +107,7 @@ const Renderer = observer((props: Props) => {
   }
 
   // 绑定 event
-  agent?.def.meta.events?.forEach(ev => {
+  agent?.def.events?.forEach(ev => {
     renderProps[ev.name] = (payload: any) => {
       // console.log('comp emit event', ev.name, payload)
       agent.emitEvent(ev.name, payload)
