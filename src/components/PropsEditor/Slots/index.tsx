@@ -26,7 +26,7 @@ const CompSlots = (props: Props) => {
 
         return <div key={slot.name} className={`${styles.slotItem} ${pstyle.propField}`}>
           <span className={pstyle.label}>{slot.label || slot.name}</span>
-          <div className={pstyle.rightPart}>
+          {/* <div className={pstyle.rightPart}>
             <div style={{flex: 1}}>
             手动输入：<Switch checked={showText} onChange={v => {
               setShowText(v)
@@ -42,7 +42,7 @@ const CompSlots = (props: Props) => {
       
 
             </div>
-          </div>
+          </div> */}
         </div>
       })}
     </SidePane>

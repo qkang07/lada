@@ -4,6 +4,8 @@ import { BindingSchema, UIComp } from "../../libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
 import Renderer from "../Renderer";
 import { observer } from "mobx-react";
+import { Button } from "@arco-design/web-react";
+import { IconEdit } from "@arco-design/web-react/icon";
 
 type Props = {
   // name?: string
@@ -25,6 +27,7 @@ const SlotHolder = observer((props: Props) => {
     return <></>
   }
 
+  
 
   return (
     <>
@@ -37,7 +40,10 @@ const SlotHolder = observer((props: Props) => {
       
 
       {isDesign && !hasChildren && (
-        <div className={styles.slotHolder}>Put something here</div>
+        <div className={styles.slotHolder}>
+          <span>添加内容</span>
+          <Button type='text' icon={<IconEdit/>}>手动编辑</Button>
+        </div>
       )}
 
       {/* {slotSchema.type === "loop" ? (
@@ -47,11 +53,12 @@ const SlotHolder = observer((props: Props) => {
       ) : (
         <></>
       )} */}
-
-      {hasChildren &&
-        slotSchema.children?.map((comp, i) => {
+      {
+        slotSchema.text ? slotSchema.text : (hasChildren &&      slotSchema.children?.map((comp, i) => {
           return <Renderer slot={slotSchema} schema={comp} key={i} />;
-        })}
+        }))
+      }
+
       {
         isDesign && <span
         data-slot-name={slotSchema.name}

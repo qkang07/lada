@@ -50,8 +50,10 @@ export interface StringEditorType extends PropEditorBase {
 }
 
 export interface OtherEditorType extends PropEditorBase {
-  type: 'boolean' | 'options',
+  type: 'boolean' | 'options' | 'void',
 }
+
+
 
 export type PropEditorType = SelectEditorType | NumberEditorType | StringEditorType | OtherEditorType
 

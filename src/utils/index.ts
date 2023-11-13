@@ -10,3 +10,19 @@ export const randomId = customAlphabet(alphabet, 15);
 export type Optional<T extends Record<string, any>> = {
   [P in keyof T]?: T[P];
 };
+
+export const isEmpty = (v: any) => {
+  return v === undefined || v === null || isNaN(v)
+}
+
+export const firstAvailable = (...items: any[]) => {
+  while(items.length) {
+    const v = items.shift()
+    if(isEmpty(v)) {
+      continue
+    } else {
+      return v
+    }
+  }
+  return undefined
+}
