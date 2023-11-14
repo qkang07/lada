@@ -159,6 +159,7 @@ export namespace UIComp {
     instance?: I
     updateState? :(name: string, value?: any) => void
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
+    mode?: 'design' | 'runtime' | 'view' 
   } & T
   
   

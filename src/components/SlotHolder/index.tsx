@@ -1,4 +1,11 @@
-import React, { CSSProperties, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  CSSProperties,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import styles from "./index.module.less";
 import { BindingSchema, UIComp } from "../../libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
@@ -14,6 +21,7 @@ type Props = {
   style?: CSSProperties;
   className?: string;
   props?: any;
+  children?: ReactNode;
 };
 
 const SlotHolder = observer((props: Props) => {
@@ -23,49 +31,51 @@ const SlotHolder = observer((props: Props) => {
 
   const hasChildren = !!props.schema?.children?.length;
 
-  if(!slotSchema) {
-    return <></>
+  if (!slotSchema) {
+    return <></>;
   }
 
-  
+
+  const showText = !!slotSchema.text;
+
+  const showSlotContent = !showText && !!slotSchema.children?.length;
+
+  const showDefaultContent = !showText && !showSlotContent && !!props.children;
+
+  const showDesignHolder = isDesign
 
   return (
     <>
-    {
-      isDesign && <span
-      data-slot-name={slotSchema.name}
-      data-slot-tag="start"
-    ></span>
-    }
-      
+      {isDesign && (
+        <span data-slot-name={slotSchema.name} data-slot-tag="start"></span>
+      )}
 
       {isDesign && !hasChildren && (
         <div className={styles.slotHolder}>
           <span>添加内容</span>
-          <Button type='text' icon={<IconEdit/>}>手动编辑</Button>
+          <Button type="text" icon={<IconEdit />}>
+            手动编辑
+          </Button>
         </div>
       )}
 
-      {/* {slotSchema.type === "loop" ? (
-        slotBinding.map((value, i) => (
-          <Renderer props={value} key={i} schema={rtSchema.children![0]!} />
-        ))
-      ) : (
-        <></>
-      )} */}
-      {
-        slotSchema.text ? slotSchema.text : (hasChildren &&      slotSchema.children?.map((comp, i) => {
+      {showText && slotSchema.text}
+      {showSlotContent &&
+        slotSchema.children?.map((comp, i) => {
           return <Renderer slot={slotSchema} schema={comp} key={i} />;
-        }))
-      }
+        })}
+
+      {showDefaultContent && props.children}
+
+      {isDesign && (
+        <span data-slot-name={slotSchema.name} data-slot-tag="end"></span>
+      )}
 
       {
-        isDesign && <span
-        data-slot-name={slotSchema.name}
-        data-slot-tag="end"
-      ></span>
+        isDesign && <div className={styles.slotFrame}>
+          
+        </div>
       }
-      
     </>
   );
 });

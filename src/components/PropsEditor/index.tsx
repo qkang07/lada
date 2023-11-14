@@ -26,7 +26,7 @@ const PropsEditor = (props: Props) => {
       <CompSlots/>
       <CompEvents/>
       <CompActions/>
-      {/* <StyleEditor/> */}
+      <StyleEditor/>
       {/* <EditorStack items={[
       ]}></EditorStack> */}
    
