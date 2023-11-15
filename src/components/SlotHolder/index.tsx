@@ -19,22 +19,20 @@ type Props = {
   // compId: string
   schema?: UIComp.SlotSchema;
   style?: CSSProperties;
+  slotTag?: keyof HTMLElementTagNameMap
   className?: string;
   props?: any;
   children?: ReactNode;
 };
 
 const SlotHolder = observer((props: Props) => {
-  const { schema: slotSchema } = props;
+  const { schema: slotSchema, className, style } = props;
 
   const { isDesign } = useContext(DesignerContext);
-
-  const hasChildren = !!props.schema?.children?.length;
 
   if (!slotSchema) {
     return <></>;
   }
-
 
   const showText = !!slotSchema.text;
 
@@ -42,42 +40,86 @@ const SlotHolder = observer((props: Props) => {
 
   const showDefaultContent = !showText && !showSlotContent && !!props.children;
 
-  const showDesignHolder = isDesign
+  const showDesignHolder = isDesign && !showText && !showSlotContent && !showDefaultContent  ;
 
-  return (
-    <>
-      {isDesign && (
-        <span data-slot-name={slotSchema.name} data-slot-tag="start"></span>
-      )}
+  const renderChildren: ReactNode[] = []
 
-      {isDesign && !hasChildren && (
-        <div className={styles.slotHolder}>
-          <span>添加内容</span>
-          <Button type="text" icon={<IconEdit />}>
-            手动编辑
-          </Button>
-        </div>
-      )}
+  if(showText) {
+    renderChildren.push(slotSchema.text)
+  }
+  if(showSlotContent) {
+    renderChildren.push(...slotSchema.children!.map((comp, i) => {
+      return <Renderer slot={slotSchema} schema={comp} key={i} />;
+    }))
+  }
+  if(showDefaultContent) {
+    renderChildren.push(props.children)
+  }
+  if(showDesignHolder) {
+    renderChildren.push(<div className={styles.slotHolder}>
+      <span>添加内容</span>
+      <Button type="text" icon={<IconEdit />}>
+        手动编辑
+      </Button>
+    </div>)
+  }
 
-      {showText && slotSchema.text}
-      {showSlotContent &&
-        slotSchema.children?.map((comp, i) => {
-          return <Renderer slot={slotSchema} schema={comp} key={i} />;
-        })}
+  return React.createElement(props.slotTag || 'div', {}, ...renderChildren);
+  //  (
+  //   <div className={`slot-holder ${className}`} style={{...style}} data-slot-name={slotSchema.name}>
+  //     {showText && slotSchema.text}
+  //     {showSlotContent &&
+  //       slotSchema.children?.map((comp, i) => {
+  //         return <Renderer slot={slotSchema} schema={comp} key={i} />;
+  //       })}
 
-      {showDefaultContent && props.children}
+  //     {showDefaultContent && props.children}
+  //     {showDesignHolder && (
+  //       <div className={styles.slotHolder}>
+  //         <span>添加内容</span>
+  //         <Button type="text" icon={<IconEdit />}>
+  //           手动编辑
+  //         </Button>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 
-      {isDesign && (
-        <span data-slot-name={slotSchema.name} data-slot-tag="end"></span>
-      )}
+  // NOTE： 这个版本认为 slot holder 不应该有自己的 dom。
+  // return (
+  //   <>
+  //     {isDesign && (
+  //       <span data-slot-name={slotSchema.name} data-slot-tag="start"></span>
+  //     )}
 
-      {
-        isDesign && <div className={styles.slotFrame}>
-          
-        </div>
-      }
-    </>
-  );
+  //     {isDesign && !hasChildren && (
+  //       <div className={styles.slotHolder}>
+  //         <span>添加内容</span>
+  //         <Button type="text" icon={<IconEdit />}>
+  //           手动编辑
+  //         </Button>
+  //       </div>
+  //     )}
+
+  //     {showText && slotSchema.text}
+  //     {showSlotContent &&
+  //       slotSchema.children?.map((comp, i) => {
+  //         return <Renderer slot={slotSchema} schema={comp} key={i} />;
+  //       })}
+
+  //     {showDefaultContent && props.children}
+
+  //     {isDesign && (
+  //       <span data-slot-name={slotSchema.name} data-slot-tag="end"></span>
+  //     )}
+
+  //     {
+  //       isDesign && <div className={styles.slotFrame}>
+
+  //       </div>
+  //     }
+  //   </>
+  // );
 });
 
 export default SlotHolder;

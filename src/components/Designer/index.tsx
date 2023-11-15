@@ -70,14 +70,12 @@ function findSlot(
     return undefined;
   }
 
-  if (dom.dataset?.slotName && dom.dataset?.slotTag === 'start') {
+  if (dom.classList.contains('slot-holder') && dom.dataset?.slotName) {
     const compDomInfo = findComp(dom)!;
     return {
       compDomInfo,
       name: dom.dataset.slotName!,
     };
-  } else if(dom.previousElementSibling) {
-    return findSlot(dom.previousElementSibling as HTMLElement)
   } else if (dom.parentElement) return findSlot(dom.parentElement);
   
   return undefined;

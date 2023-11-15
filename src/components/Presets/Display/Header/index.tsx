@@ -63,7 +63,7 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
         </SlotHolder>
       </div>
       <div className={styles.center}>
-        <SlotHolder schema={centerSlot}></SlotHolder>
+        <SlotHolder schema={centerSlot} ></SlotHolder>
       </div>
       <div className={styles.right}>
         <SlotHolder schema={rightSlot}></SlotHolder>
