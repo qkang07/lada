@@ -164,7 +164,7 @@ export namespace UIComp {
   
   
   export interface Def<P extends Record<string, any> = Record<string, any>, I = any> extends CompDefBase<Schema>, CompMeta {
-    render?: (props: RenderProps<P, I>) => JSX.Element | null
+    render: (props: RenderProps<P, I>) => JSX.Element
   };
 }
 

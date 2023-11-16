@@ -119,10 +119,11 @@ const Renderer = observer((props: Props) => {
   
   if(CompRender) {
 
-    return <>
+    return <div>
+     {/** // TODO: 这里应该采用传入 props 让子组件绑定，像 beautiful dnd 那样 */}
       <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span>
       <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
-    </>
+    </div>
   } 
   // else if(schema && bdCon) {
   //   return <span>未找到组件 {schema.provider}</span>

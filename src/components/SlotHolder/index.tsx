@@ -44,6 +44,8 @@ const SlotHolder = observer((props: Props) => {
 
   const renderChildren: ReactNode[] = []
 
+
+
   if(showText) {
     renderChildren.push(slotSchema.text)
   }
@@ -64,7 +66,11 @@ const SlotHolder = observer((props: Props) => {
     </div>)
   }
 
-  return React.createElement(props.slotTag || 'div', {}, ...renderChildren);
+  return React.createElement(props.slotTag || 'div', {
+    className: `slot-holder ${className || ''}`,
+    'data-slot-name': slotSchema.name,
+    style: {...style}
+  }, ...renderChildren);
   //  (
   //   <div className={`slot-holder ${className}`} style={{...style}} data-slot-name={slotSchema.name}>
   //     {showText && slotSchema.text}
