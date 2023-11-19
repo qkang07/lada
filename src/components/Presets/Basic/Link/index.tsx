@@ -39,7 +39,7 @@ const LinkDef: UIComp.Def<ILinkProps> = {
       defaultValue: '_blank',
       editor: {
         type: 'select',
-        config: [
+        options: [
           {value:'_self'},
           {value:'_blank'},
           {value:'_top'},
@@ -61,7 +61,9 @@ const LinkDef: UIComp.Def<ILinkProps> = {
 
   },
   render(props) {
-   return <Link target={props.target} href={props.href} className={props.classNames} style={props.style} disabled={props.disabled}>{props.children}</Link>
+   return <Link target={props.target} href={props.href} disabled={props.disabled} {...props.domAttrs}>
+    
+    {props.children}</Link>
   }
 }
 

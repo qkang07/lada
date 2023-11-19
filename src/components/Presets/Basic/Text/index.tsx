@@ -44,7 +44,7 @@ const TextDef: UIComp.Def<ITextProps> = {
     return agent
   },
   render(props) {
-   return <span className={props.classNames} style={props.style}>{props.text}</span>
+   return <span {...props.domAttrs} >{props.text}</span>
   }
 }
 

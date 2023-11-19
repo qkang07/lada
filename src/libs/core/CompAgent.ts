@@ -28,7 +28,7 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   schema: S
 
-  parentAgent?: CompAgent
+  parentAgent?: typeof this
 
   parentSlot?: UIComp.SlotSchema
 

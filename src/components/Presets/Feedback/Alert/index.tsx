@@ -11,7 +11,6 @@ type IAlertProps = {
   showIcon?: boolean
   onClose?:() => void
   afterClose?: () => void
-  [others:string]:any
 }
 
 const AlertDef: UIComp.Def<IAlertProps> = {
@@ -95,8 +94,6 @@ const AlertDef: UIComp.Def<IAlertProps> = {
   },
   render(props) {
    return <Alert 
-    className={props.classNames}
-    style={props.style}
     title={props.title}
     type={props.type}
     closable={props.closable}
@@ -104,6 +101,7 @@ const AlertDef: UIComp.Def<IAlertProps> = {
     content={props.content}
     onClose={props.onClose}
     afterClose={props.afterClose}
+    {...props.domAttrs}
     ></Alert>
   }
 }

@@ -36,12 +36,14 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
       return initSchema
   },
   render: (props) => {
-    const style: CSSProperties = {}
-    if(props.direction === 'horizon') {
+    const {domAttrs, direction} = props
+    const style: CSSProperties =  {}
+    if(direction === 'horizon') {
       style.display = 'flex'
     }
+    
     const defaultSlot = props.slots?.[0]
-    return <div style={style} className={styles.listLayout}>
+    return <div {...domAttrs} style={{...style, ...domAttrs.style}} >
       {
         defaultSlot ? <SlotHolder schema={defaultSlot} /> : <></>
       }

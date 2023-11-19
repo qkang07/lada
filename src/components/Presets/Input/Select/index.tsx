@@ -66,7 +66,7 @@ const SelectDef: UIComp.Def<SelectProps> = {
   ],
 
   render: forwardRef((props, ref) => {
-    const {style, classNames, maxLength, value, onChange, updateState} = props
+    const { maxLength, value, onChange, updateState} = props
     const [innerValue, setInnerValue] = useState(props.value || '')
     useEffect(() => {
       if(value !== undefined && value !== null) {
@@ -87,7 +87,7 @@ const SelectDef: UIComp.Def<SelectProps> = {
       }
     })
     
-    return <Select value={innerValue} onChange={handleChange} mode={props.multiple ? 'multiple' : undefined} className={classNames}  />
+    return <Select value={innerValue} onChange={handleChange} mode={props.multiple ? 'multiple' : undefined} {...props.domAttrs} />
   }),
 
 

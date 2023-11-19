@@ -65,10 +65,11 @@ const CardDef: UIComp.Def<IProps> = {
   },
   render(props) {
    return <Card
-    bordered={props.bordered}
-    hoverable={props.hoverable}
-    loading={props.loading}
-    size={props.size}
+   bordered={props.bordered}
+   hoverable={props.hoverable}
+   loading={props.loading}
+   size={props.size}
+   {...props.domAttrs}
    >
     <SlotHolder schema={props.slots?.[0]} />
    </Card>

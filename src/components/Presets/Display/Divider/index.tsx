@@ -38,8 +38,7 @@ const DividerDef: UIComp.Def<DividerProps> = {
   render(props) {
     return <Divider orientation={props.orientation}
       type={props.type}
-      className={props.classNames}
-      style={props.style}
+      {...props.domAttrs}
     />
   }
 }

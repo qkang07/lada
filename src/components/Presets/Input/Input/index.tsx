@@ -31,7 +31,7 @@ const InputDef: UIComp.Def<InputProps> = {
   // },
 
   render(props) {
-    const {style, classNames, maxLength, value, onChange, updateState} = props
+    const {maxLength, value, onChange, updateState} = props
     const [innerValue, setInnerValue] = useState(props.value || '')
     useEffect(() => {
       if(value !== undefined && value !== null) {
@@ -43,7 +43,9 @@ const InputDef: UIComp.Def<InputProps> = {
       onChange?.(v)
       updateState?.('value', v)
     }
-    return <Input value={innerValue} onChange={handleChange} maxLength={maxLength} className={classNames}  />
+    return <Input value={innerValue} onChange={handleChange} maxLength={maxLength}
+      {...props.domAttrs}
+    />
   },
 
 }

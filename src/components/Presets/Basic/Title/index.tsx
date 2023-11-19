@@ -24,7 +24,7 @@ const TitleDef: UIComp.Def<ITitleProps> = {
       valueType: 'number',
       desc: '标题等级',
       defaultValue: 1,
-      editor: {type: 'select', config: [
+      editor: {type: 'select', options: [
         {value: 1},
         {value: 2},
         {value: 3},
@@ -47,7 +47,7 @@ const TitleDef: UIComp.Def<ITitleProps> = {
     
   },
   render(props) {
-   return <Typography.Title heading={props.level}>{props.text}</Typography.Title>
+   return <Typography.Title heading={props.level} {...props.domAttrs}>{props.text}</Typography.Title>
   }
 }
 

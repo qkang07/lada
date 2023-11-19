@@ -39,7 +39,8 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
   ],
 
   render(props) {
-    const {style, classNames, slots} = props
+    const {domAttrs, slots} = props
+    const {classNames} = domAttrs
     let leftSlot: UIComp.SlotSchema | undefined 
     let centerSlot: UIComp.SlotSchema | undefined
     let rightSlot: UIComp.SlotSchema | undefined
@@ -53,7 +54,7 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
         rightSlot = slot
       }
     })
-    return <div className={`${classNames} ${styles.header}`} style={{...style}}>
+    return <div {...domAttrs} className={`${classNames} ${styles.header}`} >
       <div className={styles.left}>
         <SlotHolder schema={leftSlot}>
           <div className={styles.logo}>

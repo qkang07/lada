@@ -32,7 +32,7 @@ const IconDef: UIComp.Def<IconProps> = {
   render(props) {
     const Icon: (p: any) => JSX.Element = (ArcoIcon as Record<string ,any>)[props.name]
     if(Icon) {
-      return <Icon className={props.classNames} style={props.style} />
+      return <Icon {...props.domAttrs}  />
     }
     return <></>
 

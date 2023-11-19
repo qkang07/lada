@@ -67,7 +67,9 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     },[props.children])
     return <Button type={props.type}
       disabled={props.disabled}
-    onClick={props.onClick}>{innerChild}</Button>
+    onClick={props.onClick}
+    {...props.domAttrs}
+    >{innerChild}</Button>
   }),
   onSchemaCreate(schema: UIComp.Schema) {
     

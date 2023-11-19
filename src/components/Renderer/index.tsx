@@ -11,7 +11,7 @@ import styles from './index.module.less'
 
 
 type Props = {
-  schema?: UIComp.Schema
+  schema: UIComp.Schema
   slot: UIComp.SlotSchema
 }
 
@@ -103,7 +103,13 @@ const Renderer = observer((props: Props) => {
       agent?.updateState({[state]: value})
     },
     ...compProps,
-    state: agent?.state
+    state: agent?.state,
+    domAttrs: {
+      dataCompKey: schema.id,
+      dataInstanceKey: agent?.id!,
+      style: schema.style || {},
+      classNames: schema.className || ''
+    }
   }
 
   // 绑定 event
@@ -119,11 +125,9 @@ const Renderer = observer((props: Props) => {
   
   if(CompRender) {
 
-    return <div>
+    return <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
      {/** // TODO: 这里应该采用传入 props 让子组件绑定，像 beautiful dnd 那样 */}
-      <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span>
-      <CompRender ref={instanceRef} slots={schema?.slots} {...renderProps} />
-    </div>
+      {/* <span ref={flagRef} className={styles.compFlag} data-lada-comp-id={agent?.id}></span> */}
   } 
   // else if(schema && bdCon) {
   //   return <span>未找到组件 {schema.provider}</span>

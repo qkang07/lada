@@ -61,8 +61,7 @@ const AvatarDef: UIComp.Def<IAvatarProps> = {
    return <Avatar shape={props.shape}
     size={props.size}
     onClick={props.onClick}
-    className={props.classNames}
-    style={props.style}
+    {...props.domAttrs}
    >{props.children}</Avatar>
   }
 }

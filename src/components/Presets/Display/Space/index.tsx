@@ -42,7 +42,8 @@ const SpaceDef: UIComp.Def<Props> = {
   },
   render(props) {
 
-    return <Space className={props.classNames} style={props.style} direction={props.direction} size={props.size}>
+    return <Space direction={props.direction} size={props.size}
+    {...props.domAttrs}>
       <SlotHolder schema={props.slots?.[0]}/>
     </Space>
   }

@@ -50,8 +50,8 @@ export type SlotInfo = {
 
 function findComp(dom: HTMLElement): CompDomInfo | undefined {
   const sib = dom.previousSibling as HTMLElement;
-  if (sib && sib.dataset?.ladaCompId) {
-    const id = sib.dataset.ladaCompId;
+  if(dom.dataset?.laddaCompId) {
+    const id = sib.dataset.ladaCompId!;
     return {
       id,
       dom,
@@ -189,7 +189,7 @@ const Designer = (props: Props) => {
       const compDomInfo = findComp(source);
       const bdCon = canvasRef.current?.bdCon;
       if (compDomInfo?.id) {
-        const agent = bdCon?.compMap.get(compDomInfo.id)!;
+        const agent = bdCon?.compMap.get(compDomInfo.id) ;
         setCurrentAgent(agent)
         focusFrameRef.current?.setCompDom(compDomInfo.dom)
       }
@@ -197,7 +197,7 @@ const Designer = (props: Props) => {
       const theSlot = findSlot(source);
       // debugger
       if (theSlot?.name) {
-        const agent = bdCon?.compMap.get(theSlot.compDomInfo.id);
+        const agent = bdCon?.compMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
         setCurrentSlot({
           name: theSlot.name,
           // dom: theSlot.dom,
@@ -211,7 +211,7 @@ const Designer = (props: Props) => {
     const agents = canvasRef.current?.bdCon?.schemaCompMap.get(schema.id)
     console.log(agents)
     if(agents?.length) {
-      const agent = agents[0]
+      const agent = agents[0] as CompAgent<UIComp.Schema, UIComp.Def>
       const dom = agent.findDom()
       setCurrentAgent(agent)
       console.log('comp dom',dom)

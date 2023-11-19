@@ -127,8 +127,6 @@ const CarouselDef : UIComp.Def<CarouselType> = {
 
     return <Carousel
       ref={insRef}
-      className={props.classNames}
-      style={props.style}
       miniRender={props.minRender}
       currentIndex={props.currentIndex}
       moveSpeed={props.moveSpeed}
@@ -143,7 +141,7 @@ const CarouselDef : UIComp.Def<CarouselType> = {
       autoPlay={props.autoPlay}
       indicatorClassName={props.indicatorClassName}
       onChange={props.onChange}
-
+      {...props.domAttrs}
     >
       {props.children?.map(item => {
         return item

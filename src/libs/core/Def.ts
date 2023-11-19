@@ -149,17 +149,22 @@ export namespace UIComp {
   
   export interface Schema extends CompSchemaBase {
     slots?: SlotSchema[]
-    style?: string | CSSProperties
+    style?: CSSProperties
     className?: string
   }
   
   export type RenderProps<T extends Record<string, any> = Record<string, any>, I = any> = {
-    style?: CSSProperties;
-    classNames?: string;
     instance?: I
     updateState? :(name: string, value?: any) => void
     slots?: SlotSchema[] // TODO: 存疑，slot 应该有 instance?
     mode?: 'design' | 'runtime' | 'view' 
+    // 需要绑定到 dom 上的东西
+    domAttrs: {
+      style: CSSProperties;
+      classNames: string;
+      dataLalaCompId: string
+      dataLalaInstanceId: string
+    }
   } & T
   
   

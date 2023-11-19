@@ -22,7 +22,7 @@ const ParagraphDef: UIComp.Def<PProps> = {
       return initSchema
   },
   render: (props) => {
-    return <Typography.Paragraph>
+    return <Typography.Paragraph {...props.domAttrs}>
       <SlotHolder schema={props.slots?.[0]} />
      </Typography.Paragraph>
   }
