@@ -135,6 +135,7 @@ export namespace UIComp {
   export type SlotType = 'single' | 'list' | 'loop'
   
   export interface SlotDef extends DescBase {
+    placeholder?: string
     single?: boolean
     prop?: StatePropDef
   }
@@ -162,8 +163,8 @@ export namespace UIComp {
     domAttrs: {
       style: CSSProperties;
       classNames: string;
-      dataLalaCompId: string
-      dataLalaInstanceId: string
+      'data-lada-schema-id': string
+      'data-lada-agent-id': string
     }
   } & T
   

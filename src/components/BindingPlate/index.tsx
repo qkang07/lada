@@ -28,7 +28,7 @@ const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
   const {bdCon, currentCompAgent} = useContext(DesignerContext)
 
   const compList: CompAgent[] = []
-  bdCon?.compMap.forEach((comp) => {
+  bdCon?.agentMap.forEach((comp) => {
     compList.push(comp)
   })
 

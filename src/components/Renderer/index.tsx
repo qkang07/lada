@@ -105,8 +105,8 @@ const Renderer = observer((props: Props) => {
     ...compProps,
     state: agent?.state,
     domAttrs: {
-      dataCompKey: schema.id,
-      dataInstanceKey: agent?.id!,
+      'data-lada-schema-id': schema.id,
+      'data-lada-agent-id': agent?.id!,
       style: schema.style || {},
       classNames: schema.className || ''
     }

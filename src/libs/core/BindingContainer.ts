@@ -24,10 +24,11 @@ export type ContainerOptions = {
  * 这里除了运行时处理确定的组件绑定，也处理设计时动态的组件绑定。
  */
 export class BindingContainer {
-  compMap: Map<string, CompAgent> = new Map()
+  // 通过 agent id 找到 agent
+  agentMap: Map<string, CompAgent> = new Map()
 
   // 通过 schema id 找到 agent。
-  schemaCompMap: Map<string, CompAgent[]> = new Map()
+  schemaAgentMap: Map<string, CompAgent[]> = new Map()
 
   schema?: BindingScopeSchema
 
@@ -123,11 +124,11 @@ export class BindingContainer {
   // 找到已经注册的组件的 prop，绑定自己的 state
   regComp(comp: CompAgent) {
     // console.log('reg comp', comp.schema.name, comp)
-    this.compMap.set(comp.id, comp)
-    if(this.schemaCompMap.has(comp.schema.id)) {
-      this.schemaCompMap.get(comp.schema.id)?.push(comp)
+    this.agentMap.set(comp.id, comp)
+    if(this.schemaAgentMap.has(comp.schema.id)) {
+      this.schemaAgentMap.get(comp.schema.id)?.push(comp)
     } else {
-      this.schemaCompMap.set(comp.schema.id, [comp])
+      this.schemaAgentMap.set(comp.schema.id, [comp])
     }
 
     // 非设计时，需要实例化绑定。
@@ -138,8 +139,8 @@ export class BindingContainer {
 
   // 组件注销
   unRegComp(comp: CompAgent) {
-    this.compMap.delete(comp.id)
-    const agents = this.schemaCompMap.get(comp.schema.id)
+    this.agentMap.delete(comp.id)
+    const agents = this.schemaAgentMap.get(comp.schema.id)
     if(agents) {
       agents.splice(agents.indexOf(comp))
     }
@@ -296,7 +297,7 @@ export class BindingContainer {
 
   triggerAction(targetInfo: BindingInfo, payload?: any) {
     const {id, prop} = targetInfo
-    const agents = this.schemaCompMap.get(id) 
+    const agents = this.schemaAgentMap.get(id) 
     console.log('con.triggerAction', targetInfo, payload)
     if(agents) {
       agents.forEach(agent => {
@@ -309,7 +310,7 @@ export class BindingContainer {
 
   updateProp(targetInfo: BindingInfo, value: any) {
     const {id, prop} = targetInfo
-    const agents = this.schemaCompMap.get(id)
+    const agents = this.schemaAgentMap.get(id)
     if(agents) {
       agents.forEach(agent => {
         agent.updateProp(prop, value)

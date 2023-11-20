@@ -55,20 +55,14 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
       }
     })
     return <div {...domAttrs} className={`${classNames} ${styles.header}`} >
-      <div className={styles.left}>
-        <SlotHolder schema={leftSlot}>
-          <div className={styles.logo}>
-            {props.logo && <img src={props.logo}/>}
-          </div>
-          <div className={styles.title}>{props.title}</div>
-        </SlotHolder>
-      </div>
-      <div className={styles.center}>
-        <SlotHolder schema={centerSlot} ></SlotHolder>
-      </div>
-      <div className={styles.right}>
-        <SlotHolder schema={rightSlot}></SlotHolder>
-      </div>
+      <SlotHolder className={styles.left} schema={leftSlot}>
+        <div className={styles.logo}>
+          {props.logo && <img src={props.logo}/>}
+        </div>
+        <div className={styles.title}>{props.title}</div>
+      </SlotHolder>
+      <SlotHolder className={styles.center} placeholder="中间部分" schema={centerSlot} ></SlotHolder>
+      <SlotHolder className={styles.right} schema={rightSlot} placeholder="右侧"></SlotHolder>
     </div>
   }
 }

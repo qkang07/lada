@@ -23,12 +23,13 @@ type Props = {
   className?: string;
   props?: any;
   children?: ReactNode;
+  placeholder?: string
 };
 
 const SlotHolder = observer((props: Props) => {
   const { schema: slotSchema, className, style } = props;
 
-  const { isDesign } = useContext(DesignerContext);
+  const { isDesign, currentSlot, currentCompAgent } = useContext(DesignerContext);
 
   if (!slotSchema) {
     return <></>;
@@ -44,7 +45,7 @@ const SlotHolder = observer((props: Props) => {
 
   const renderChildren: ReactNode[] = []
 
-
+  const isActive = isDesign && currentSlot?.schema === slotSchema
 
   if(showText) {
     renderChildren.push(slotSchema.text)
@@ -58,16 +59,16 @@ const SlotHolder = observer((props: Props) => {
     renderChildren.push(props.children)
   }
   if(showDesignHolder) {
-    renderChildren.push(<div className={styles.slotHolder}>
-      <span>添加内容</span>
-      <Button type="text" icon={<IconEdit />}>
+    renderChildren.push(<div className={styles.slotPlaceholder}>
+      <span>{props.placeholder || '添加内容'}</span>
+      {/* <Button type="text" icon={<IconEdit />}>
         手动编辑
-      </Button>
+      </Button> */}
     </div>)
   }
 
   return React.createElement(props.slotTag || 'div', {
-    className: `slot-holder ${className || ''}`,
+    className: `slot-holder ${isActive ? 'slot-holder-active' : ''} ${className || ''}`,
     'data-slot-name': slotSchema.name,
     style: {...style}
   }, ...renderChildren);

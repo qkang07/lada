@@ -46,12 +46,12 @@ export type SlotInfo = {
   // id: string
   name: string;
   compAgent: CompAgent<UIComp.Schema, UIComp.Def>;
+  schema: UIComp.SlotSchema
 };
 
 function findComp(dom: HTMLElement): CompDomInfo | undefined {
-  const sib = dom.previousSibling as HTMLElement;
-  if(dom.dataset?.laddaCompId) {
-    const id = sib.dataset.ladaCompId!;
+  if(dom.dataset?.ladaAgentId) {
+    const id = dom.dataset.ladaAgentId!;
     return {
       id,
       dom,
@@ -62,7 +62,6 @@ function findComp(dom: HTMLElement): CompDomInfo | undefined {
   return void 0;
 }
 
-//  这个可以优化
 function findSlot(
   dom: HTMLElement
 ): { compDomInfo: CompDomInfo; name: string; } | undefined {
@@ -103,6 +102,7 @@ type DesignerContextType = {
     def: CompDefBase
     schema:CompSchemaBase
   }
+  currentSlot?: SlotInfo
   deleteComp?: (id: any) => any;
   openBinding?: (lookingFor:BindingElement, propName: string) => void;
 };
@@ -144,17 +144,8 @@ const Designer = (props: Props) => {
   };
 
   const addComp = action((provider: string) => {
-    const compDef = compMan.getComp(provider);
-    const id = randomId();
-    let schema: UIComp.Schema = {
-      provider,
-      name: provider + id,
-      id,
-    };
-
-    if (compDef?.onSchemaCreate) {
-      schema = compDef.onSchemaCreate(schema);
-    }
+    
+    let schema = compMan.createSchema(provider) as UIComp.Schema
 
     if (currentSlot) {
       console.log(currentSlot)
@@ -177,7 +168,7 @@ const Designer = (props: Props) => {
 
   const deleteComp = (id: string) => {
   const bdCon = canvasRef.current?.bdCon
-  const agent = bdCon?.compMap.get(id);
+  const agent = bdCon?.agentMap.get(id);
     if(agent) {
       const plist = agent?.parentSlot?.children
       plist?.splice(plist.indexOf(agent.schema), 1)
@@ -189,7 +180,7 @@ const Designer = (props: Props) => {
       const compDomInfo = findComp(source);
       const bdCon = canvasRef.current?.bdCon;
       if (compDomInfo?.id) {
-        const agent = bdCon?.compMap.get(compDomInfo.id) ;
+        const agent = bdCon?.agentMap.get(compDomInfo.id) ;
         setCurrentAgent(agent)
         focusFrameRef.current?.setCompDom(compDomInfo.dom)
       }
@@ -197,18 +188,19 @@ const Designer = (props: Props) => {
       const theSlot = findSlot(source);
       // debugger
       if (theSlot?.name) {
-        const agent = bdCon?.compMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
+        const agent = bdCon?.agentMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
         setCurrentSlot({
           name: theSlot.name,
           // dom: theSlot.dom,
           // compDomInfo: theSlot.compDomInfo,
           compAgent: agent!,
+          schema: agent.schema.slots!.find(s => s.name === 'default') || agent.schema.slots![0]
         })
       }
     }
 
   const handleTreeClick = (schema: UIComp.Schema) => {
-    const agents = canvasRef.current?.bdCon?.schemaCompMap.get(schema.id)
+    const agents = canvasRef.current?.bdCon?.schemaAgentMap.get(schema.id)
     console.log(agents)
     if(agents?.length) {
       const agent = agents[0] as CompAgent<UIComp.Schema, UIComp.Def>
@@ -219,6 +211,7 @@ const Designer = (props: Props) => {
       setCurrentSlot({
         name: agent.parentSlot!.name,
         compAgent: agent.parentAgent!,
+        schema: agent.schema.slots!.find(s => s.name === 'default') || agent.schema.slots![0]
         // dom: 
 
       })
@@ -227,7 +220,7 @@ const Designer = (props: Props) => {
 
   const choosePureComp = (id: string) => {
     const bdCon = canvasRef.current?.bdCon
-    const agent = bdCon?.compMap.get(id)
+    const agent = bdCon?.agentMap.get(id)
     if(agent) {
       setCurrentAgent(agent)
       focusFrameRef.current?.setCompDom(undefined)
@@ -252,6 +245,7 @@ const Designer = (props: Props) => {
         deleteComp,
         bdCon: canvasRef.current?.bdCon,
         currentCompAgent: currentAgent,
+        currentSlot,
         openBinding,
       }}
     >
@@ -280,7 +274,7 @@ const Designer = (props: Props) => {
                 }}
                   onChoose={choosePureComp}
                 />,
-                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />,
+                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} onSlotClick={handleSlotClick} />,
               ]}
             />
           </div>

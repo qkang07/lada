@@ -1,4 +1,16 @@
-.slot-holder {
+:global(.slot-holder) {
+  height: 100%;
+  width: 100%;
+
+}
+
+:global(.slot-holder-active) {
+  outline: 1px dashed green;
+  box-shadow: 0 0 16px 0 #aaaaaa;
+
+}
+
+.slot-placeholder {
   height: 100%;
   width: 100%;
   padding: 10px;
@@ -6,9 +18,4 @@
   background-color: #f6f6f6;
   box-sizing: border-box;
   text-align: center;
-}
-
-.slot-frame {
-  outline: 1px solid green;
-  
 }

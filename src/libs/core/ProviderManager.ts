@@ -100,7 +100,7 @@ export class ProviderManager<D extends CompDefBase> {
         name: provider + id,
         provider
       }
-      const uiDef = def as UIComp.Def
+      const uiDef = def as any as UIComp.Def
       if(uiDef.slots?.length) {
         (schema as UIComp.Schema).slots = uiDef.slots.map(slot => {
           return {
