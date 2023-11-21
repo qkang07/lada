@@ -12,6 +12,7 @@ import CarouselDef from "../Presets/Display/Carousel";
 import DividerDef from "../Presets/Display/Divider";
 import SpaceDef from "../Presets/Display/Space";
 import SelectDef from "../Presets/Input/Select";
+import HeaderDef from "../Presets/Display/Header";
 
 
 export type CompRegCat = {
@@ -48,7 +49,8 @@ export const UICompRegTable: CompRegCat[] = [
       AvatarDef,
       CarouselDef,
       DividerDef,
-      SpaceDef
+      SpaceDef,
+      HeaderDef
     ]
   },
   {

@@ -68,7 +68,6 @@ function findSlot(
   if (dom.dataset.ladaCanvas) {
     return undefined;
   }
-
   if (dom.classList.contains('slot-holder') && dom.dataset?.slotName) {
     const compDomInfo = findComp(dom)!;
     return {
@@ -183,23 +182,29 @@ const Designer = (props: Props) => {
         const agent = bdCon?.agentMap.get(compDomInfo.id) ;
         setCurrentAgent(agent)
         focusFrameRef.current?.setCompDom(compDomInfo.dom)
+        const theSlot = findSlot(source);
+        // debugger
+        if (theSlot?.name) {
+          const agent = bdCon?.agentMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
+          setCurrentSlot({
+            name: theSlot.name,
+            // dom: theSlot.dom,
+            // compDomInfo: theSlot.compDomInfo,
+            compAgent: agent!,
+            schema: agent.schema.slots!.find(s => s.name === theSlot.name)! 
+          })
+        } else {
+          setCurrentSlot(undefined)
+        }
+      } else {
+        setCurrentAgent(undefined)
+        setCurrentSlot(undefined)
       }
 
-      const theSlot = findSlot(source);
-      // debugger
-      if (theSlot?.name) {
-        const agent = bdCon?.agentMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
-        setCurrentSlot({
-          name: theSlot.name,
-          // dom: theSlot.dom,
-          // compDomInfo: theSlot.compDomInfo,
-          compAgent: agent!,
-          schema: agent.schema.slots!.find(s => s.name === 'default') || agent.schema.slots![0]
-        })
-      }
+    
     }
 
-  const handleTreeClick = (schema: UIComp.Schema) => {
+  const handleTreeClick = (schema: UIComp.Schema, slot?: UIComp.SlotSchema) => {
     const agents = canvasRef.current?.bdCon?.schemaAgentMap.get(schema.id)
     console.log(agents)
     if(agents?.length) {
@@ -208,14 +213,22 @@ const Designer = (props: Props) => {
       setCurrentAgent(agent)
       console.log('comp dom',dom)
       focusFrameRef.current?.setCompDom(dom)
-      setCurrentSlot({
-        name: agent.parentSlot!.name,
-        compAgent: agent.parentAgent!,
-        schema: agent.schema.slots!.find(s => s.name === 'default') || agent.schema.slots![0]
-        // dom: 
-
-      })
+      if(slot) {
+        setCurrentSlot({
+          name: slot.name,
+          compAgent: agent,
+          schema: slot
+        })
+      } else if(agent.def.slots?.length) {
+        const defaultSlot = agent.def.slots.find(s => s.name === 'default') || agent.def.slots[0]
+        setCurrentSlot({
+          name: defaultSlot.name,
+          compAgent: agent,
+          schema: agent.schema.slots!.find(s => s.name === defaultSlot.name)! 
+        })
+      }
     }
+
   }
 
   const choosePureComp = (id: string) => {
@@ -274,7 +287,7 @@ const Designer = (props: Props) => {
                 }}
                   onChoose={choosePureComp}
                 />,
-                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} onSlotClick={handleSlotClick} />,
+                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />,
               ]}
             />
           </div>

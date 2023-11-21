@@ -21,8 +21,8 @@ const CompSlots = (props: Props) => {
   return (
     <SidePane title='插槽'>
       {compDef.slots?.map(slot => {
-        const slotSchema = schema?.slots?.find(s => s.name === slot.name)
-        const [showText, setShowText] = useState(!!slotSchema?.text || !!slotSchema?.children?.length )
+        // const slotSchema = schema?.slots?.find(s => s.name === slot.name)
+        // const [showText, setShowText] = useState(!!slotSchema?.text || !!slotSchema?.children?.length )
 
         return <div key={slot.name} className={`${styles.slotItem} ${pstyle.propField}`}>
           <span className={pstyle.label}>{slot.label || slot.name}</span>

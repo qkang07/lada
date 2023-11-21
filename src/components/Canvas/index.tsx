@@ -159,11 +159,9 @@ console.log('canvas render')
     <CanvasContext.Provider value={{
       bdCon,
     }}>
-      <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef}>
+      <div data-lada-canvas="1" className={styles.canvasWrapper} ref={canvasDomRef} onClick={onCanvasClick }>
         {
-          initSchema && <div className={styles.canvasContext}  onClick={onCanvasClick }>
-            <Renderer slot={rootSlotRef.current} schema={initSchema?.uiRoot} />
-          </div>
+          initSchema && <Renderer slot={rootSlotRef.current} schema={initSchema?.uiRoot} />
         }
         
       </div>

@@ -21,7 +21,8 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
     },
     {
       name: 'title',
-      valueType: 'string'
+      valueType: 'string',
+      editor: {type: 'string'}
     }
   ],
   slots: [
@@ -66,3 +67,5 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
     </div>
   }
 }
+
+export default HeaderDef

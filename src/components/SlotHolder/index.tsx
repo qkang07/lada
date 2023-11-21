@@ -47,6 +47,8 @@ const SlotHolder = observer((props: Props) => {
 
   const isActive = isDesign && currentSlot?.schema === slotSchema
 
+  console.log('slott active', isActive, currentSlot, slotSchema)
+
   if(showText) {
     renderChildren.push(slotSchema.text)
   }

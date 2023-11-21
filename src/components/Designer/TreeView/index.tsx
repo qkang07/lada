@@ -10,8 +10,7 @@ type SlotClickHandler = (slot: UIComp.SlotSchema, comp: UIComp.Schema) => void
 
 const TreeContext = createContext<{
   indent?: number;
-  onNodeClick?: (node: UIComp.Schema) => void;
-  onSlotClick?: SlotClickHandler
+  onNodeClick?: (node: UIComp.Schema, slot?: UIComp.SlotSchema) => void;
 }>({});
 
 type NodeProps = {
@@ -20,7 +19,7 @@ type NodeProps = {
 };
 
 const TreeNode = observer((props: NodeProps) => {
-  const { indent, onNodeClick, onSlotClick } = useContext(TreeContext);
+  const { indent, onNodeClick } = useContext(TreeContext);
   const { schema } = props;
   const [expanded, setExpanded] = useState(true);
   const style = {
@@ -52,7 +51,7 @@ const TreeNode = observer((props: NodeProps) => {
         {schema.slots?.map((slot) => {
           return (
             <div className={styles.slot} key={slot.name}>
-              <div className={styles.slotTitle} onClick={() => onSlotClick?.(slot, schema) }>{slot.name}</div>
+              <div className={styles.slotTitle} onClick={() => onNodeClick?.(schema, slot) }>{slot.name}</div>
               {slot.children?.map((s) => {
                 return <TreeNode schema={s} key={s.id} />;
               })}
@@ -65,20 +64,18 @@ const TreeNode = observer((props: NodeProps) => {
 });
 
 type Props = {
-  onNodeClick?: (node: UIComp.Schema) => void;
-  onSlotClick?: (slot: UIComp.SlotSchema, comp: UIComp.Schema) => void
+  onNodeClick?: (node: UIComp.Schema, slot?: UIComp.SlotSchema) => void;
   root: UIComp.Schema;
 };
 
 const TreeView = observer((props: Props) => {
-  const { root, onNodeClick, onSlotClick } = props;
+  const { root, onNodeClick } = props;
   return (
     <SidePane title="UI组件树">
 
       <TreeContext.Provider
         value={{
           onNodeClick,
-          onSlotClick,
           indent: 10,
         }}
       >
