@@ -2,6 +2,7 @@ import { DesignerContext } from '@/components/Designer'
 import { OptionType, PrimitiveType, PropEditorType, StatePropDef } from '@/libs/core/Def'
 import { firstAvailable } from '@/utils'
 import { Input, InputNumber, Radio, Select, Switch } from '@arco-design/web-react'
+import { useDebounceFn } from 'ahooks'
 import React, { ReactNode, useContext } from 'react'
 
 
@@ -50,9 +51,9 @@ const PresetEditor = (props: Props) => {
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;
   
-  const handlePropChange = (name: string, value: any) => {
+  const {run: handlePropChange} = useDebounceFn((name: string, value: any) => {
     currentCompAgent?.updateDefaultProp(name, value)
-  }
+  }, {wait: 400}) 
   
   return (
     <div>
