@@ -3,7 +3,9 @@ import { OptionType, PrimitiveType, PropEditorType, StatePropDef } from '@/libs/
 import { firstAvailable } from '@/utils'
 import { Input, InputNumber, Radio, Select, Switch } from '@arco-design/web-react'
 import { useDebounceFn } from 'ahooks'
-import React, { ReactNode, useContext } from 'react'
+import { observe } from 'mobx'
+import { observer } from 'mobx-react'
+import React, { ReactNode, useContext, useEffect } from 'react'
 
 
 function nrmlzOptions(options:OptionType[]) {
@@ -40,20 +42,31 @@ type Props = {
   disabled?: boolean
 }
 
-const PresetEditor = (props: Props) => {
+const PresetEditor = observer((props: Props) => {
 
   const {prop, disabled} = props
 
   const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
   const compSchema = currentCompAgent?.schema
+
+  useEffect(() => {
+    observe(compSchema?.defaultProps, () =>{
+      
+    })
+  },[])
   
   const value = firstAvailable(compSchema?.defaultProps?.[prop.name] || prop.defaultValue)
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;
   
-  const {run: handlePropChange} = useDebounceFn((name: string, value: any) => {
+  // const {run: handlePropChange} = useDebounceFn((name: string, value: any) => {
+  //   currentCompAgent?.updateDefaultProp(name, value)
+  // }, {wait: 400}) 
+
+  const handlePropChange = (name: string, value: any) => {
     currentCompAgent?.updateDefaultProp(name, value)
-  }, {wait: 400}) 
+
+  }
   
   return (
     <div>
@@ -126,6 +139,6 @@ const PresetEditor = (props: Props) => {
                 )}
     </div>
   )
-}
+})
 
 export default PresetEditor

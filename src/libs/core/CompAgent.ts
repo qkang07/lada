@@ -1,6 +1,7 @@
 import { Optional, randomId } from "../../utils"
 import { BindingInfo, CompDefBase, CompSchemaBase, UIComp } from "./Def"
 import { compMan } from "../../components/CompManager/manager"
+import { makeAutoObservable } from "mobx"
 
 export type HandlerShape = (payload?: any) => void
 
@@ -47,7 +48,6 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
     this.id = randomId()
     this.state = {} as ST
     this.instance = def.onCreate?.(this)
-    // makeAutoObservable(this)
   }
 
   
