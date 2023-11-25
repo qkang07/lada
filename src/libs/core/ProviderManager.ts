@@ -95,10 +95,17 @@ export class ProviderManager<D extends CompDefBase> {
     const def = this.getComp(provider)
     if(def) {
       const id = randomId()
+      const defaultProps: Record<string, any> = {}
+      def.props?.forEach(prop => {
+        if(Reflect.has(prop, 'defaultValue')) {
+          defaultProps[prop.name] = prop.defaultValue
+        }
+      })
       let schema: CompSchemaBase = {
         id,
         name: provider + id,
-        provider
+        provider,
+        defaultProps
       }
       const uiDef = def as any as UIComp.Def
       if(uiDef.slots?.length) {

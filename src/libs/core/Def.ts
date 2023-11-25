@@ -77,7 +77,7 @@ export interface StatePropDef extends DescBase  {
 export interface CompSchemaBase extends DescBase {
   id: string // comp schema 也需要ID，为的是在 schema 中定位。区别于 comp instance 的 id
   provider: string
-  defaultProps?: Record<string, any>
+  defaultProps: Record<string, any>
 }
 
 export interface CompMetaBase extends DescBase {

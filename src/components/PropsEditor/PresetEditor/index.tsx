@@ -3,9 +3,9 @@ import { OptionType, PrimitiveType, PropEditorType, StatePropDef } from '@/libs/
 import { firstAvailable } from '@/utils'
 import { Input, InputNumber, Radio, Select, Switch } from '@arco-design/web-react'
 import { useDebounceFn } from 'ahooks'
-import { observe } from 'mobx'
+import { action, autorun, observable, observe } from 'mobx'
 import { observer } from 'mobx-react'
-import React, { ReactNode, useContext, useEffect } from 'react'
+import React, { ReactNode, useContext, useEffect, useState } from 'react'
 
 
 function nrmlzOptions(options:OptionType[]) {
@@ -48,14 +48,8 @@ const PresetEditor = observer((props: Props) => {
 
   const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
   const compSchema = currentCompAgent?.schema
-
-  useEffect(() => {
-    observe(compSchema?.defaultProps, () =>{
-      
-    })
-  },[])
   
-  const value = firstAvailable(compSchema?.defaultProps?.[prop.name] || prop.defaultValue)
+  const value = compSchema?.defaultProps[prop.name]
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;
   
@@ -67,7 +61,6 @@ const PresetEditor = observer((props: Props) => {
     currentCompAgent?.updateDefaultProp(name, value)
 
   }
-  
   return (
     <div>
         {editor?.type === "string" && (
