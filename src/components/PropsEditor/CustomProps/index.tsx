@@ -1,6 +1,5 @@
 import styles from './index.module.less'
 import SidePane from "@/components/SidePane";
-import { OptionType, PrimitiveType } from "@/libs/core/Def";
 import { DesignerContext } from "@/components/Designer";
 import { Input, Radio, Select, Switch, Button, InputNumber } from "@arco-design/web-react";
 import React, { ReactNode, useContext, useEffect, useState } from "react";

@@ -13,9 +13,11 @@ export interface EventActionDef extends DescBase {
 }
 
 
-export type PrimitiveType = number| string | boolean 
+export type TextType = number | string
 
-export type OptionType = PrimitiveType | {value: PrimitiveType, label?: string | ReactNode}
+export type PrimitiveType = TextType | boolean 
+
+export type OptionType = {value: TextType, label?: string | ReactNode}
 
 
 // 这个是内置的属性编辑器。
