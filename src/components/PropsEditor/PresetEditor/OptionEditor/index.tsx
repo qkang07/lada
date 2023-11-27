@@ -19,6 +19,12 @@ const index = (props: Props) => {
     onChange?.([...options])
   }
 
+  const swap = (i: number, i2: number) => {
+    const temp = options[i]
+    options[i] = options[i2]
+    options[i2] = temp
+  }
+
   return (
     <div className={styles.optionEditor}>
       {options.map((option, i) => {
@@ -34,21 +40,24 @@ const index = (props: Props) => {
           </div>
           <div className={styles.actions}>
             <div>
-
             <Button icon='+' onClick={() => {
-
+              options.splice(i, 0, {value: '', label: ''})
+              onChange?.([...options])
             }}></Button>
             <Button icon={'-'} onClick={() => {
-
+              options.splice(i, 1)
+              onChange?.([...options])
             }}></Button>
             </div>
             <div>
 
             <Button disabled={i === 0} icon={<IconUp/>} onClick={() => {
-
+              swap(i, i-1)
+              onChange?.([...options])
             }}></Button>
             <Button disabled={i === options.length - 1} icon={<IconDown/>} onClick={() => {
-
+              swap(i, i+1)
+              onChange?.([...options])
             }}></Button>
             </div>
           </div>
