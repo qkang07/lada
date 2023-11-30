@@ -3,7 +3,7 @@ import { OptionType, PrimitiveType, PropEditorType, StatePropDef, TextType } fro
 import { firstAvailable } from '@/utils'
 import { Input, InputNumber, Radio, Select, Switch } from '@arco-design/web-react'
 import { useDebounceFn } from 'ahooks'
-import { action, autorun, observable, observe } from 'mobx'
+import { action, autorun, observable, observe, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
 
@@ -48,7 +48,7 @@ const PresetEditor = observer((props: Props) => {
 
   const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
   const compSchema = currentCompAgent?.schema
-  
+  console.log('current aaa', toJS(currentCompAgent))
   const value = compSchema?.defaultProps[prop.name]
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;

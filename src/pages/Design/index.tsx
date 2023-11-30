@@ -11,9 +11,11 @@ const defaultPageSchema = () => Promise.resolve<BindingScopeSchema>({
   id: randomId(),
   name: 'New Page',
   provider:'',
+  defaultProps: {},
   uiRoot: {
     id: randomId(),
     provider: 'listLayout',
+    defaultProps: {},
     name: 'root',
     slots: [{
       name: 'default',

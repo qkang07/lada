@@ -28,13 +28,7 @@ const ListLayoutDef: UIComp.Def<ListLayoutProps> = {
   slots: [
     {name: 'default', single: false}
   ],
-  onSchemaCreate(initSchema) {
-    initSchema.slots = [{
-      name: 'default',
-      children: []
-    }]
-      return initSchema
-  },
+ 
   render: (props) => {
     const {domAttrs, direction} = props
     const style: CSSProperties =  {}

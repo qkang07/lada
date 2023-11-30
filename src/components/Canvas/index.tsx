@@ -154,7 +154,7 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
   //   return void 0
   // }
 
-console.log('canvas render')
+console.log('canvas render', JSON.stringify(initSchema || {}))
   return (
     <CanvasContext.Provider value={{
       bdCon,
