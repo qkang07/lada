@@ -1,13 +1,14 @@
 import { UIComp } from "@/libs/core/Def";
-import { InputCommonProps } from "../common";
+import { InputBaseDef, InputCommonProps } from "../common";
 import { Switch } from "@arco-design/web-react";
+import { extendDefs } from "@/libs/core/utils";
 
 
 type SwitchProps = {
   
 } & InputCommonProps
 
-const SwitchDef: UIComp.Def<SwitchProps> = {
+const SwitchDef = extendDefs<UIComp.Def<SwitchProps>>(InputBaseDef('boolean'), {
   name: 'switch',
   props: [
     {
@@ -40,4 +41,6 @@ const SwitchDef: UIComp.Def<SwitchProps> = {
     }}/>
   }
   
-}
+})
+
+export default SwitchDef

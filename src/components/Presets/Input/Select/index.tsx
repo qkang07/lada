@@ -1,6 +1,8 @@
 import { OptionType, UIComp } from "@/libs/core/Def"
+import { extendDefs } from "@/libs/core/utils"
 import { Input, Select } from "@arco-design/web-react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
+import { InputBaseDef } from "../common"
 
 
 type SelectProps = {
@@ -13,7 +15,7 @@ type SelectProps = {
 }
 
 
-const SelectDef: UIComp.Def<SelectProps> = {
+const SelectDef = extendDefs<UIComp.Def<SelectProps> >(InputBaseDef('any'), {
   name: 'select',
   label: '下拉选择',
 
@@ -91,6 +93,6 @@ const SelectDef: UIComp.Def<SelectProps> = {
   }),
 
 
-}
+})
 
 export default SelectDef
