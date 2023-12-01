@@ -6,9 +6,6 @@ const extend2Defs = () =>{
 }
 
 export const extendDefs = <T extends Record<string, any> = Record<string, any>>(...defs: T[]) => {
-  if(!defs.length) {
-    return undefined
-  }
   const base = defs.shift()! as Record<string, any>
   
   while(defs.length ) {

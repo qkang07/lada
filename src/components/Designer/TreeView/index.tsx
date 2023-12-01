@@ -41,7 +41,7 @@ const TreeNode = observer((props: NodeProps) => {
           )}
         </div>
         <div className={styles.nodeTitle} onClick={() => onNodeClick?.(schema)}>
-          {schema.name}
+          {schema.provider}
         </div>
       </div>
       <div

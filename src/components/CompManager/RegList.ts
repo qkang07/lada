@@ -13,6 +13,7 @@ import DividerDef from "../Presets/Display/Divider";
 import SpaceDef from "../Presets/Display/Space";
 import SelectDef from "../Presets/Input/Select";
 import HeaderDef from "../Presets/Display/Header";
+import SwitchDef from "../Presets/Input/Switch";
 
 
 export type CompRegCat = {
@@ -58,7 +59,8 @@ export const UICompRegTable: CompRegCat[] = [
     label: 'Input',
     items: [
       InputDef,
-      SelectDef
+      SelectDef,
+      SwitchDef
     ]
   },
   {
