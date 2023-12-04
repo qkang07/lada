@@ -10,7 +10,7 @@ type Props = {
   onChange?: (value: OptionType[]) => void
 }
 
-const index = (props: Props) => {
+const OptionEditor = (props: Props) => {
 
   const {options = [], onChange} = props
 
@@ -67,4 +67,4 @@ const index = (props: Props) => {
   )
 }
 
-export default index
+export default OptionEditor

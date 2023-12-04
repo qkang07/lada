@@ -18,13 +18,16 @@ const BasicProps = observer((props: Props) => {
     <SidePane title='基本属性'>
       <div className={pstyle.propField}>
         <div className={pstyle.label}>Name</div>
-        <Input size='small' value={schema?.name} onChange={v => {
-          if(v){
-            currentCompAgent?.updateDefaultProp('name', v)
-            // compSchema.name = v
-            // updateCompSchema?.(compId, compSchema)
-          }
-        }} />
+        <div className={pstyle.content}>
+
+          <Input size='small' value={schema?.name} onChange={v => {
+            if(v){
+              currentCompAgent?.updateDefaultProp('name', v)
+              // compSchema.name = v
+              // updateCompSchema?.(compId, compSchema)
+            }
+          }} />
+        </div>
       </div>
     </SidePane>
   )

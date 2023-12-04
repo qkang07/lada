@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UIComp } from "../../../libs/core/Def";
+import { CompDefBase, PureComp, UIComp } from "../../../libs/core/Def";
 import { action, makeAutoObservable } from "mobx";
 import { Form, Input, Select } from "@arco-design/web-react";
 
@@ -11,7 +11,7 @@ type HttpProps = {
   method?: string
 }
 
-const HTTPDataSource: UIComp.Def<HttpProps> = {
+const HTTPDataSource: PureComp.Def<HttpProps> = {
   name: 'http',
   label: 'HTTP 请求数据',
   // type: 'async',
@@ -90,7 +90,7 @@ const HTTPDataSource: UIComp.Def<HttpProps> = {
   ],
   onCreate(agent) {
     // const {url ,method = 'GET', body} = params
-
+    
     const data = makeAutoObservable({
       url: '',
       params: undefined as any,

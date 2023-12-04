@@ -16,19 +16,7 @@ type InputProps = {
 const InputDef: UIComp.Def<InputProps> = {
   // meta: meta as UIComp.CompMeta,
   ...(meta as UIComp.CompMeta),
-  // create(ctx) {
-  //   const store = makeAutoObservable({
-  //     value: undefined
-  //   })
-  //   const setValue = (v: any) => {
-  //     store.value = v
-  //     ctx.emit('change', v)
-  //   }
-  //   return  makeAutoObservable({
-  //     setValue,
-  //     value: store.value
-  //   })
-  // },
+
 
   render(props) {
     const {maxLength, value, onChange, updateState} = props

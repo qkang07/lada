@@ -19,27 +19,18 @@ const SelectDef = extendDefs<UIComp.Def<SelectProps> >(InputBaseDef('any'), {
   name: 'select',
   label: '下拉选择',
 
-  // create(ctx) {
-  //   const store = makeAutoObservable({
-  //     value: undefined
-  //   })
-  //   const setValue = (v: any) => {
-  //     store.value = v
-  //     ctx.emit('change', v)
-  //   }
-  //   return  makeAutoObservable({
-  //     setValue,
-  //     value: store.value
-  //   })
-  // },
+
   props: [
-    {
-      name: 'value',
-      valueType: 'string'
-    },
+   
     {
       name: 'options',
       valueType: 'array',
+      defaultValue: [
+        {
+          value: 'value',
+          label: 'label'
+        }
+      ],
       editor: {type: 'options'}
     },{
       name: 'multiple',
@@ -55,10 +46,7 @@ const SelectDef = extendDefs<UIComp.Def<SelectProps> >(InputBaseDef('any'), {
     }
   ],
   events: [
-    {
-      name: 'onChange',
-      valueType: 'string'
-    }
+
   ],
   actions: [
     {

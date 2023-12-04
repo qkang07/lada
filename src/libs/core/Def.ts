@@ -28,7 +28,7 @@ export interface PropEditorBase  {
 
 export interface SelectEditorType extends PropEditorBase {
   type: 'select' | 'radio' | 'checkbox',
-  options: OptionType[]
+  options: OptionType[] | string[] | number[]
   config?: {
     multiple?: boolean
   }
@@ -130,6 +130,18 @@ export type PropValueSchema = {
 export interface ActionSchema extends DescBase {
   params?: DescBase[]
 }
+
+
+
+
+export namespace PureComp {
+  export interface Schema extends CompSchemaBase {
+
+  }
+  export interface Def<P extends Record<string, any> = Record<string, any>, I = any> extends CompDefBase<Schema>, CompMetaBase {
+  };
+}
+
 
 
 export namespace UIComp {

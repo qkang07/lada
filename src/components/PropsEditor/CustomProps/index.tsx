@@ -5,7 +5,7 @@ import { Input, Radio, Select, Switch, Button, InputNumber } from "@arco-design/
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import pstyle from "../index.module.less";
 import { observer } from "mobx-react";
-import { action, autorun, makeAutoObservable } from "mobx";
+import { action, autorun } from "mobx";
 import { IconLink } from '@arco-design/web-react/icon';
 import PresetEditor from '../PresetEditor';
 
@@ -36,18 +36,20 @@ const CustomPropsEditor = observer((props: Props) => {
 
         return (
           <div className={pstyle.propField} key={prop.name}>
-
+            <div className={pstyle.title}>
               <span className={pstyle.label}>{prop.label || prop.name}</span>
-              <div className={pstyle.rightPart}>
-                <PresetEditor prop={prop} disabled={bound}/>
 
               <div className={styles.bd}>
                 <Button type={bound ? 'primary' : 'secondary'} size="mini" icon={<IconLink  />} onClick={() => {
                   openBinding?.('state', prop.name)
-                }} shape="circle"></Button>
+                }} ></Button>
                 
               </div>
-              </div>
+            </div>
+            <div className={pstyle.content}>
+              <PresetEditor prop={prop} disabled={bound}/>
+
+            </div>
           </div>
         );
       })}

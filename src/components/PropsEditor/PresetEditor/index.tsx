@@ -6,6 +6,7 @@ import { useDebounceFn } from 'ahooks'
 import { action, autorun, observable, observe, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
+import OptionEditor from './OptionEditor'
 
 
 function nrmlzOptions(options:(TextType | OptionType)[]) {
@@ -48,7 +49,7 @@ const PresetEditor = observer((props: Props) => {
 
   const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
   const compSchema = currentCompAgent?.schema
-  console.log('current aaa', toJS(currentCompAgent))
+  console.log('current aaa', toJS(currentCompAgent), compSchema)
   const value = compSchema?.defaultProps[prop.name]
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;
@@ -62,7 +63,7 @@ const PresetEditor = observer((props: Props) => {
 
   }
   return (
-    <div>
+    <>
         {editor?.type === "string" && (
                   <Input
                     disabled={disabled}
@@ -115,7 +116,7 @@ const PresetEditor = observer((props: Props) => {
                       handlePropChange(prop.name, v);
                     }}
                   >
-                    {editor.options.map((option: any) => {
+                    {nrmlzOptions(editor.options).map((option: any) => {
                       return <Radio key={option.value} value={option.value}>{option.label}</Radio>;
                     })}
                   </Radio.Group>
@@ -126,11 +127,12 @@ const PresetEditor = observer((props: Props) => {
                   }}/>
                 )}
                 {editor?.type === 'options' && (
-                  <Input.TextArea value={value} onChange={(v) => {
+                  <OptionEditor options={value} onChange={v => {
+                    console.log('options change:', v)
                     handlePropChange(prop.name, v)
-                  }}/>
+                  }} />
                 )}
-    </div>
+    </>
   )
 })
 

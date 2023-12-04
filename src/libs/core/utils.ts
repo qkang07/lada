@@ -10,7 +10,7 @@ export const extendDefs = <T extends Record<string, any> = Record<string, any>>(
   
   while(defs.length ) {
     const def = defs.shift()!
-    Object.keys(base).forEach(key => {
+    Object.keys(def).forEach(key => {
       if(def[key] !== undefined) {
 
         if(base[key] instanceof Array) {
