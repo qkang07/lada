@@ -15,8 +15,8 @@ import { CompSchemaBase, UIComp } from "@/libs/core/Def";
 import { compMan } from "@/components/CompManager/manager";
 
 type Props = {
-  schemas: CompSchemaBase[];
-  onAdd: (ds: CompSchemaBase) => void;
+  schemas?: CompSchemaBase[];
+  onAdd: (provider: string) => void;
   onChoose?: (id: string) => void
 };
 
@@ -40,28 +40,9 @@ const DataSources = (props: Props) => {
   const dsTypes = ['http', 'var']
 
   const add = () => {
-    form.setFieldsValue({
-      type: "var",
-      name: "new data source",
-      initValue: "",
-    });
     setNewVisible(true);
   };
 
-  const saveNew = () => {
-    const values: any = form.getFieldsValue();
-
-    console.log(values);
-    props.onAdd(values);
-    setNewVisible(false);
-  };
-
-  const handleAdd = (provider: string) => {
-    const schema = compMan.createSchema(provider)
-    if(schema) {
-      props.onAdd(schema)
-    }
-  }
 
   return (
     <SidePane
@@ -112,7 +93,7 @@ const DataSources = (props: Props) => {
               </div> */}
               {dsTypes.map(dst=>{
                 return <Button key={dst} className={styles.dsType} onClick={() => {
-                  handleAdd(dst)
+                  props.onAdd?.(dst)
                 }}>
                   {dst}
                 </Button>
@@ -128,7 +109,7 @@ const DataSources = (props: Props) => {
           ></Button>
         </Popover>
       <div className={styles.dsList}>
-        {schemas.map((ds, i) => {
+        {schemas?.map((ds, i) => {
           return (
             <SidePaneItem onClick={() => {
               props.onChoose?.(ds.id)

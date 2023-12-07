@@ -59,6 +59,7 @@ const PresetEditor = observer((props: Props) => {
   // }, {wait: 400}) 
 
   const handlePropChange = (name: string, value: any) => {
+    console.log('custom props chanmge', name, value, currentCompAgent)
     currentCompAgent?.updateDefaultProp(name, value)
 
   }

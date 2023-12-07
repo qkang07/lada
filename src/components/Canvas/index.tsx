@@ -110,7 +110,7 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
     const agent = new CompAgent(schema)
     bdCon?.regComp(agent)
     return agent
-  },[])
+  },[bdCon])
 
   useImperativeHandle(ref, () => {
     return {
@@ -126,6 +126,7 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
     if(initSchema) {
       if(!bdCon) {
         bdCon = new BindingContainer(initSchema)
+        console.log('bd container', bdCon)
         setBdCon(bdCon)
       }
       if(isDesign) {

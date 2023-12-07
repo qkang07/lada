@@ -145,7 +145,6 @@ const Designer = (props: Props) => {
   const addComp = action((provider: string) => {
     
     let schema = compMan.createSchema(provider) as UIComp.Schema
-
     if (currentSlot) {
       console.log(currentSlot)
       const slotDef = currentSlot.compAgent.def.slots?.find(
@@ -163,6 +162,21 @@ const Designer = (props: Props) => {
       // newComp.parent = runtimeSchema
       // runtimeSchema.slots?.[0].children?.push(newComp)
     }
+  })
+
+
+  const addPureComp = action((provider: string, isDataSource?: boolean) => {
+    const schema = compMan.createSchema(provider)
+    if(schema) {
+      if(isDataSource) {
+        obsSchema?.dataSources.push(schema)
+      } else {
+        obsSchema?.pureComps.push(schema)
+      }
+      const agent = canvasRef.current?.initPureComp?.(schema)
+      setCurrentAgent(agent)
+    }
+
   })
 
   const deleteComp = (id: string) => {
@@ -233,7 +247,7 @@ const Designer = (props: Props) => {
 
   const choosePureComp = (id: string) => {
     const bdCon = canvasRef.current?.bdCon
-    const agent = bdCon?.agentMap.get(id)
+    const agent = bdCon?.schemaAgentMap.get(id)?.[0] // pure comp 不会循环实例化，因此用 schema agent map
     if(agent) {
       setCurrentAgent(agent)
       focusFrameRef.current?.setCompDom(undefined)
@@ -279,12 +293,7 @@ const Designer = (props: Props) => {
             <EditorStack
               items={[
                 <CompBox onCompClick={handleCompAdd} />,
-                <DataSources schemas={bdConSchema?.dataSources || []} onAdd={ds => {
-                  // 这里 schema 和 agent 的处理分开了。。
-                  bdConSchema?.dataSources.push(ds)
-                  const agent = canvasRef.current?.initPureComp?.(ds)
-                  setCurrentAgent(agent)
-                }}
+                <DataSources schemas={obsSchema?.dataSources} onAdd={(p) => addPureComp(p, true)}
                   onChoose={choosePureComp}
                 />,
                 <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />,
