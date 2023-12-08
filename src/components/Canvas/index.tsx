@@ -107,7 +107,9 @@ const Canvas = forwardRef<CanvasRef, Props>((props, ref) => {
 
   // 实例化非 UI 组件
   const initPureComp = useCallback((schema: CompSchemaBase) => {
-    const agent = new CompAgent(schema)
+    // 这里必须要用 initschema 下的 reactive 的schema
+    const obsSchema = initSchema?.dataSources.find(ds=>ds.id === schema.id) || initSchema?.pureComps.find(cp => cp.id === schema.id)
+    const agent = new CompAgent(obsSchema!)
     bdCon?.regComp(agent)
     return agent
   },[bdCon])

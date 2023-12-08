@@ -38,7 +38,6 @@ const Renderer = observer((props: Props) => {
   useEffect(() => {
     // console.log(schema, bdCon)
     if(schema && bdCon) {
-
       if(!agentRef.current) {
         agentRef.current = new CompAgent(schema)
         bdCon.regComp(agentRef.current)

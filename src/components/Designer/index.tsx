@@ -180,8 +180,8 @@ const Designer = (props: Props) => {
   })
 
   const deleteComp = (id: string) => {
-  const bdCon = canvasRef.current?.bdCon
-  const agent = bdCon?.agentMap.get(id);
+    const bdCon = canvasRef.current?.bdCon
+    const agent = bdCon?.agentMap.get(id);
     if(agent) {
       const plist = agent?.parentSlot?.children
       plist?.splice(plist.indexOf(agent.schema), 1)
