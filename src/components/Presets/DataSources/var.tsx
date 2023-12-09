@@ -1,5 +1,5 @@
 import { action, makeAutoObservable } from "mobx";
-import { UIComp } from "../../../libs/core/Def";
+import { PureComp, UIComp } from "../../../libs/core/Def";
 
 type VarProps = {
   value?: any
@@ -7,7 +7,7 @@ type VarProps = {
 }
 
 
-const VarDataSource: UIComp.Def<VarProps> = {
+const VarDataSource: PureComp.Def<VarProps> = {
   name: 'var',
   label: '变量',
   actions:[
@@ -29,8 +29,23 @@ const VarDataSource: UIComp.Def<VarProps> = {
       valueType: 'string',
       editor: {
         type: 'select',
-        options: ['string','number','boolean']
+        options: ['string','number','boolean', 'json']
       }
+    },
+    {
+      name: 'defaultValue',
+      label: '默认值',
+      valueType: 'any',
+      editorRender(){
+        return <></>
+      }
+    }
+  ],
+  states: [
+    {
+      name: 'value',
+      label: '值',
+      
     }
   ],
   

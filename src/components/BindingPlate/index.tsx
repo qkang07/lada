@@ -104,6 +104,8 @@ const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
     bdCon?.addBinding(schema as BindingSchema)
     resolve?.(schema as BindingSchema)
     setVisible(false)
+    setSelectedComp(undefined)
+    setSelectedElement(undefined)
   }
   
   return (
@@ -157,7 +159,7 @@ const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
           </div>
         
         </div>
-        <Tabs className={styles.bindingItems}>
+        <Tabs activeTab={lookingFor} className={styles.bindingItems}>
           {
             lookingFor === 'prop' && ( <Tabs.TabPane key={'prop'} title='Prop'>
               {selectedComp?.def.props?.map(prop => {

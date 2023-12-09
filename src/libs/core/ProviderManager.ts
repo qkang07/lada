@@ -119,6 +119,7 @@ export class ProviderManager<D extends CompDefBase> {
       if(def.onSchemaCreate){
         schema = def.onSchemaCreate(schema)
       }
+      console.log('create schema', schema)
       return schema
     }
     return undefined

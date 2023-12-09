@@ -1,5 +1,5 @@
 import { Optional, randomId } from "../../utils"
-import { BindingInfo, CompDefBase, CompSchemaBase, UIComp } from "./Def"
+import { BindingInfo, CompDefBase, CompSchemaBase, StatePropDef, UIComp } from "./Def"
 import { compMan } from "../../components/CompManager/manager"
 
 export type HandlerShape = (payload?: any) => void
@@ -16,6 +16,33 @@ type HandlerType = 'others' | 'event' | 'action' | 'state' | 'prop'
 
 // export type BindingRegTable = Map<string, BindingTarget>
 
+
+function typeGuard(value:any, def: StatePropDef) {
+  const typeofValue = typeof value
+  if(def.valueType === 'string' && typeofValue !== 'string') {
+    return String(value)
+  }
+  if(def.valueType === 'number' && typeofValue !== 'number') {
+    const n = Number(value) 
+    if(isNaN(n)) {
+      return undefined
+    }
+    return n
+  }
+  if(def.valueType === 'boolean' && typeofValue !== 'boolean') {
+    return !!value
+  }
+  if(def.valueType === 'void') {
+    return 
+  }
+  if(def.valueType === 'record' && typeofValue !== 'object') {
+    return {}
+  }
+  if(def.valueType === 'array' && (typeofValue !== 'object' || (value instanceof Array))) {
+    return []
+  }
+  return value
+}
 
 // 这就是层代理，用于沟通 binding scope 和具体的组件实现
 
@@ -178,21 +205,31 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
 
   // 组件发出了事件，向外通知
   emitEvent(event: string ,payload?: any) {
-    const list = this.getHandlerList('event', event)
-    this.log('emit event', event, payload, list)
-    list.forEach(h => h(payload))
+    const def = this.def.events?.find(e => e.name === event)
+    if(def) {
+      const v = typeGuard(payload, def)
+      const list = this.getHandlerList('event', event)
+      this.log('emit event', event, v, list)
+      list.forEach(h => h(v))
+    }
   }
 
   // 组件改变了 state
   updateState(s: Optional<ST>) {
+    
     this.state = {
       ...this.state,
       ...s
     }
     Object.keys(s).forEach(k => {
-      const list = this.getHandlerList('state', k)
-      console.log('update state', k, s[k], list)
-      list.forEach(h => h(s[k]))
+      const def = this.def.states?.find(s => s.name === k)
+      if(def) {
+        const v = typeGuard(s[k], def);
+        (this.state as Record<string, any>)[k] = v
+        const list = this.getHandlerList('state', k)
+        console.log('update state', k, v, list)
+        list.forEach(h => h(v))
+      }
     })
     // this.getHandlerList('others', 'state').forEach(h => h(this.state))
   }
@@ -204,19 +241,23 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   // 向内 调用组件的 action
   callAction(action: string, payload?: any) {
     // console.log('call action', action, payload)
-    if(this.def.actions?.some(a => a.name === action)) {
+    const def = this.def.actions?.find(a => a.name === action)
+    if(def) {
+      const v = typeGuard(payload, def)
       const list = this.getHandlerList('action', action)
-      this.log('call action', action, payload, list)
-      list.forEach(h => h(payload))
+      this.log('call action', action, v, list)
+      list.forEach(h => h(v))
     }
   }
 
   // 向内 更新组件的 prop
   updateProp(prop: string, value?: any) {
-    if(this.def.props?.some(p => p.name === prop)) {
+    const def = this.def.props?.find(p => p.name === prop)
+    if(def) {
+      const v = typeGuard(value, def)
       const list = this.getHandlerList('prop', prop)
-      this.log('update prop', prop, value, list)
-      list.forEach(h => h(value))
+      this.log('update prop', prop, v, list)
+      list.forEach(h => h(v))
     }
   }
 

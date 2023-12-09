@@ -30,12 +30,14 @@ const HTTPDataSource: PureComp.Def<HttpProps> = {
       name: 'url',
       valueType: 'string',
       label: 'URL',
+      defaultValue: 'http://localhost:8080',
       editor: {type: 'textarea'}
     },
     {
       name: 'method',
       valueType: 'string',
       label: '请求方式',
+      defaultValue: 'GET',
       editor: {type: 'select', options: ['GET','POST','PUT','DELETE','HEAD']}
     },
     {
@@ -88,12 +90,14 @@ const HTTPDataSource: PureComp.Def<HttpProps> = {
       label: '数据'
     }
   ],
+  onSchemaCreate(schema) {
+    return schema
+  },
   onCreate(agent) {
     // const {url ,method = 'GET', body} = params
-    
-    const data = makeAutoObservable({
-      url: '',
-      params: undefined as any,
+    const props = agent.schema.defaultProps
+    const data: any = makeAutoObservable({
+      ...props,
       value: undefined,
       loading: false,
       cancelFlag: false
@@ -111,18 +115,19 @@ const HTTPDataSource: PureComp.Def<HttpProps> = {
     const fetchData = action(async (params: any) => {
       data.params = params
       data.loading = true
-      agent.updateState({
-        params,
-        loading: true
-      })
+
       agent.updateState({
         ...agent.state,
+        ...data,
         loading: true
       })
       try {
 
         // TODO 暂时用 fetch
-        const res = await fetch(params.url, params.options)
+        const res = await fetch(data.url, {
+          method: data.method,
+          body: JSON.stringify(data.params),
+        })
         if(checkCancel()) {
           return Promise.reject('cancelled')
         }
@@ -168,6 +173,11 @@ const HTTPDataSource: PureComp.Def<HttpProps> = {
     agent.onPropChange('params', (params: any) => {
       data.params = params
     })
+
+    // init 
+    if(data.url && data.autorun) {
+      fetchData(data.params)
+    } 
 
     return () => ({
       loading: data.loading,
