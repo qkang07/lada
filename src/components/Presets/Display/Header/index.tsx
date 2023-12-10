@@ -5,6 +5,8 @@ import SlotHolder from "@/components/SlotHolder";
 
 type HeaderProps = {
   logo?: string
+  logoHeight?: number
+  logoWidth?: number
   title?: string
 }
 
@@ -18,6 +20,17 @@ const HeaderDef: UIComp.Def<HeaderProps> = {
       valueType: 'string',
       desc: 'logo 链接',
       editor: {type:'string'}
+    },
+    {
+      name: 'logoHeight',
+      valueType: 'number',
+      defaultValue: 30,
+      editor: {type: 'number'}
+    },
+    {
+      name: 'logoWidth',
+      valueType: 'number',
+      editor: {type: 'number'}
     },
     {
       name: 'title',

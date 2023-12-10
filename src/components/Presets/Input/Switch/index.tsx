@@ -2,6 +2,7 @@ import { UIComp } from "@/libs/core/Def";
 import { InputBaseDef, InputCommonProps } from "../common";
 import { Switch } from "@arco-design/web-react";
 import { extendDefs } from "@/libs/core/utils";
+import { useEffect, useState } from "react";
 
 
 type SwitchProps = {
@@ -15,6 +16,7 @@ const SwitchDef = extendDefs<UIComp.Def<SwitchProps>>(InputBaseDef('boolean'), {
       name: 'value',
       label: '值',
       valueType: 'boolean',
+      defaultValue: false,
       editor: {type:'boolean'}
     },
     {
@@ -35,7 +37,12 @@ const SwitchDef = extendDefs<UIComp.Def<SwitchProps>>(InputBaseDef('boolean'), {
     }
   ],
   render(props) {
-    return <Switch checked={props.value} onChange={v=> {
+    const [v, setV] = useState(!!props.value)
+    useEffect(() => {
+      setV(props.value)
+    },[props.value])
+    return <Switch checked={v} onChange={v=> {
+      setV(v)
       props.onChange?.(v)
       props.updateState?.('value', v)
     }}/>

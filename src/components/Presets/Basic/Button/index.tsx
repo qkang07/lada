@@ -67,7 +67,7 @@ const ButtonDef: UIComp.Def<ButtonProps> = {
     },[props.children])
     return <Button type={props.type}
       disabled={props.disabled}
-    onClick={props.onClick}
+    onClick={() => props.onClick()} // WARNING:  别把原生事件参数带进来
     {...props.domAttrs}
     >{innerChild}</Button>
   }),
