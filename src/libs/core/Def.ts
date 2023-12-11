@@ -17,7 +17,7 @@ export type TextType = number | string
 
 export type PrimitiveType = TextType | boolean 
 
-export type OptionType = {value: TextType, label?: string | ReactNode}
+export type OptionType = {value: TextType, label?: string}
 
 
 // 这个是内置的属性编辑器。
@@ -71,7 +71,7 @@ export interface StatePropDef extends DescBase  {
   editor?: PropEditorType // 需要预设的编辑器
   editorRender?: string | PropEditorRenderType
   valueType?: ValueType
-  defaultValue?: any
+  defaultValue?: string | number | boolean | (() => any)
   required?: boolean
 }
 
@@ -188,6 +188,9 @@ export namespace UIComp {
   };
 }
 
+
+export type BindingFilter = (v: any) => any
+
 export type BindingInfo = {
   id: string
   prop: string
@@ -201,6 +204,7 @@ export type BindingSchema = {
   source: BindingInfo
   target: BindingInfo
   type: BindingType
+  filters?: BindingFilter[]
 }
 
 export interface BindingInstance {

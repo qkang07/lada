@@ -2,17 +2,15 @@ import { OptionType, UIComp } from "@/libs/core/Def"
 import { extendDefs } from "@/libs/core/utils"
 import { Input, Select } from "@arco-design/web-react"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import { InputBaseDef } from "../common"
+import { InputBaseDef, InputCommonProps } from "../common"
 
 
 type SelectProps = {
   maxLength?: number
-  value?: any
   multiple?: boolean
   options?: OptionType[]
   setValue?: (v: any) => void
-  onChange?: (v: string) => void
-}
+} & InputCommonProps
 
 
 const SelectDef = extendDefs<UIComp.Def<SelectProps> >(InputBaseDef('any'), {
@@ -25,7 +23,7 @@ const SelectDef = extendDefs<UIComp.Def<SelectProps> >(InputBaseDef('any'), {
     {
       name: 'options',
       valueType: 'array',
-      defaultValue: [
+      defaultValue: () => [
         {
           value: 'value',
           label: 'label'

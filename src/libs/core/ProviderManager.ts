@@ -98,7 +98,12 @@ export class ProviderManager<D extends CompDefBase> {
       const defaultProps: Record<string, any> = {}
       def.props?.forEach(prop => {
         if(Reflect.has(prop, 'defaultValue')) {
-          defaultProps[prop.name] = prop.defaultValue
+          if(typeof prop.defaultValue === 'function') {
+            defaultProps[prop.name] = prop.defaultValue()
+          } else {
+            defaultProps[prop.name] = prop.defaultValue
+          }
+          
         }
       })
       let schema: CompSchemaBase = {

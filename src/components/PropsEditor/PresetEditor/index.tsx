@@ -1,6 +1,6 @@
 import { DesignerContext } from '@/components/Designer'
 import { OptionType, PrimitiveType, PropEditorType, StatePropDef, TextType } from '@/libs/core/Def'
-import { firstAvailable } from '@/utils'
+import { firstAvailable, nrmlzOptions } from '@/utils'
 import { Input, InputNumber, Radio, Select, Switch } from '@arco-design/web-react'
 import { useDebounceFn } from 'ahooks'
 import { action, autorun, observable, observe, toJS } from 'mobx'
@@ -9,24 +9,7 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import OptionEditor from './OptionEditor'
 
 
-function nrmlzOptions(options:(TextType | OptionType)[]) {
-  if(!options || !(options instanceof Array)) {
-    console.warn('invalid options value!', options)
-    return []
-  }
-  console.log(options)
-  return options.map(item => {
-    if(typeof item === 'object' && Reflect.has(item, 'value')) {
-      const oitem = item as {value: TextType, label?: string | ReactNode}
-      return {
-        value: oitem.value,
-        label: String(oitem.label || oitem.value)
-      }
-    }
-    return {value: item as TextType, label: String(item)}
 
-  })
-}
 
 const DefaultEditorMap = {
   string: 'string',
