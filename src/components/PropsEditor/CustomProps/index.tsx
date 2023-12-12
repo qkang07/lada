@@ -47,6 +47,7 @@ const CustomPropsEditor = observer((props: Props) => {
               </div>
             </div>
             <div className={pstyle.content}>
+              
               <PresetEditor prop={prop} disabled={bound}/>
 
             </div>

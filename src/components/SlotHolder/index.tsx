@@ -24,6 +24,7 @@ type Props = {
   props?: any;
   children?: ReactNode;
   placeholder?: string
+  editable?: boolean // TODO: 可直接编辑的 slot
 };
 
 const SlotHolder = observer((props: Props) => {

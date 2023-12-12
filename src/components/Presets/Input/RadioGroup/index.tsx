@@ -18,7 +18,7 @@ const RadioGroupDef = extendDefs<UIComp.Def<RadioGroupProps>>(InputBaseDef('any'
       label: '选项',
       valueType: 'array',
       editor:{type: 'options'},
-      defaultValue: () => []
+      defaultValue: () => [] 
     }
   ],
   render(props) {

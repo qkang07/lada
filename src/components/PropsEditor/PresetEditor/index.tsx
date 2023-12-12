@@ -46,6 +46,13 @@ const PresetEditor = observer((props: Props) => {
     currentCompAgent?.updateDefaultProp(name, value)
 
   }
+
+  if(prop.editorRender) {
+    return <prop.editorRender value={value} onChange={v => {
+      handlePropChange(prop.name, v)
+    }}/>
+  }
+
   return (
     <>
         {editor?.type === "string" && (
