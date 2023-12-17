@@ -28,6 +28,12 @@ const GridLayoutDef: UIComp.Def<GridLayoutType> = {
     }
 
   ],
+  slots: [
+    {
+      name: 'default',
+      single: false
+    }
+  ],
   render(props) {
     const {} = props
 

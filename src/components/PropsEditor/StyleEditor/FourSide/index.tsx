@@ -4,7 +4,9 @@ type Props = {}
 
 const FourSide = (props: Props) => {
   return (
-    <div>FourSide</div>
+    <div>
+      
+    </div>
   )
 }
 

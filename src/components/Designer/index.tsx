@@ -18,13 +18,12 @@ import {
   UIComp,
 } from "@/libs/core/Def";
 import PropsEditor from "@/components/PropsEditor";
-import FocusFrame, { FocusFrameType } from "@/components/FocusFrame";
+import FocusFrame, { FocusFrameType } from "@/components/Designer/FocusFrame";
 import DesignerHeader from "./Header";
 import { ResizeBox } from "@arco-design/web-react";
 import DataSources from "./DataSource";
-import EditorStack from "@/components/EditorStack";
+import EditorStack from "@/components/UIKit/EditorStack";
 import TreeView from "./TreeView";
-import SidePane from "@/components/SidePane";
 import { Optional, randomId } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "ahooks";

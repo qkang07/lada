@@ -3,7 +3,7 @@ import styles from "./index.module.less";
 import { IconMinus, IconPlus } from "@arco-design/web-react/icon";
 import { UIComp } from "@/libs/core/Def";
 import { observer } from "mobx-react";
-import SidePane from "@/components/SidePane";
+import SidePane from "@/components/UIKit/SidePane";
 
 
 type SlotClickHandler = (slot: UIComp.SlotSchema, comp: UIComp.Schema) => void

@@ -1,6 +1,6 @@
 import { DesignerContext } from '@/components/Designer'
 import LiveItem from '@/components/LiveItem'
-import SidePane from '@/components/SidePane'
+import SidePane from '@/components/UIKit/SidePane'
 import { IconUpCircle } from '@arco-design/web-react/icon'
 import React, {useContext} from 'react'
 

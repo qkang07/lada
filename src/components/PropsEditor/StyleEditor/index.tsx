@@ -1,53 +1,73 @@
 import { CanvasContext } from '@/components/Canvas/context'
-import SidePane from '@/components/SidePane'
+import SidePane from '@/components/UIKit/SidePane'
 import { DesignerContext } from '@/components/Designer'
 import Editor from '@monaco-editor/react'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { CSSProperties, useContext, useEffect, useRef, useState } from 'react'
+import PropField from '@/components/UIKit/Field'
+import { Input, InputNumber, Radio, Select } from '@arco-design/web-react'
+import { observer } from 'mobx-react'
+import { action } from 'mobx'
+import FieldGroup from '@/components/UIKit/FieldGroup'
 
 type Props = {
   // compId: string
 }
 
-const StyleEditor = (props: Props) => {
+const StyleEditor = observer((props: Props) => {
 
 
   const {} = useContext(CanvasContext)
 
   const {currentCompAgent} = useContext(DesignerContext)
 
-  const schema = currentCompAgent?.schema
+  const schema = currentCompAgent!.schema
+
+  const updateStyle = action((css: CSSProperties) => {
+    schema.style = {
+      ...schema?.style,
+      ...css
+    }
+  })
 
 
   return (
     <SidePane title={'样式'}>
-      <Editor
+      <FieldGroup title='字体'>
 
-        language='css'
-        onChange={v => {
-          currentCompAgent?.updateDefaultProp('style', v)
-          // comp().updateBinding({
-          //   prop: 'style',
-          //   scope: BindScopeEnum.Direct,
-          //   type: BindTypeEnum.Model,
-          //   binding: v || ''
-          // })
-          
-
-        }}
-        value={schema?.defaultProps?.['style']}
-        
-        options={{
-          selectOnLineNumbers: true,
-          lineDecorationsWidth: 0,
-          lineNumbersMinChars: 4,
-          tabSize: 2,
-          
-        }}
-        height={800}
-        theme="vs"
-      />
+        <PropField title='字体大小'>
+          <InputNumber min={0} value={schema?.style?.fontSize} onChange={v => {
+            updateStyle({fontSize: v})
+          }}/>
+        </PropField>
+        <PropField title='字体颜色'>
+          <Input type='color' value={schema.style?.color} onChange={v => {
+            updateStyle({color: v})
+          }}></Input>
+        </PropField>
+        <PropField title='粗体'>
+          <Select options={['normal','light','bold']} value={schema.style?.fontWeight} onChange={v => {
+            updateStyle({fontWeight: v})
+          }}></Select>
+        </PropField>
+        <PropField title='对齐'>
+          <Radio.Group type='button' value={schema.style?.textAlign} onChange={v => {
+            updateStyle({textAlign: v})
+          }} defaultValue={'left'}>
+            <Radio value={'left'}>左</Radio>
+            <Radio value={'center'}>中</Radio>
+            <Radio value={'right'}>右</Radio>
+          </Radio.Group>
+        </PropField>
+      </FieldGroup>
+      <FieldGroup title='块'>
+        <PropField title='内边距'>
+          <InputNumber value={schema.style?.padding} onChange={v => {
+            updateStyle({padding: v})
+          }}/>
+        </PropField>
+      </FieldGroup>
     </SidePane>
   )
-}
+})
 
 export default StyleEditor

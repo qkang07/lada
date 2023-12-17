@@ -1,6 +1,6 @@
 import { compMan } from '@/components/CompManager/manager';
 import { DesignerContext } from '@/components/Designer';
-import SidePane from '@/components/SidePane'
+import SidePane from '@/components/UIKit/SidePane'
 import { UIComp } from '@/libs/core/Def';
 import React, { useContext, useState } from 'react'
 import styles from './index.module.less'

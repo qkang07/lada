@@ -1,4 +1,4 @@
-import SidePane from '@/components/SidePane'
+import SidePane from '@/components/UIKit/SidePane'
 import React, { useContext } from 'react'
 import pstyle from '../index.module.less'
 import { Input } from '@arco-design/web-react'

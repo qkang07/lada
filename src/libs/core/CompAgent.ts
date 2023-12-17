@@ -280,9 +280,9 @@ export class CompAgent<S extends CompSchemaBase = CompSchemaBase, D extends Comp
   }
   // 设计时更新 schema
   updateSchema(schema?: S) {
-    if(schema) {
-      this.schema = schema
-    }
+    // if(schema) {
+    //   this.schema = schema
+    // }
     this.getHandlerList('others', 'schemaChange').forEach(h => {
       h()
     })

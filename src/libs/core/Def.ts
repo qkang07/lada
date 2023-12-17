@@ -189,7 +189,21 @@ export namespace UIComp {
 }
 
 
-export type BindingFilter = (v: any) => any
+export type DataFilterType = 'child' | 'format' | 'objMap' | 'arrayMap' | 'custom'
+export interface Formatter extends DescBase {
+  transformer: (input: any) => any
+  valueType: ValueType
+
+}
+export interface DataFilterSchema extends DescBase {
+  type: DataFilterType
+  childPath?: string[]
+  objMap?: Record<string, string>
+  formatter?: string
+}
+
+
+
 
 export type BindingInfo = {
   id: string
@@ -204,7 +218,7 @@ export type BindingSchema = {
   source: BindingInfo
   target: BindingInfo
   type: BindingType
-  filters?: BindingFilter[]
+  filters?: DataFilter[]
 }
 
 export interface BindingInstance {

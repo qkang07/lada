@@ -1,4 +1,4 @@
-import SidePane from '@/components/SidePane'
+import SidePane from '@/components/UIKit/SidePane'
 import React from 'react'
 
 type Props = {}

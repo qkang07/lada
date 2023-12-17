@@ -7,6 +7,7 @@ import { bind, cloneDeep, merge, mergeWith } from 'lodash-es'
 import { CompAgent } from '../../libs/core/CompAgent'
 import { observer } from 'mobx-react'
 import styles from './index.module.less'
+import { toJS } from 'mobx'
 
 
 
@@ -106,7 +107,7 @@ const Renderer = observer((props: Props) => {
     domAttrs: {
       'data-lada-schema-id': schema.id,
       'data-lada-agent-id': agent?.id!,
-      style: schema.style || {},
+      style: toJS(schema.style) || {},
       classNames: schema.className || ''
     }
   }

@@ -10,7 +10,7 @@ import {
   Trigger,
 } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
-import SidePane, { SidePaneItem } from "@/components/SidePane";
+import SidePane, { SidePaneItem } from "@/components/UIKit/SidePane";
 import { CompSchemaBase, UIComp } from "@/libs/core/Def";
 import { compMan } from "@/components/CompManager/manager";
 

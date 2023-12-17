@@ -1,8 +1,9 @@
 import { UICompRegTable } from '@/components/CompManager/RegList'
-import SidePane from '@/components/SidePane'
-import { Button } from '@arco-design/web-react'
+import SidePane from '@/components/UIKit/SidePane'
+import { Button, Space } from '@arco-design/web-react'
 import React from 'react'
 import styles from './index.module.less'
+import FieldGroup from '@/components/UIKit/FieldGroup'
 type Props = {
   onCompClick?: (name: string) => void
 }
@@ -13,14 +14,13 @@ const CompBox = (props: Props) => {
     <SidePane title='组件'>
       {
         UICompRegTable.map(cat => {
-          return <div className={styles.cat} key={cat.category}>
-            <div className={styles.catTitle}>{cat.label}</div>
-            <div className={styles.items}>
+          return <FieldGroup title={cat.label}  key={cat.category}>
+            <Space wrap className={styles.items}>
               {cat.items.map(item => {
                 return <Button long key={item.name} onClick={() => props.onCompClick?.(item.name)}>{item.label || item.name}</Button>
               })}
-            </div>
-          </div>
+            </Space>
+          </FieldGroup>
         })
       }
     </SidePane>
