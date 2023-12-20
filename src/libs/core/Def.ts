@@ -195,13 +195,27 @@ export interface Formatter extends DescBase {
   valueType: ValueType
 
 }
-export interface DataFilterSchema extends DescBase {
+export interface PathFilterSchema extends DescBase {
   type: DataFilterType
-  childPath?: string[]
-  objMap?: Record<string, string>
-  formatter?: string
+  path?: string[]
 }
-
+export interface ObjMapFilterSchema extends DescBase {
+  type: DataFilterType
+  objMap?: Record<string, (string | DataFilterSchema)[]>
+}
+export interface ArrayMapFilterSchema extends DescBase {
+  type: DataFilterType
+  arrayMap?: DataFilterSchema[]
+}
+export interface FormatFilterSchema extends DescBase {
+  type: DataFilterType
+  format?: string
+}
+export interface CustomFilterSchema extends DescBase {
+  type: DataFilterType
+  customFunc?: string
+}
+export type DataFilterSchema = PathFilterSchema | ObjMapFilterSchema | ArrayMapFilterSchema | FormatFilterSchema | CustomFilterSchema
 
 
 
@@ -218,7 +232,7 @@ export type BindingSchema = {
   source: BindingInfo
   target: BindingInfo
   type: BindingType
-  filters?: DataFilter[]
+  filters?: DataFilterSchema[]
 }
 
 export interface BindingInstance {

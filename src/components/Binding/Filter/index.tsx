@@ -16,11 +16,13 @@ const FilterNameMap: Record<DataFilterType, string> = {
 }
 
 const BindingFilter = (props: Props) => {
-
+  const {filter} = props
   return (
     <div>
       <Popover content={
-        <div></div>
+        <div>
+          {filter.type === 'objMap'}
+        </div>
       }>
         <Button type='dashed' shape='square' icon={<IconFilter/>}>{FilterNameMap[props.filter.type]}</Button>
       </Popover>
