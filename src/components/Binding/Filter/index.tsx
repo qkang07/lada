@@ -2,6 +2,8 @@ import { DataFilterSchema, DataFilterType } from '@/libs/core/Def'
 import { Button, Popover } from '@arco-design/web-react'
 import { IconFilter } from '@arco-design/web-react/icon'
 import React from 'react'
+import FilterCode from './FilterCode'
+import { observer } from 'mobx-react'
 
 type Props = {
   filter: DataFilterSchema
@@ -15,19 +17,19 @@ const FilterNameMap: Record<DataFilterType, string> = {
   custom: '自定义'
 }
 
-const BindingFilter = (props: Props) => {
+const BindingFilter = observer((props: Props) => {
   const {filter} = props
   return (
     <div>
       <Popover content={
         <div>
-          {filter.type === 'objMap'}
+          <FilterCode schema={filter}/>
         </div>
       }>
         <Button type='dashed' shape='square' icon={<IconFilter/>}>{FilterNameMap[props.filter.type]}</Button>
       </Popover>
     </div>
   )
-}
+})
 
 export default BindingFilter
