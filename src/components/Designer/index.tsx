@@ -117,7 +117,6 @@ const Designer = (props: Props) => {
   const nav = useNavigate();
 
   const canvasRef = useRef<CanvasRef | null>(null);
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
 
 
   const bdPlateRef = useRef<BDPlateType>(null);
@@ -289,25 +288,28 @@ const Designer = (props: Props) => {
         </div>
         <div className={styles.body}>
           <div className={styles.toolbox}>
-            <EditorStack
-              items={[
-                <CompBox onCompClick={handleCompAdd} />,
+                <CompBox onCompClick={handleCompAdd} />
                 <DataSources schemas={obsSchema?.dataSources} onAdd={(p) => addPureComp(p, true)}
                   onChoose={choosePureComp}
-                />,
-                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />,
+                />
+                <TreeView root={obsSchema?.uiRoot!} onNodeClick={handleTreeClick} />
+            {/* <EditorStack
+              items={[
               ]}
-            />
+            /> */}
           </div>
-          <div className={styles.canvas} ref={canvasContainerRef}>
-            <Canvas
-              ref={canvasRef}
-              onCanvasClick={handleCanvasClick}
-              initSchema={obsSchema!}
-            />
-            <FocusFrame
-              ref={focusFrameRef}
-            />
+          <div className={styles.center} >
+            <div className={styles.canvas}>
+              <Canvas
+                ref={canvasRef}
+                onCanvasClick={handleCanvasClick}
+                initSchema={obsSchema!}
+              />
+              <FocusFrame
+                ref={focusFrameRef}
+              />
+            </div>
+            <div className={styles.bottomPane}></div>
           </div>
           <div className={styles.editor}>
             <PropsEditor />

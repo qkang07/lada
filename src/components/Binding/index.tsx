@@ -5,6 +5,7 @@ import { CanvasContext } from '../Canvas/context'
 import styles from './index.module.less'
 import FilterCode from './Filter/FilterCode'
 import BindingMember from './BindingMember'
+import FilterButton from './Filter/FilterButton'
 
 type Props = {
   schema: BindingSchema
@@ -14,7 +15,7 @@ const Binding = (props: Props) => {
   const {bdCon} = useContext(CanvasContext)
   const {schema} = props
   const [detailType, setDetailType] = useState<'source'|'filter'|'target'|undefined>()
-  const [filter, setFilter] = useState<DataFilterSchema>()
+  const [currentFilter, setCurrentFilter] = useState<DataFilterSchema>()
   const {sourceComp, targetComp} = useMemo(() => {
     const sourceComp = bdCon?.schemaAgentMap.get(schema.source.id)![0].schema
     const targetComp = bdCon?.schemaAgentMap.get(schema.source.id)![0].schema
@@ -26,7 +27,14 @@ const Binding = (props: Props) => {
         <div className={styles.source}>
           <BindingMember schema={sourceComp!} type='source' prop={schema.source.prop} />
         </div>
-        <div className={styles.filters}></div>
+        <div className={styles.filters}>
+          {schema.filters?.map(ft => {
+            return <FilterButton filter={ft} onClick={() => {
+              setDetailType('filter')
+              setCurrentFilter(ft)
+            }}/>
+          })}
+        </div>
         <div className={styles.target}>
         <BindingMember schema={targetComp!} type='target' prop={schema.target.prop} />
 
@@ -38,10 +46,10 @@ const Binding = (props: Props) => {
           </div>}
         {
           detailType === 'filter' && (
-            filter?.type === 'custom' && <div>
-              <FilterCode schema={filter}/>
+            currentFilter?.type === 'custom' && <div>
+              <FilterCode schema={currentFilter}/>
             </div> ||
-            filter?.type === 'child' && <div></div>
+            currentFilter?.type === 'child' && <div>child filter</div>
           )
         }
       </div>

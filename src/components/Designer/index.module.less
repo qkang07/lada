@@ -4,7 +4,7 @@
 }
 .head {
   height: 49px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd;
 }
 .body {
   height: calc(100vh - 50px);
@@ -13,22 +13,26 @@
 
 .toolbox {
   width: 300px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #ddd;
   // background-color: rgb(243, 243, 243);
 }
-
-.canvas {
+.center {
+  height: 100%;
+  background-color: #f9f9f9;
+  position: relative;
   flex: 1;
+}
+.canvas {
   height: 100%;
   overflow-y: auto;
   padding: 20px;
-  background-color: #f9f9f9;
   box-sizing: border-box;
   position: relative;
+
 }
 
 .editor {
-  border-left: 1px solid #eee;
+  border-left: 1px solid #ddd;
   width: 300px;
   overflow-y: auto;
 }
@@ -42,4 +46,13 @@
     background-color: #bedaff;
     border-bottom-color: #bedaff;
   }
+}
+
+.bottom-pane {
+  position: absolute;
+  width: 100%;
+  height: 300px;
+  bottom: 0;
+  border-top: 1px solid #ddd;
+  background-color: white;
 }
