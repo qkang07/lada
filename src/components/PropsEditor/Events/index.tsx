@@ -7,13 +7,13 @@ import React, {useContext} from 'react'
 type Props = {}
 
 const CompEvents = (props: Props) => {
-  const {openBinding, currentCompAgent} = useContext(DesignerContext)
+  const {bindFor, designerStore} = useContext(DesignerContext)
   return (
     <SidePane title='事件'>
       {
-        currentCompAgent?.def.events?.map(ev => {
+        designerStore.currentAgent?.def.events?.map(ev => {
           return <LiveItem title={ev.name} onClick={() => {
-            openBinding?.('action', ev.name)
+            bindFor?.('action', ev.name)
           }} />
         })
       }

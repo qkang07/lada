@@ -30,7 +30,7 @@ type Props = {
 const SlotHolder = observer((props: Props) => {
   const { schema: slotSchema, className, style } = props;
 
-  const { isDesign, currentSlot, currentCompAgent } = useContext(DesignerContext);
+  const { isDesign, designerStore } = useContext(DesignerContext);
 
   if (!slotSchema) {
     return <></>;
@@ -46,7 +46,7 @@ const SlotHolder = observer((props: Props) => {
 
   const renderChildren: ReactNode[] = []
 
-  const isActive = isDesign && currentSlot?.schema === slotSchema
+  const isActive = isDesign && designerStore.currentSlot?.schema === slotSchema
 
   // console.log('slott active', isActive, currentSlot, slotSchema)
 

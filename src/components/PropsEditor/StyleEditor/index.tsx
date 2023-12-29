@@ -8,6 +8,7 @@ import { Input, InputNumber, Radio, Select } from '@arco-design/web-react'
 import { observer } from 'mobx-react'
 import { action } from 'mobx'
 import FieldGroup from '@/components/UIKit/FieldGroup'
+import { UIComp } from '@/libs/core/Def'
 
 type Props = {
   // compId: string
@@ -18,9 +19,11 @@ const StyleEditor = observer((props: Props) => {
 
   const {} = useContext(CanvasContext)
 
-  const {currentCompAgent} = useContext(DesignerContext)
+  const {designerStore} = useContext(DesignerContext)
 
-  const schema = currentCompAgent!.schema
+
+  const def = designerStore.currentAgent!.def
+  const schema = designerStore.currentAgent?.schema as UIComp.Schema
 
   const updateStyle = action((css: CSSProperties) => {
     schema.style = {
@@ -29,6 +32,9 @@ const StyleEditor = observer((props: Props) => {
     }
   })
 
+  if(!def.render) {
+    return <></>
+  }
 
   return (
     <SidePane title={'样式'}>

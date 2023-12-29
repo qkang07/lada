@@ -21,10 +21,10 @@ type Props = {
 
 const CustomPropsEditor = observer((props: Props) => {
 
-  const { currentCompAgent, bdCon } = useContext(DesignerContext);
+  const { designerStore, bdCon } = useContext(DesignerContext);
 
-  const compSchema = currentCompAgent?.schema
-  const compDef = currentCompAgent?.def
+  const compSchema = designerStore.currentAgent?.schema
+  const compDef = designerStore.currentAgent?.def
 
   return (
     <SidePane title={"自定义属性"}>

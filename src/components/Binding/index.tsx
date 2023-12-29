@@ -1,4 +1,4 @@
-import { BindingSchema, BindingScopeSchema, DataFilterSchema } from '@/libs/core/Def'
+import { BindingSchema, BindingScopeSchema, DataFilterSchema, OptionalBindingSchema } from '@/libs/core/Def'
 import React, { useContext, useMemo, useState } from 'react'
 import { DesignerContext } from '../Designer'
 import { CanvasContext } from '../Canvas/context'
@@ -6,12 +6,13 @@ import styles from './index.module.less'
 import FilterCode from './Filter/FilterCode'
 import BindingMember from './BindingMember'
 import FilterButton from './Filter/FilterButton'
+import { observer } from 'mobx-react'
 
 type Props = {
-  schema: BindingSchema
+  schema: OptionalBindingSchema
 }
 
-const Binding = (props: Props) => {
+const Binding = observer((props: Props) => {
   const {bdCon} = useContext(CanvasContext)
   const {schema} = props
   const [detailType, setDetailType] = useState<'source'|'filter'|'target'|undefined>()
@@ -55,6 +56,6 @@ const Binding = (props: Props) => {
       </div>
     </div>
   )
-}
+})
 
 export default Binding

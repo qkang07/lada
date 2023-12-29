@@ -11,16 +11,19 @@ import { action } from 'mobx';
 type Props = {}
 
 const CompSlots = (props: Props) => {
-  const { currentCompAgent, } = useContext(DesignerContext);
-  const schema = currentCompAgent?.schema
-  const compDef = compMan.getComp(schema?.provider!) as UIComp.Def;
+  const { designerStore, } = useContext(DesignerContext);
+  const def = designerStore.currentAgent?.def as UIComp.Def
+
+  if(!def.render) {
+    return <></>
+  }
 
   const updateSlotSchema = action((name: string, schema: UIComp.SlotSchema) => {
     // TODO current work
   })
   return (
     <SidePane title='插槽'>
-      {compDef.slots?.map(slot => {
+      {def.slots?.map(slot => {
         // const slotSchema = schema?.slots?.find(s => s.name === slot.name)
         // const [showText, setShowText] = useState(!!slotSchema?.text || !!slotSchema?.children?.length )
 

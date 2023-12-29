@@ -8,10 +8,10 @@ import { observer } from 'mobx-react'
 
 type Props = {}
 const BasicProps = observer((props: Props) => {
-  const { currentCompAgent} = useContext(DesignerContext);
+  const { designerStore} = useContext(DesignerContext);
 
   
-  const schema = currentCompAgent?.schema
+  const schema = designerStore.currentAgent?.schema
 
   const compDef = compMan.getComp(schema?.provider!);
   return (
@@ -22,7 +22,7 @@ const BasicProps = observer((props: Props) => {
 
           <Input size='small' value={schema?.name} onChange={v => {
             if(v){
-              currentCompAgent?.updateDefaultProp('name', v)
+              designerStore.currentAgent?.updateDefaultProp('name', v)
               // compSchema.name = v
               // updateCompSchema?.(compId, compSchema)
             }

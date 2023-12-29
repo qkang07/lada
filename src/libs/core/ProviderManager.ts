@@ -110,7 +110,7 @@ export class ProviderManager<D extends CompDefBase> {
         id,
         name: provider + id,
         provider,
-        defaultProps
+        defaultProps,
       }
       const uiDef = def as any as UIComp.Def
       if(uiDef.slots?.length) {

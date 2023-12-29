@@ -1,5 +1,6 @@
 import { CSSProperties, ReactNode } from 'react';
 import type { CompAgent } from './CompAgent';
+import { Optional } from '@/utils';
 
 export type DescBase = {
   name: string
@@ -97,6 +98,8 @@ export interface CompDefBase<S extends CompSchemaBase = CompSchemaBase, I = any>
   onCreate?: (agent: CompAgent) => I
   // 设计时初始 schema
   onSchemaCreate?: (initSchema: S) => S
+  // render function 
+  render?: (props: any) => any
 }
 
 
@@ -136,7 +139,6 @@ export interface ActionSchema extends DescBase {
 
 export namespace PureComp {
   export interface Schema extends CompSchemaBase {
-
   }
   export interface Def<P extends Record<string, any> = Record<string, any>, I = any> extends CompDefBase<Schema>, CompMetaBase {
   };
@@ -234,6 +236,8 @@ export type BindingSchema = {
   type: BindingType
   filters?: DataFilterSchema[]
 }
+
+export type OptionalBindingSchema = Optional<BindingSchema>
 
 export interface BindingInstance {
   // id: string

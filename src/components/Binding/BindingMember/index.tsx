@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styles from './index.module.less'
-import { CompSchemaBase } from '@/libs/core/Def'
+import { BindingInfo, CompSchemaBase } from '@/libs/core/Def'
+import { DesignerContext } from '@/components/Designer'
 
 type Props = {
-  schema: CompSchemaBase
+  info?: BindingInfo
   type: 'source' | 'target'
-  prop: string
   onClick?:() => void
 }
 
 const BindingMember = (props: Props) => {
-  const {schema} = props
+  const {info} = props
+  const {bdCon} = useContext(DesignerContext)
+
+  
+
   return (
     <div className={styles.bindingMember} onClick={() => {
       console.log(schema)

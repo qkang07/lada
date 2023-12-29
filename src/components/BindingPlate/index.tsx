@@ -25,7 +25,7 @@ type Props = {
 }
 
 const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
-  const {bdCon, currentCompAgent} = useContext(DesignerContext)
+  const {bdCon, designerStore} = useContext(DesignerContext)
 
   const compList: CompAgent[] = []
   bdCon?.agentMap.forEach((comp) => {
@@ -88,12 +88,12 @@ const BindingPlate = forwardRef<BDPlateType, Props>((props, ref) => {
       }
       schema.target = {
         prop: name!,
-        id: currentCompAgent?.schema.id!
+        id: designerStore.currentAgent?.schema.id!
       }
     } else {
       schema.source = {
         prop: name,
-        id: currentCompAgent?.schema.id!
+        id: designerStore.currentAgent?.schema.id!
        
       }
       schema.target = {

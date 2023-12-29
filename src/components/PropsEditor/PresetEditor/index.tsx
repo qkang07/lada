@@ -30,9 +30,10 @@ const PresetEditor = observer((props: Props) => {
 
   const {prop, disabled} = props
 
-  const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
-  const compSchema = currentCompAgent?.schema
-  console.log('current aaa', toJS(currentCompAgent), compSchema)
+  const { designerStore, bdCon } = useContext(DesignerContext);
+  const {currentAgent} = designerStore
+  const compSchema = currentAgent?.schema
+  // console.log('current aaa', toJS(currentAgent), compSchema)
   const value = compSchema?.defaultProps[prop.name]
   const editor =
   typeof prop.editor === "string" ? { type: DefaultEditorMap[prop.editor] || 'void' } : prop.editor;
@@ -42,8 +43,8 @@ const PresetEditor = observer((props: Props) => {
   // }, {wait: 400}) 
 
   const handlePropChange = (name: string, value: any) => {
-    console.log('custom props chanmge', name, value, currentCompAgent)
-    currentCompAgent?.updateDefaultProp(name, value)
+    console.log('custom props chanmge', name, value, currentAgent)
+    currentAgent?.updateDefaultProp(name, value)
 
   }
 

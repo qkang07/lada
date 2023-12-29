@@ -10,10 +10,12 @@ import CompBox from "./CompBox";
 import Canvas, { CanvasRef } from "@/components/Canvas";
 import {
   BindingElement,
+  BindingSchema,
   BindingScopeSchema,
   BindingType,
   CompDefBase,
   CompSchemaBase,
+  OptionalBindingSchema,
   StatePropDef,
   UIComp,
 } from "@/libs/core/Def";
@@ -33,6 +35,8 @@ import { CompAgent } from "@/libs/core/CompAgent";
 import BindingPlate, { BDPlateType } from "../BindingPlate";
 import { schemaRef } from "@/pages/PageRunner";
 import { action, makeAutoObservable, toJS } from "mobx";
+import { observer } from "mobx-react";
+import Binding from "../Binding";
 
 type CompDomInfo = {
   id: string;
@@ -92,17 +96,39 @@ function findSlot(
 //   dataSources: []
 // })
 
+class DesignerStore {
+  constructor(){
+    makeAutoObservable(this)
+  }
+  currentBinding: OptionalBindingSchema | null = null
+  setCurrentBinding( binding: OptionalBindingSchema | null) {
+    this.currentBinding = binding
+  }
+
+  currentAgent: CompAgent | null = null
+  setCurrentAgent(agent: CompAgent | null) {
+    this.currentAgent = agent
+  }
+
+  currentSlot: SlotInfo | null = null
+  setCurrentSlot(slot: SlotInfo | null) {
+    this.currentSlot = slot
+  }
+}
+
 type DesignerContextType = {
   isDesign?: boolean;
   bdCon?: BindingContainer;
-  currentCompAgent?: CompAgent<UIComp.Schema>;
+  // currentCompAgent?: CompAgent<UIComp.Schema>;
   currentComp?: {
     def: CompDefBase
     schema:CompSchemaBase
   }
-  currentSlot?: SlotInfo
+  // currentSlot?: SlotInfo
   deleteComp?: (id: any) => any;
-  openBinding?: (lookingFor:BindingElement, propName: string) => void;
+  // openBinding?: (lookingFor:BindingElement, propName: string) => void;
+  bindFor?: (lookingFor:BindingElement, propName: string) => void;
+  designerStore: DesignerStore;
 };
 
 export const DesignerContext = createContext<DesignerContextType>({} as any);
@@ -111,20 +137,23 @@ type Props = {
   bdConSchema?: BindingScopeSchema;
 };
 
-const Designer = (props: Props) => {
+const Designer = observer( (props: Props) => {
   const { bdConSchema } = props;
 
   const nav = useNavigate();
 
   const canvasRef = useRef<CanvasRef | null>(null);
 
+  const designStoreRef = useRef(new DesignerStore())
+
+  const store = designStoreRef.current
 
   const bdPlateRef = useRef<BDPlateType>(null);
 
   const focusFrameRef = useRef<FocusFrameType>(null)
 
-  const [currentAgent, setCurrentAgent] = useState<CompAgent>()
-  const [currentSlot, setCurrentSlot] = useState<SlotInfo>()
+  // const [currentAgent, setCurrentAgent] = useState<CompAgent>()
+  // const [currentSlot, setCurrentSlot] = useState<SlotInfo>()
 
   const [obsSchema, setObsSchema] = useState<BindingScopeSchema>();
 
@@ -143,6 +172,7 @@ const Designer = (props: Props) => {
   const addComp = action((provider: string) => {
     
     let schema = compMan.createSchema(provider) as UIComp.Schema
+    const {currentSlot} = store
     if (currentSlot) {
       console.log(currentSlot)
       const slotDef = currentSlot.compAgent.def.slots?.find(
@@ -172,33 +202,34 @@ const Designer = (props: Props) => {
         obsSchema?.pureComps.push(schema)
       }
       const agent = canvasRef.current?.initPureComp?.(schema)
-      setCurrentAgent(agent)
+      // setCurrentAgent(agent)
+      store.setCurrentAgent(agent!)
     }
 
   })
 
-  const deleteComp = (id: string) => {
+  const deleteComp = action((id: string) => {
     const bdCon = canvasRef.current?.bdCon
     const agent = bdCon?.agentMap.get(id);
     if(agent) {
       const plist = agent?.parentSlot?.children
       plist?.splice(plist.indexOf(agent.schema), 1)
     }
-  }
+  })
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleCanvasClick = action((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const source = e.nativeEvent.target as HTMLElement;
       const compDomInfo = findComp(source);
       const bdCon = canvasRef.current?.bdCon;
       if (compDomInfo?.id) {
         const agent = bdCon?.agentMap.get(compDomInfo.id) ;
-        setCurrentAgent(agent)
+        store.setCurrentAgent(agent!)
         focusFrameRef.current?.setCompDom(compDomInfo.dom)
         const theSlot = findSlot(source);
         // debugger
         if (theSlot?.name) {
           const agent = bdCon?.agentMap.get(theSlot.compDomInfo.id) as CompAgent<UIComp.Schema, UIComp.Def>;
-          setCurrentSlot({
+          store.setCurrentSlot({
             name: theSlot.name,
             // dom: theSlot.dom,
             // compDomInfo: theSlot.compDomInfo,
@@ -206,34 +237,34 @@ const Designer = (props: Props) => {
             schema: agent.schema.slots!.find(s => s.name === theSlot.name)! 
           })
         } else {
-          setCurrentSlot(undefined)
+          store.setCurrentSlot(null)
         }
       } else {
-        setCurrentAgent(undefined)
-        setCurrentSlot(undefined)
+        store.setCurrentAgent(null)
+        store.setCurrentSlot(null)
       }
 
     
-    }
+    })
 
-  const handleTreeClick = (schema: UIComp.Schema, slot?: UIComp.SlotSchema) => {
+  const handleTreeClick = action((schema: UIComp.Schema, slot?: UIComp.SlotSchema) => {
     const agents = canvasRef.current?.bdCon?.schemaAgentMap.get(schema.id)
     console.log(agents)
     if(agents?.length) {
       const agent = agents[0] as CompAgent<UIComp.Schema, UIComp.Def>
       const dom = agent.findDom()
-      setCurrentAgent(agent)
+      store.setCurrentAgent(agent)
       console.log('comp dom',dom)
       focusFrameRef.current?.setCompDom(dom)
       if(slot) {
-        setCurrentSlot({
+        store.setCurrentSlot({
           name: slot.name,
           compAgent: agent,
           schema: slot
         })
       } else if(agent.def.slots?.length) {
         const defaultSlot = agent.def.slots.find(s => s.name === 'default') || agent.def.slots[0]
-        setCurrentSlot({
+        store.setCurrentSlot({
           name: defaultSlot.name,
           compAgent: agent,
           schema: agent.schema.slots!.find(s => s.name === defaultSlot.name)! 
@@ -241,27 +272,31 @@ const Designer = (props: Props) => {
       }
     }
 
-  }
+  })
 
-  const choosePureComp = (id: string) => {
+  const choosePureComp = action((id: string) => {
     const bdCon = canvasRef.current?.bdCon
     const agent = bdCon?.schemaAgentMap.get(id)?.[0] // pure comp 不会循环实例化，因此用 schema agent map
     if(agent) {
-      setCurrentAgent(agent)
+      store.setCurrentAgent(agent)
       focusFrameRef.current?.setCompDom(undefined)
     } else {
       // this should not happen
     }
-  }
+  })
 
 
 
-  const openBinding = (lookingFor: BindingElement, prop: string) => {
+  const bindFor = (lookingFor: BindingElement, prop: string) => {
     bdPlateRef.current?.open({
       lookingFor,
       name: prop
     })
   };
+
+  const openBinding = (binding:  BindingSchema) => {
+    store.setCurrentBinding(binding)
+  }
 
   return (
     <DesignerContext.Provider
@@ -269,9 +304,10 @@ const Designer = (props: Props) => {
         isDesign: true,
         deleteComp,
         bdCon: canvasRef.current?.bdCon,
-        currentCompAgent: currentAgent,
-        currentSlot,
-        openBinding,
+        // currentCompAgent: currentAgent,
+        // currentSlot,
+        bindFor,
+        designerStore: designStoreRef.current
       }}
     >
       <div className={styles.designer}>
@@ -309,7 +345,12 @@ const Designer = (props: Props) => {
                 ref={focusFrameRef}
               />
             </div>
-            <div className={styles.bottomPane}></div>
+            <div className={styles.bottomPane}>
+              {
+                store.currentBinding && <Binding schema={store.currentBinding} />
+              }
+              
+            </div>
           </div>
           <div className={styles.editor}>
             <PropsEditor />
@@ -321,6 +362,6 @@ const Designer = (props: Props) => {
       </div>
     </DesignerContext.Provider>
   );
-}
+})
 
 export default Designer;

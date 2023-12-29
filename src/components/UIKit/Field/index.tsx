@@ -15,7 +15,6 @@ type Props = {
 
 const PropField = (props: Props) => {
   const {prop, bound} = props
-  // const { currentCompAgent, openBinding, bdCon } = useContext(DesignerContext);
 
   return (
     <div className={styles.propField} >
@@ -25,7 +24,6 @@ const PropField = (props: Props) => {
               <div className={styles.bd}>
                 {(props.bound || props.onBind) && <Button type={bound ? 'primary' : 'secondary'} size="mini" icon={<IconLink />} onClick={() => {
                   props.onBind?.()
-                  // openBinding?.('state', prop.name)
                 }} ></Button>}
                 
               </div>

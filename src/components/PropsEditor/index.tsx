@@ -7,14 +7,15 @@ import BasicProps from './Basic'
 import CompSlots from './Slots'
 import CompEvents from './Events'
 import CompActions from './Actions'
+import { observer } from 'mobx-react'
 
 type Props = {
 }
 
-const PropsEditor = (props: Props) => {
+const PropsEditor = observer((props: Props) => {
 
-  const {currentCompAgent} = useContext(DesignerContext)
-  if(!currentCompAgent) {
+  const {designerStore} = useContext(DesignerContext)
+  if(!designerStore.currentAgent) {
     return <></>
   } 
 
@@ -32,6 +33,6 @@ const PropsEditor = (props: Props) => {
     </div>
   )
  
-}
+})
 
 export default PropsEditor
