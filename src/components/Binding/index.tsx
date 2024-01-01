@@ -7,6 +7,8 @@ import FilterCode from './Filter/FilterCode'
 import BindingMember from './BindingMember'
 import FilterButton from './Filter/FilterButton'
 import { observer } from 'mobx-react'
+import { Menu, Popover } from '@arco-design/web-react'
+import { CompAgent } from '@/libs/core/CompAgent'
 
 type Props = {
   schema: OptionalBindingSchema
@@ -17,16 +19,16 @@ const Binding = observer((props: Props) => {
   const {schema} = props
   const [detailType, setDetailType] = useState<'source'|'filter'|'target'|undefined>()
   const [currentFilter, setCurrentFilter] = useState<DataFilterSchema>()
-  const {sourceComp, targetComp} = useMemo(() => {
-    const sourceComp = bdCon?.schemaAgentMap.get(schema.source.id)![0].schema
-    const targetComp = bdCon?.schemaAgentMap.get(schema.source.id)![0].schema
-    return {sourceComp, targetComp}
-  }, [schema])
+
+  const compList: CompAgent[] = []
+  bdCon?.agentMap.forEach((comp) => {
+    compList.push(comp)
+  })
   return (
     <div>
       <div className={styles.binding}>
         <div className={styles.source}>
-          <BindingMember schema={sourceComp!} type='source' prop={schema.source.prop} />
+          <BindingMember info={schema.source} type='source'  />
         </div>
         <div className={styles.filters}>
           {schema.filters?.map(ft => {
@@ -37,7 +39,17 @@ const Binding = observer((props: Props) => {
           })}
         </div>
         <div className={styles.target}>
-        <BindingMember schema={targetComp!} type='target' prop={schema.target.prop} />
+          <Popover content={<Menu >{
+              compList.map((comp) => {
+                return <Menu.Item key={comp.id} onClick={() => {
+                  // bdCon?.setAgent(key)
+                }}>
+                  {comp.schema.name}
+                </Menu.Item>
+              })
+            }</Menu>}>
+            <BindingMember info={schema.target} type='target' />
+          </Popover>
 
         </div>
       </div>

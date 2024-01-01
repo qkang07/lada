@@ -21,7 +21,7 @@ type Props = {
 
 const CustomPropsEditor = observer((props: Props) => {
 
-  const { designerStore, bdCon } = useContext(DesignerContext);
+  const { designerStore, bdCon  } = useContext(DesignerContext);
 
   const compSchema = designerStore.currentAgent?.schema
   const compDef = designerStore.currentAgent?.def
@@ -30,14 +30,31 @@ const CustomPropsEditor = observer((props: Props) => {
     <SidePane title={"自定义属性"}>
       {compDef?.props?.map((prop) => {
 
-        const bound = bdCon?.schema?.bindings.some(bd => bd.type === 'state-prop' && bd.target.id === compSchema?.id && bd.target.prop === prop.name)
+        const binding = bdCon?.schema?.bindings.find(bd => bd.type === 'state-prop' && bd.target.id === compSchema?.id && bd.target.prop === prop.name)
 
         return (
           <PropField
             prop={prop}
-            bound={bound}
+            bound={!!binding}
+            onBind={() => {
+              if(binding) {
+
+                designerStore.setCurrentBinding(binding)
+              }
+              else {
+                designerStore.setCurrentBinding({
+                  source: {
+                    id: compSchema?.id!,
+                    prop: prop.name,
+                    
+                  },
+                  type: 'state-prop'
+                  
+                })
+              }
+            }}
           >
-              <PresetEditor prop={prop} disabled={bound}/>
+              <PresetEditor prop={prop} disabled={!!binding}/>
           </PropField>
         );
       })}
