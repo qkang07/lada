@@ -20,10 +20,7 @@ const Binding = observer((props: Props) => {
   const [detailType, setDetailType] = useState<'source'|'filter'|'target'|undefined>()
   const [currentFilter, setCurrentFilter] = useState<DataFilterSchema>()
 
-  const compList: CompAgent[] = []
-  bdCon?.agentMap.forEach((comp) => {
-    compList.push(comp)
-  })
+
   return (
     <div>
       <div className={styles.binding}>
@@ -39,18 +36,7 @@ const Binding = observer((props: Props) => {
           })}
         </div>
         <div className={styles.target}>
-          <Popover content={<Menu >{
-              compList.map((comp) => {
-                return <Menu.Item key={comp.id} onClick={() => {
-                  // bdCon?.setAgent(key)
-                }}>
-                  {comp.schema.name}
-                </Menu.Item>
-              })
-            }</Menu>}>
-            <BindingMember info={schema.target} type='target' />
-          </Popover>
-
+          <BindingMember info={schema.target} type='target' />
         </div>
       </div>
       <div className={styles.details}>
